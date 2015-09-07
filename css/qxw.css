@@ -8,19 +8,19 @@ ul{list-style: none;}
 img{border: none;}
 select,input{outline: none;}
 body{background: #F5F5F5;}
-.main{width: 980px;height: 100%;margin: 0 auto; }
+.main{width: 980px;height: 100%;margin: 0 auto;background: #FFF; }
 .m-top{background: #444242;width: 100%;color: #fff;font-size: 14px;height: 156px;}
 .top-photo{display: inline-block;background: #F0EFE4;margin-left: 30px;height:120px; margin-top: 36px;width: 220px;text-align: center;}
 .top-photo img{
-	width: 100px;height: 100px;border-radius: 50%;margin-top: 10px;
-	-webkit-transition:all 2s ease-in-out;
+    width: 100px;height: 100px;border-radius: 50%;margin-top: 10px;
+    -webkit-transition:all 2s ease-in-out;
     -moz-transition:all 2s ease-in-out;
     -o-transition:all 2s ease-in-out;
     -ms-transition:all 2s ease-in-out;    
     transition:all 2s ease-in-out;
 }
 .top-photo img:hover{
-	-webkit-transform:rotate(720deg) scale(1.2,1.2);
+    -webkit-transform:rotate(720deg) scale(1.2,1.2);
     -moz-transform:rotate(720deg) scale(1.2,1.2);
     -o-transform:rotate(720deg) scale(1.2,1.2);
     -ms-transform:rotate(720deg) scale(1.2,1.2);
@@ -30,7 +30,7 @@ body{background: #F5F5F5;}
 .top-cent span{font-size: 1.5rem;font-weight: normal;color: #ccc;}
 #span-child{font-size: 13px;margin-left: 10px;}
 .top-name{color: #ccc;font-size: 12px;}
-.m-left{width: 280px;height: 100%;float: left;text-align: left;background:#FFF;height: 700px;}
+.m-left{width: 280px;height: 100%;float: left;text-align: left;background:#FFF;}
 .le-cent{background:#F0EFE4 ;width: 220px;margin-left: 30px;padding-top: 20px;height: 600px;}
 .le-user{margin-left: 10px;margin-right: 10px;}
 .x{background: #ccc;height: 1px;}
@@ -38,7 +38,14 @@ body{background: #F5F5F5;}
 .le-uli dl dt{margin-top: 3px;}
 .le-jieshao{padding-bottom: 10px;}
 
-.m-right{width: 700px;height: 100%;background:#fff;float: left;height: 700px}
+.m-right{width: 700px;height: 100%;background:#fff;float: left;}
+.m-jn{margin-top: 20px;}
+.r-conetn{margin-top: 10px;line-height: 28px;clear: both;}
+.r-conetn dl {list-style-type: disc}
+.r-workjl{margin-top: 10px;line-height: 28px;}
+.wokr-two{margin-top: 30px;}
+.r-xmu{margin-top: 20px;}
+.r-xmu dl dt{line-height: 28px;}
 .m-footer{clear: both;background:#444242;width: 100%;height: 30px;line-height: 30px;text-align: center;color: #fff; }
 .m-footer span{margin-left: 40px;}
 
