@@ -13,14 +13,13 @@ body{background:url('../images/body_bg.jpg');font-size: 14px;font-weight: bold;}
 .top-photo{
     display: inline-block;background: #F0EFE4;margin-left: 30px;height:120px; margin-top: 36px;width: 220px;text-align: center;}
 .top-photo img{
-    width: 100px;height: 100px;margin-top: 10px;
+    height: 100px;
+    margin-top: 10px;
     -webkit-transition:all 2s ease-in-out;
     -moz-transition:all 2s ease-in-out;
     -o-transition:all 2s ease-in-out;
     -ms-transition:all 2s ease-in-out;    
     transition:all 2s ease-in-out;
-    border-radius: 50%; 
-
 }
 .top-photo img:hover{
     -webkit-transform:rotate(720deg) scale(1.2,1.2);
