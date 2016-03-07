@@ -9,7 +9,7 @@ img{border: none;}
 select,input{outline: none;}
 body{background:url('../images/body_bg.jpg');font-size: 14px;font-weight: bold;}
 .main{width: 980px;height: 100%;margin: 0 auto;background: #FFF; }
-.m-top{background: url('../images/31.png');width: 100%;color: #fff;font-size: 14px;height: 156px;position: relative;}
+.m-top{background:#333030;width: 100%;color: #fff;font-size: 14px;height: 156px;position: relative;}
 .top-photo{
     display: inline-block;background: #F0EFE4;margin-left: 30px;height:120px; margin-top: 36px;width: 220px;text-align: center;}
 .top-photo img{
