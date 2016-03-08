@@ -84,17 +84,17 @@ app.config(function($routeProvider) {
 //首页
 app.controller('indexCtrl', function($scope,$location,$rootScope){
         MB.open();
-     	$rootScope.header={show:true,title:'',back:false,indextitle:true};
+     	$rootScope.header={show:true,title:'',back:false};
         $rootScope.footer={show:true,calss:"mui-content-footer-buttom"}
         mui('.mui-scroll-wrapper').scroll({deceleration: 0.0005});        
         $rootScope.sing=function(){
-       
+        	console.log("das");
         		$.alert('签到成功');
-                
 
         }
          MB.close();
 });
+
 
 
 
@@ -106,8 +106,6 @@ app.controller('userinfoCtrl', function($scope,$location,$rootScope){
        
          MB.close();
 });
-
-
 
 
 
