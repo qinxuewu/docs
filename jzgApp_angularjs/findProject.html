@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="user-scalable=no,maximum-scale=1,width=320">
+	    <link href="css/mui.css" rel="stylesheet"/>
+	    <link rel="stylesheet"  href="css/mui.picker.min.css" />
+	    <link rel="stylesheet" href="css/style.css" />
+	    <style type="text/css">
+	    	.list-left {padding-top:3px;}
+			.list-left >p{margin-top: 3px;font-size:15px;}
+			.index-list ul li {height:120px;}
+			.list-right {margin-top: 15px;}
+			.find-list-title{padding-top:10px;padding-left: 8px;}
+			.p-name {font-size: 16px;overflow: hidden;white-space:nowrap;text-overflow:ellipsis;width: 70%;display: inline-block;}
+	    </style>
+	    <title></title>	 
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<div class="index-top-title">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">工程找活</h1>
+				<span class="mui-icon mui-icon-search" onClick="location.href='serachProject.html'"></span>
+			</div>		
+		</header>	
+		<div class="mui-content">
+				<div class="find-tab">
+					<ul class="find-tab-ul">
+						<li class="on">被推荐的</li>
+						<li>抢单的</li>
+						<li>我的</li>
+					</ul>
+					<div class="clear"></div>
+					<div class="find-xiala">
+						<ul class="find-xiala-ul">
+							<li id="ptype"><span id="ptypeText">类型</span><img src="images/1a1_xia.png"></li>
+							<li id="city2"><span id="cityText">城市</span><img src="images/1a1_xia.png"></li>
+							<li id="jujian"><span id="jujian-text">时间</span><img src="images/1a1_xia.png"></li>
+						</ul>
+					</div>
+				</div>
+				<!-- 上拉加载   数据列表-->
+				<div id="pullrefresh" class="mui-content mui-scroll-wrapper" style="margin-top:155px">
+					<div class="mui-scroll">						
+						<div class="mui-table-view mui-table-view-chevron">
+							<div class="index-list">
+								<ul>
+									<li>
+										<a href="">
+											<div class="find-list-title">
+													<span class="user-renzhen">个人认证</span>
+													<span class="p-name">河道污泥厂飒飒发送</span>
+											</div>
+											<div class="list-left">
+												<p>类型：土石方工程</p>
+												<p>地址：广东省深圳市南山区</p>
+												<p>发布日期：2015-10-23</p>
+											</div>
+											<div class="list-right">
+												<label>推荐待查看</label>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a href="">
+											<div class="find-list-title">
+													<span class="user-renzhen">个人认证</span>
+													<span class="p-name">河道污泥厂飒飒发送</span>
+											</div>
+											<div class="list-left">
+												<p>类型：土石方工程</p>
+												<p>地址：广东省深圳市南山区</p>
+												<p>发布日期：2015-10-23</p>
+											</div>
+											<div class="list-right">
+												<span class="qdjh">5</span>
+												<span class="q-tip">抢单机会</span>	
+											</div>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>			
+				</div>		
+		</div>		
+	</body>
+</html>
+<script src="js/jquery.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/city.data-3.js"  charset="utf-8"></script>
+<script src="js/utils.js"></script>
+<script type="text/javascript">
+picker();
+	$(function(){
+		$(".find-tab-ul li").on("click",function(){
+			var  $li=$(".find-tab-ul li");
+			$li.removeClass();
+			$(this).addClass('on');
+		})
+	})
+</script>
