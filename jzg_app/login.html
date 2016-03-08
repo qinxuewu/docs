@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no,maximum-scale=1,width=320">
+    <title></title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+	<script type="text/javascript" id="screen_adapt">
+	    (function() {
+	        if (/Android/i.test(navigator.userAgent)) {
+	            document.body.style.zoom = document.body.clientWidth / 320;
+	        }
+	    })();
+	</script>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">登录</h1>
+		</header>
+		<div class="mui-content">
+			<div class="logp-img"><img src="images/9gywm_logo.png"  ></div>		
+			<form id='login-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label>账号</label>
+					<input id='account' type="tel" class="mui-input-clear mui-input" placeholder="请输入账号">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+				</div>
+			</form>
+			<form class="mui-input-group">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						自动登录
+						<div id="autoLogin" class="mui-switch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</li>
+				</ul>
+			</form>
+			<div class="mui-content-padded">
+				<button id='login' class="logingbtn" onclick="location.href='index.html' ">登录</button>
+				<div class="link-area">
+				<a id='reg' href="register.html">注册账号</a> <span class="spliter">|</span>
+				 <a id='forgetPassword' href="findpwd.html">忘记密码</a>
+				</div>
+			</div>
+		</div>	
+</body>
+</html>
+<script src="js/jquery.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/utils.js"></script>
