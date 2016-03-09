@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="user-scalable=no,maximum-scale=1,width=320">
+	    <link href="css/mui.css" rel="stylesheet"/>
+	    <link rel="stylesheet" href="css/style.css" />
+	    <title></title>
+	    <style type="text/css">
+	    	input[type='text']{width:70%;text-align:right;border:none;}
+	    	input[type='date']{width:70%;text-align:center;border:none;}
+			.mui-input-row label {width: 100%;}
+	    </style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<div class="index-top-title">
+			<h1 class="mui-title">发布招工信息</h1>
+			</div>		
+		</header>	
+		<div class="mui-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						
+						<ul class="user-menu up-user">
+							<li>
+								<span>工种类别</span>
+								<input type="text" class="user-text" readonly="true" id="gtype">
+								<img src="images/you.png" class="jt">
+							</li>
+							<li>
+								<span>招聘人数</span>
+								<input type="text" class="user-text" placeholder="请输入招聘人数">
+							</li>
+							<li>
+								<span>结算方式</span>
+								<input type="text" class="user-text" readonly="true" id="jiesuan">
+								<img src="images/you.png" class="jt">
+							</li>
+							<li>
+								<span>工作地点</span>
+								<input type="text" class="user-text" id="city" value="武汉" readonly="true">
+								<img src="images/you.png" class="jt">
+							</li>
+							<li>
+								<span>详细地址</span>
+								<input type="text" class="user-text" placeholder="请输入详细地址">
+							</li>
+							<li>
+								<span>工资待遇</span>
+								<input type="text" class="user-text" placeholder="请输入工资待遇">
+							</li>
+							<li>
+								<span>联系人</span>
+								<input type="text" class="user-text" placeholder="请输入联系人">
+							</li>
+							<li>
+								<span>联系电话</span>
+								<input type="text" class="user-text" placeholder="请输入联系电话">
+							</li>
+						</ul>
+						<div class="input-text" style="margin-top:10px;padding:5px 5px;">
+							<textarea placeholder="招工要求" ></textarea>
+						</div>
+						<div class="mui-input-row mui-radio mui-left">
+							<label>小明施工队</label>
+							<input name="radio" type="radio">
+						</div>
+						<div class="mui-input-row mui-radio mui-left">
+							<label>小武施工队</label>
+							<input name="radio" type="radio" checked="true">
+						</div>
+						<div class="input-text" style="margin-top:10px;padding:5px 10px;">
+							<button id='login' class="logingbtn" onclick="add();">发布</button>
+						</div>
+						
+					</div>
+				</div>
+		</div>	
+			<footer>
+				<div class="index-footer" data="发布" url="fabu_zhaogogn.html"></div>
+			</footer>	
+	</body>
+</html>
+<script src="js/jquery.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/city.data-3.js"  charset="utf-8"></script>
+<script src="js/utils.js"></script>
+<script src="js/footer.js"></script>
+<script type="text/javascript">
+picker();
+function add(){
+		MB.open();
+}
+</script>

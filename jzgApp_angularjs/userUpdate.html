@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="user-scalable=no,maximum-scale=1,width=320">
+	    <link href="css/mui.css" rel="stylesheet"/>
+	    <link rel="stylesheet" href="css/style.css" />
+	    <title></title>
+	    <style type="text/css">
+	    	input[type='text']{width:70%;text-align:center;border:none;}
+	    	input[type='date']{width:70%;text-align:center;border:none;}
+	    </style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<div class="index-top-title">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">个人中心</h1>
+			
+			</div>		
+		</header>	
+		<div class="mui-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="user-info" style="height:140px;padding-top:30px">
+							<div class="user-logimg">
+								<img src="images/8wdzl_5.png" id="touxiang">
+								<input type="file" accept="image/*" id="uplod-file" multiple>
+								<p>张珊珊</p>
+							</div>
+						</div>	
+						<ul class="user-menu up-user">
+							<li>
+								<span><img src="images/8wdzl_1.png">昵称</span>
+								<input type="text" class="user-text" value="张珊珊">
+							</li>
+							<li>
+								<span><img src="images/8wdzl_2.png">性别 </span> 
+								<input type="text" class="user-text" id="xingbie" value="男" readonly="true">
+								<img src="images/you.png" class="jt">
+								</li>
+							<li>
+								<span><img src="images/8wdzl_3.png">年龄</span>
+								<input  type="date" value="2014-01-13"/>
+								<img src="images/you.png" class="jt">
+							</li>
+							<li><img src="images/fbgcrj_dw.png">所在地
+							<input type="text" class="user-text" id="city" value="武汉" readonly="true"></li>
+						</ul>
+					</div>
+				</div>
+		</div>		
+	</body>
+</html>
+<script src="js/jquery.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/city.data-3.js"  charset="utf-8"></script>
+<script src="js/utils.js"></script>
+<script type="text/javascript">
+picker();
+</script>
