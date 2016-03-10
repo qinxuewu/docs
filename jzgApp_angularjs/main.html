@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html ng-app="app">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	     <link href="css/mui.css" rel="stylesheet"/>
+	    <link rel="stylesheet" href="css/style.css" />	
+	    <title></title>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav"  ng-show="header.show">	
+			<div class="index-top-title" ng-show="header.indextitle">
+				<span >未认证</span>
+				<span class="sing"  ng-click="sing()">签到</span>
+			</div>
+			<div class="index-top-title" ng-show="header.title">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" ng-show="header.back"></a>
+				<h1 class="mui-title" ng-bind="header.title">工程详情</h1>					
+			</div>	
+
+			
+		</header>
+
+		<nav class="mui-bar mui-bar-tab" ng-show="footer.show">
+			<a class="mui-tab-item mui-active" href="#index">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label" >首页</span>
+			</a>
+			<a class="mui-tab-item" href="#">
+
+				<span class="mui-icon mui-icon-gear"></span>
+				<span class="mui-tab-label">发布</span>
+			</a>
+			<a class="mui-tab-item" href="#">
+				<span class="mui-icon mui-icon-email"></span>
+				<span class="mui-tab-label">消息</span>
+			</a>
+			
+			<a class="mui-tab-item" href="#">
+				<span class="mui-icon mui-icon-gear"></span>
+				<span class="mui-tab-label">入住</span>
+			</a>
+			<a class="mui-tab-item "  href="#">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">我的</span>
+			</a>			
+		</nav>
+		<div id="MB"><span id="loadDiv"><img src="images/load.gif"></span></div>
+		<div ng-view="" class="mui-content"> </div>
+
+
+<script src="js/jquery.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/angular.min.js"></script>
+<script src="js/angular-route.min.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/controllers.js"></script>
+<script src="js/service.js"></script>
+<script type="text/javascript">
+	mui('.mui-bar-tab').on( 'tap' , 'a' , function(){
+		var url=$(this).attr("href");
+			location.href=url;
+	})
+</script>
+</body>
+</html>
+
+
+
+

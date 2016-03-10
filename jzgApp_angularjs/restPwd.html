@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no,maximum-scale=1,width=320">
+    <title></title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+	<script type="text/javascript" id="screen_adapt">
+	    (function() {
+	        if (/Android/i.test(navigator.userAgent)) {
+	            document.body.style.zoom = document.body.clientWidth / 320;
+	        }
+	    })();
+	</script>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">重置密码</h1>
+		</header>
+		<div class="mui-content">
+			<div class="from">
+				<div class="input-text">
+					<input type="password"  placeholder="输入新密码">
+				</div>
+				<div class="input-text">
+					<input type="password"  placeholder="再次输入">
+				</div>
+			
+				<div class="input-text" style="margin-top:20px;">
+					<button class="logingbtn" onclick="location.href='login.html' ">提交</button>
+				</div>
+			</div>
+		</div>	
+</body>
+</html>
+<script src="js/jquery.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/utils.js"></script>
