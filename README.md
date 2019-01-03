@@ -1,6 +1,6 @@
 
 # interview-docs  
-快速访问：https://a870439570.github.io/interview-docs
+* 快速访问：https://a870439570.github.io/interview-docs
 Java 知识点学习+面试核心知识，收录网上大部分面试题整理加看书笔记整理而来,继续完善中。
 
 
