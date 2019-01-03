@@ -10,7 +10,10 @@
 
 - Spring/SpringBoot/SpringCloud
   - [aop实现原理](Spring/aop.md)
-
+  - [SpringBoot Admin监控集成](Spring/SpringBootAdmin.md)
+  - [SpringMvc工作原理](Spring/SpringMvc.md)
+  - [eureka注册中心访问权限](Spring/eureka注册中心访问权限.md)
+  
 - 分布式
      - Storm系列
          - [(一)环境搭建安装](storm/storm01.md)
