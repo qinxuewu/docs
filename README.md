@@ -25,7 +25,7 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 - JVM系列
   - [JVM垃圾回收机制](docs/JVM/JVM垃圾回收机制.md)
   - [Java内存模型之happens-before](docs/JVM/Java内存模型之happens-before.md)
-  - [Minor GC和Full GC区别](docs/JVM/Minor GC和Full GC区别.md)
+  - [Minor GC和Full GC区别](docs/JVM/MinorGC和FullGC区别.md)
   - [java常量池总结](docs/JVM/java常量池总结.md)
   - [jvm参数的设置和jvm调优](docs/JVM/jvm参数的设置和jvm调优.md)
   - [内存分配与回收策略](docs/JVM/内存分配与回收策略.md)
