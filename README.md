@@ -17,9 +17,9 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 
 # 目录
 - 常用集合
-  - [Map系列](collections/Map.md)
-  - [HashSet/LinkedHashSet/TreeSet](collections/set.md)
-  - [Collections/Arrays](collections/Collections-Arrays.md)
+  - [Map系列](docs/collections/Map.md)
+  - [HashSet/LinkedHashSet/TreeSet](docs/collections/set.md)
+  - [Collections/Arrays](docs/collections/Collections-Arrays.md)
 
 
 - JVM系列
