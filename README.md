@@ -1,18 +1,15 @@
 
-![输入图片说明](https://images.gitee.com/uploads/images/2019/0103/191141_7edb20c3_1478371.png "docs.png")
-# interview-docs  
-* 快速访问：https://a870439570.github.io/interview-docs
-* Java 知识点学习+面试核心知识，收录网上大部分面试题整理加看书笔记整理而来,继续完善中。
 
+<div align="center">  
+<img src="https://images.gitee.com/uploads/images/2019/0103/191141_7edb20c3_1478371.png" width=""/>
+</br>
+
+* Java 知识点学习+面试核心知识，收录网上大部分面试题整理加看书笔记整理而来,继续完善中。
 
 [![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-924715723-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5PIRvFq)
 [![码云](https://img.shields.io/badge/Gitee-%E7%A0%81%E4%BA%91-yellow.svg)](https://gitee.com/qinxuewu)
 [![Github](https://img.shields.io/badge/Github-Github-red.svg)](https://github.com/a870439570)
-
-
-
-
-
+</div>
 
 
 # 福利
