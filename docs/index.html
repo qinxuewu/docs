@@ -9,13 +9,37 @@
   <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
 </head>
 <body>
-  <div id="app"></div>
+   <div id="app"></div>
   <script>
     window.$docsify = {
-      name: '',
-      repo: ''
+      name: 'interview-docs',
+      repo: 'https://github.com/a870439570/interview-docs/tree/master',
+      coverpage: true,
+       maxLevel: 4,
+        // 加载 _sidebar.md
+       loadSidebar: true,
+       subMaxLevel:2,
+        loadNavbar: true,
+       search: {
+        noData: {
+          '/': '找不到结果'
+        },
+        maxAge: 86400000, // 过期时间，单位毫秒，默认一天
+         paths: [], // or 'auto'
+        placeholder: {
+          '/': '搜索'
+        }
+      },
+       alias: {
+      '/.*/_sidebar.md': '/_sidebar.md',
+      '/.*/_navbar.md': '/_navbar.md',
+    }
     }
   </script>
   <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-bash.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-java.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/search.js"></script>
+
 </body>
 </html>
