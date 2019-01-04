@@ -51,7 +51,7 @@ GitHub Pages 支持从三个地方读取文件
  - gh-pages 分支
 
 上传文件至Github仓库  官方推荐直接将文档放在 docs/ 目录下，在设置页面开启 GitHub Pages 功能并选择 master branch /docs folder 选项。
-![在这里插入图片描述](https://user-gold-cdn.xitu.io/2019/1/4/16816de071452a5a?w=778&h=519&f=png&s=64539)
+
 
 此时等待几秒钟 就可以访问了   我这里使用了自定义域名 
 
