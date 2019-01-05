@@ -1,6 +1,6 @@
-http://localhost:8090/dubbo-admin-2.5.8  
 
-dubbo源码地址
+
+## dubbo源码地址
 [https://github.com/alibaba/dubbo](https://github.com/alibaba/dubbo)
 - 进入下载dubbo-admin管理界面源码，进行maven打包 把打包war包部署到tomcat
 - 打包war包，进入dubbo-admin这个文件目录 运行命令：
@@ -31,7 +31,7 @@ dataDir=F:\\zookeeper-3.3.6\\logs
 # the port at which the clients will connect  监听客户端连接的端口
 clientPort=2181
 ```
-### w系统下伪集群安装
+## w系统伪集群安装
 
 
 - 在 一台机器上通过伪集群运行时可以修改 zkServer.cmd 文件在里面加入
@@ -55,7 +55,7 @@ clientPort=2181
 /tmp/zookeeper/3
 
  建立一个文本文件命名为myid，内容就为对应的zoo.cfg里server.后数字
-### Linux环境下安装
+## Linux环境下安装
 
  
 - 安装:
@@ -105,7 +105,7 @@ myid 指明自己的 id，对应上面 zoo.cfg 中 server. 后的数字，第一
 telnet 127.0.0.1 2181
 dump
 ```
-### Dubbo架构
+## Dubbo架构
 
 
 - Provider: 暴露服务的服务提供方。
@@ -115,7 +115,7 @@ dump
 - Container: 服务运行容器。
 - ZooKeeper是一个分布式的，开放源码的分布式应用程序协调服务。
 
-### Dubbo提供的注册中心有如下几种类型可供选择： 
+## Dubbo提供的注册中心有如下几种类型 
 
 
 - * Multicast注册中心 
@@ -123,7 +123,7 @@ dump
 - * Redis注册中心 
 - * Simple注册中心
 
-### Dubbo优缺点
+## Dubbo优缺点
 
 
 - 优点： 
@@ -138,16 +138,16 @@ dump
 - Dubbo-admin与Dubbo-monitor提供了完善的服务接口管理与监控功能，针对不同应用的不同接口，可以进行 多
   版本，多协议，多注册中心管理
 - 缺点：只支持JAVA语言
-### Dubbo中zookeeper做注册中心，如果注册中心集群都挂掉，发布者和订阅者之间还能通信么？
+* Dubbo中zookeeper做注册中心，如果注册中心集群都挂掉，发布者和订阅者之间还能通信么？
 
 
 - 可以的，启动dubbo时，消费者会从zk拉取注册的生产者的地址接口等数据，缓存在本地。每次调用时，按照本地存储的地址进行调用
 - 可以，消费者本地有一个生产者的列表，他会按照列表继续工作，倒是无法从注册中心去同步最新的服务列表，短期的注册中心挂掉是不要紧的，但一定要尽快修复
-### Dubbo在安全机制方面是如何解决的 
 
+## Dubbo在安全机制方面是如何解决的 
 Dubbo通过Token令牌防止用户绕过注册中心直连，然后在注册中心上管理授权。Dubbo还提供服务黑白名单，来控制服务所允许的调用方。
 
-### dubbo 配置文件详解   
+## dubbo配置文件详解   
 
 
 1. [Dubbo用户手册](http://dubbo.io/books/dubbo-user-book/)
@@ -183,7 +183,7 @@ Dubbo通过Token令牌防止用户绕过注册中心直连，然后在注册中�
 <dubbo:method/> 方法配置，用于ServiceConfig和ReferenceConfig指定方法级的配置信息。
 <dubbo:argument/> 用于指定方法参数配置。
 ```
-### dubbo 实现服务降级
+## dubbo实现服务降级
 
 
 - 查看dubbo的官方文档，可以发现有个mock的配置，mock只在出现非业务异常(比如超时，网络异常等)时执行。mock的配置支持两种
