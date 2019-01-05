@@ -1,6 +1,7 @@
 * 常用集合
   * [Map系列](collections/Map.md)
   * [Set系列](collections/set.md)
+  * [List系列](collections/List.md)
   * [Collections/Arrays](collections/Collections-Arrays.md)
 
 
