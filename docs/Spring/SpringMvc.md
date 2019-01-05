@@ -1,8 +1,8 @@
-### 了解SpringMVC运行流程及九大组件
+## SpringMVC运行流程及九大组件
 
 ![输入图片说明](https://gitee.com/uploads/images/2018/0701/135845_cb034280_1478371.png "21D3022E-0B0C-4F3B-B5B0-C3CB55B4F744.png")
 
-### SpringMVC流程
+## SpringMVC流程
 
 1. 用户发送请求至前端控制器DispatcherServlet。
 1. DispatcherServlet收到请求调用HandlerMapping处理器映射器。
@@ -16,15 +16,13 @@
 1. DispatcherServlet根据View进行渲染视图（即将模型数据填充至视图中）。
 1. DispatcherServlet响应用户。
 
-### 组件说明：
+## 组件说明：
 以下组件通常使用框架提供实现：
 
 1. DispatcherServlet：作为前端控制器，整个流程控制的中心，控制其它组件执行，统一调度，降低组件之间的耦合性，提高每个组件的扩展性。
 1. HandlerMapping：通过扩展处理器映射器实现不同的映射方式，例如：配置文件方式，实现接口方式，注解方式等。 
 1. HandlAdapter：通过扩展处理器适配器，支持更多类型的处理器。
 1. ViewResolver：通过扩展视图解析器，支持更多类型的视图解析，例如：jsp、freemarker、pdf、excel等。
-
-### 组件：
 
  **1、前端控制器DispatcherServlet（不需要工程师开发）,由框架提供** 
 - 作用：接收请求，响应结果，相当于转发器，中央处理器。有了dispatcherServlet减少了其它组件之间的耦合度。
@@ -54,7 +52,7 @@
 - View是一个接口，实现类支持不同的View类型（jsp、freemarker、pdf...）
 
 
-### 核心架构的具体流程步骤如下：
+## 核心架构的具体流程
 - 1、首先用户发送请求——>DispatcherServlet，前端控制器收到请求后自己不进行处理，而是委托给其他的解析器进行处理，作为统一访问点，进行全局的流程控制；
 
 - 2、DispatcherServlet——>HandlerMapping， HandlerMapping 将会把请求映射为HandlerExecutionChain 对象（包含一个Handler 处理器（页面控制器）对象、多个HandlerInterceptor 拦截器）对象，通过这种策略模式，很容易添加新的映射策略；
@@ -74,7 +72,7 @@
 - Handler：处理器，即后端控制器用controller表示。
 - View：视图，即展示给用户的界面，视图中通常需要标签语言展示模型数据。
 
-### SpringMVC之前我们先来看一下什么是MVC模式
+## 什么是MVC模式
 MVC的原理图：
 ![MVC的原理图](https://images2015.cnblogs.com/blog/249993/201702/249993-20170207135959401-404841652.png "在这里输入图片标题")
 
