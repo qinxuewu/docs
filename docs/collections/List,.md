@@ -1,5 +1,3 @@
-# ArrayList/Vector 的底层分析
-
 ## ArrayList
 
 `ArrayList` 实现于 `List`、`RandomAccess` 接口。可以插入空数据，也支持随机访问。
@@ -55,7 +53,7 @@
 
 由此可见 `ArrayList` 的主要消耗是数组扩容以及在指定位置添加数据，在日常使用时最好是指定大小，尽量减少扩容。更要减少在指定位置插入数据的操作。
 
-### 序列化
+## 序列化
 
 由于 ArrayList 是基于动态数组实现的，所以并不是所有的空间都被使用。因此使用了 `transient` 修饰，可以防止被自动序列化。
 
@@ -148,21 +146,21 @@ transient Object[] elementData;
 ```
 
 
-### LinkedList 
+## LinkedList 
 LinkedList 和 ArrayList 一样，都实现了 List 接口，但其内部的数据结构有本质的不同。LinkedList 是基于链表实现的，所以它的插入和删除操作比 ArrayList 更加高效。但也是由于其为基于链表的，所以随机访问的效率要比 ArrayList 差。
 
 
-### Stack
+## Stack
 Stack是一个后进先出（last in first out，LIFO）的堆栈，在Vector类的基础上扩展5个方法而来
 ![输入图片说明](https://gitee.com/uploads/images/2018/0702/144136_41c0e686_1478371.png "clipboard.png")
 
-### ArrayList和LinkedList的区别
+## ArrayList和LinkedList的区别
 1. `ArrayList`是实现了基于动态数组的数据结构，
 1. `LinkedList`基于链表的数据结构。
 1. 对于随机访问`get`和`set`，`ArrayList`觉得优于`LinkedList`，因为`LinkedList`要移动指针。
 1. 对于新增和删除操作`add`和`remove`，`LinkedList`比较占优势，因为`ArrayList`要移动数据。
 
-### ArrayList和Vector的区别
+## ArrayList和Vector的区别
 1. Vector和ArrayList几乎是完全相同的,唯一的区别在于Vector是同步类(synchronized)，属于强同步类。因此开销就比ArrayList要大，访问要慢。正常情况下,大多数的Java程序员使用ArrayList而不是Vector,因为同步完全可以由程序员自己来控制。
 1. Vector每次扩容请求其大小的2倍空间，而ArrayList是1.5倍。 
 1. Vector还有一个子类Stack.
