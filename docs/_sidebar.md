@@ -1,7 +1,7 @@
-- 常用集合
-  - [Map系列](collections/Map.md)
-  - [HashSet/LinkedHashSet/TreeSet](collections/set.md)
-  - [Collections/Arrays](collections/Collections-Arrays.md)
+* 常用集合
+  * [Map系列](collections/Map.md)
+  * [Set系列](collections/set.md)
+  * [Collections/Arrays](collections/Collections-Arrays.md)
 
 
 - JVM系列
