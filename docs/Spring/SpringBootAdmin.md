@@ -159,7 +159,7 @@ http://codecentric.github.io/spring-boot-admin/current/#register-clients-via-spr
 java -jar spring-boot01-1.0-SNAPSHOT.jar > log.file 2>&1 &
 ```
 
-## springBoot Admin实例司机下线 邮件通知 配置如下：
+## 邮件通知配置
 ```
 spring.mail.host=smtp.qq.com
 spring.mail.username=870439570@qq.com
