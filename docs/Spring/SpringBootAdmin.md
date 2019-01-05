@@ -1,14 +1,10 @@
-# SpringBoot -Admin-demo
-
-#### 项目介绍
+## 介绍
 Spring Boot Admin应用监控 
 
 - Spring Boot Admin 是一个管理和监控Spring Boot 应用程序的开源软件。每个应用都认为是一个客户端，通过HTTP或者使用 Eureka注册到admin server中进行展示，Spring Boot Admin UI部分使用AngularJs将数据展示在前端。
  - Spring Boot Admin 是一个针对spring-boot的actuator接口进行UI美化封装的监控工具。他可以：在列表中浏览所有被监控spring-boot项目的基本信息，详细的Health信息、内存信息、JVM信息、垃圾回收信息、各种配置信息（比如数据源、缓存列表和命中率）等，还可以直接修改logger的level。
 
-## 
-
-### 设置Spring Boot Admin Server
+## 设置Spring Boot Admin Server
 - 新建一个springBoot2.x工程，将Spring Boot Admin Server启动器添加到pom.xml
 - 使用ide新建工程可以直接选择引入Spring Boot Admin
 
@@ -35,7 +31,7 @@ Spring Boot Admin应用监控
             <artifactId>spring-boot-starter-security</artifactId>
    </dependency>
 ```
-### 启动类添加如下注解
+## 启动类添加如下注解
 
 ```
 @SpringBootApplication
@@ -47,7 +43,7 @@ public class SpringbootAdminApplication {
     }
 }
 ```
-### 添加身份验证和授权
+## 添加身份验证和授权
 
 ```
 @Configuration
@@ -93,7 +89,7 @@ public class SecuritySecureConfig extends WebSecurityConfigurerAdapter {
 
 ```
 
-### application.properties配置文件
+## application.properties配置文件
 
 ```
 server.port=8088
@@ -112,7 +108,7 @@ spring.boot.admin.ui.title=szq-Monitpring
 启动运行：http://localhost:8088/szq-monitoring/login 出现登录界面表示成功
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1016/191838_0f809301_1478371.png "屏幕截图.png")
 
-### Spring Boot客户端配置监控
+## Spring Boot客户端配置监控
 - 客户端需要配置账户密码 不然无法注册到springBoot Admin
 - 每个要注册的应用程序都必须包含Spring Boot Admin Client 配置如下
 ```
@@ -142,7 +138,7 @@ spring.boot.admin.client.instance.service-url=http://localhost:8081
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1016/192619_d4dab5d0_1478371.png "屏幕截图.png")
 
 
-### Spring Boot Admin Client配置选项
+## Spring Boot Admin Client配置选项
 
 ```
 spring.boot.admin.client.enabled    #启用S​​pring Boot Admin Client,默认值true
@@ -154,7 +150,7 @@ spring.boot.admin.client.password
 spring.boot.admin.client.period #重复注册的间隔（以ms为单位）默认自10,000
 spring.boot.admin.client.connect-timeout  #连接超时进行注册（以ms为单位 #默认5,000
 ```
-### 官方配置
+## 官方配置
 http://codecentric.github.io/spring-boot-admin/current/#register-clients-via-spring-boot-admin
 
 打jar包放到linux服务器后台运行模式
@@ -163,7 +159,7 @@ http://codecentric.github.io/spring-boot-admin/current/#register-clients-via-spr
 java -jar spring-boot01-1.0-SNAPSHOT.jar > log.file 2>&1 &
 ```
 
-### springBoot Admin实例司机下线 邮件通知 配置如下：
+## springBoot Admin实例司机下线 邮件通知 配置如下：
 ```
 spring.mail.host=smtp.qq.com
 spring.mail.username=870439570@qq.com
