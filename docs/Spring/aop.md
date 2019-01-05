@@ -1,10 +1,10 @@
-### aop的概述
+## 概述
 - aop一般被叫做面向方面（切面）的编程。是作为面向对象的一种补充，主要用于处理系统中分布在各个环节的的横切的关注点，比如日志记录，异常处理，缓存,事物等等。
 - aop的实现关键在于aop框架自动创建aop代理，aop代理主要分为静态代理和动态代理两种
 - 静态代理的代表为AspectJ；而动态代理则以Spring AOP为代表
 
 
-### 使用AspectJ的编译时增强实现AOP
+## 使用AspectJ的编译时增强实现AOP
 AspectJ是静态代理的增强，所谓的静态代理就是AOP框架会在编译阶段生成AOP代理类，因此也称为编译时增强。
 
 首先我们有一个普通的Hello类
@@ -54,10 +54,10 @@ hello
 AOP已经生效了,它会在编译阶段将Aspect织入Java字节码中， 运行的时候就是经过增强之后的AOP对象。
 
 
-### Spring AOP实现原理
+## Spring AOP实现原理
 - Spring AOP使用的动态代理，所谓的动态代理就是说AOP框架不会去修改字节码，而是在内存中临时为方法生成一个AOP对象，这个AOP对象包含了目标对象的全部方法，并且在特定的切点做了增强处理，并回调原对象的方法。
 
-### Spring AOP中的动态代理主要有两种方式
+## Spring AOP中的动态代理主要有两种方式
  **JDK动态代理和CGLIB动态代理。** 
 - JDK动态代理通过反射来接收被代理的类，并且要求被代理的类必须实现一个接口。
 - JDK动态代理的核心是InvocationHandler接口和Proxy类。
@@ -138,7 +138,7 @@ public class WebLogAspect {
 }
 
 ```
-### jdk动态代理实现
+## jdk动态代理实现
 
 ```
 //定义一个接口
@@ -245,7 +245,7 @@ public class ProxyTest {
 }
 
 ```
-### cglib 动态代理
+## cglib 动态代理
 
 ```
 public class UserDaoImpl {
@@ -319,6 +319,6 @@ public class CGLibProxyFactory {
 
 
 
-### 小结
+## 小结
 - AspectJ在编译时就增强了目标对象，Spring AOP的动态代理则是在每次运行时动态的增强，生成AOP代理对象，区别在于生成AOP代理对象的时机不同，相对来说AspectJ的静态代理方式具有更好的性能，但是AspectJ需要特定的编译器进行处理，而Spring AOP则无需特定的编译器处理。
 
