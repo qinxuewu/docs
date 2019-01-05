@@ -1,9 +1,9 @@
-###  springCloud的eureka注册中心增加访问权限（ Springboot2.0版本解决方案）
+##  概述
 - SpringCloud组件它主要提供的模块包括：服务发现（Eureka），断路器（Hystrix），智能路有（Zuul），客户端负载均衡（Ribbon），Archaius，Turbine等
 - Eureka作用相当于zookeeper,用于微服务项目中的服务注册及发现，在采用springBoot+springCloud开发微服务时，通过一些简单的配置就能够达到基本的目的
 
  
-### eureka注册中心访问权限
+### 注册中心访问权限配置
 在注册中心服务pom.xml添加依赖
 
 ```
@@ -33,7 +33,7 @@ spring.security.user.password=123456
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/0724/140715_4f6f683e_1478371.png "微信图片_20180724140701.png")
 
-### eureka开启验证后服务无法连接注册中心解决方案
+## 开启验证后服务无法连接注册中心解决方案
 运行错误提示
 ```
 com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
