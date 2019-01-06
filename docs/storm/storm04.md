@@ -46,7 +46,7 @@ Storm的流分组策略
 示例
 ----
 修改上一章节的Topology
-[Storm(三)Java编写第一个本地模式demo](https://blog.csdn.net/u010391342/article/details/82735305)
+[Storm(三)Java编写第一个本地模式demo](storm/storm03.md)
 ```
 package com.qxw.topology;
 import org.apache.storm.Config;
