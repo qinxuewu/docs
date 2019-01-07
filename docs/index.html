@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>interview-docs</title>
+    <link rel="icon" href="_media/logo3.jpg">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -16,16 +17,14 @@
       repo: 'https://github.com/a870439570/interview-docs/tree/master',
       coverpage: true,
       maxLevel: 4,
-        // 加载 _sidebar.md
        loadSidebar: true,
        subMaxLevel:2,
         loadNavbar: true,
-       search: {
+     search: {
         noData: {
-          '/': '找不到结果'
+          '/': 'No results!'
         },
-        maxAge: 86400000, // 过期时间，单位毫秒，默认一天
-         paths: [], // or 'auto'
+        paths: 'auto',
         placeholder: {
           '/': '搜索'
         }

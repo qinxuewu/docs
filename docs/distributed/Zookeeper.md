@@ -147,3 +147,6 @@ Redis的分布式解决方案Codis，就利用了Zookeeper来存放数据路由�
 
 此外，Kafka、HBase、Hadoop，也都依靠Zookeeper同步节点信息，实现高可用。
 
+
+#### 参考
+- https://mp.weixin.qq.com/s/Gs4rrF8wwRzF6EvyrF_o4A

@@ -334,9 +334,7 @@ elasticsearch.url: "http://192.168.1.191:9200"
 **启动** 
 ```
 ./kibana  //不能关闭终端
- 
 nohup  ./kibana > /nohub.out &  //可关闭终端，在nohup.out中查看log
-
 在浏览器中访问：http://192.168.1.191:5601/
 ```
 
@@ -348,13 +346,13 @@ nohup  ./kibana > /nohub.out &  //可关闭终端，在nohup.out中查看log
 
 ```
 tar zxvf logstash-6.2.2.tar.gz
-# 进入目录
+###  进入目录
 cd logstash-6.2.2
 ```
 LogStash 的运行需要指定一个配置文件，来指定数据的流向，我们在当前目录下创建一个 first.conf 文件，其内容如下:
 
 ```
-# 配置输入为 beats
+###  配置输入为 beats
 input {
     beats {
             port => "5044"
@@ -362,7 +360,7 @@ input {
     }
 
 }
-# 数据过滤
+###  数据过滤
 filter {
     grok {
             match => { "message" => "%{COMBINEDAPACHELOG}" }
@@ -408,7 +406,6 @@ cd filebeat-6.2.2-darwin-x86_64
     paths:
       - /usr/local/nginx/logs/*.log
 
-#----------------------------- Logstash output --------------------------------
 # 输出到本机的 LogStash
 output.logstash:
   # The Logstash hosts

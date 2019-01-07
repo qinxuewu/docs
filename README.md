@@ -18,41 +18,11 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 # 目录
 - 常用集合
   - [Map系列](docs/collections/Map.md)
-  - [HashSet/LinkedHashSet/TreeSet](docs/collections/set.md)
+  - [Set系列](docs/collections/set.md)
+  - [List系列](docs/collections/List.md)
   - [Collections/Arrays](docs/collections/Collections-Arrays.md)
 
 
-- JVM系列
-  - [JVM垃圾回收机制](docs/JVM/JVM垃圾回收机制.md)
-  - [Java内存模型之happens-before](docs/JVM/Java内存模型之happens-before.md)
-  - [Minor GC和Full GC区别](docs/JVM/MinorGC和FullGC区别.md)
-  - [java常量池总结](docs/JVM/java常量池总结.md)
-  - [jvm参数的设置和jvm调优](docs/JVM/jvm参数的设置和jvm调优.md)
-  - [内存分配与回收策略](docs/JVM/内存分配与回收策略.md)
-  - [初始化和清理及类的加载](docs/JVM/初始化和清理及类的加载.md)
-  - [对象的创建与内存分配](docs/JVM/对象的创建与内存分配.md)
-  - [对象的创建和生命周期](docs/JVM/对象的创建和生命周期.md)
-  - [虚拟机类加载机制](docs/JVM/虚拟机类加载机制.md)
-  - [运行时数据区域](docs/JVM/运行时数据区域.md)
-  
-- 多线程系列
-  - [ConcurrentHashMap实现原理](docs/Thread/ConcurrentHashMap实现原理.md)
-  - [CountDownLatch](docs/Thread/CountDownLatch.md)
-  - [Exchanger](docs/Thread/Exchanger.md)
-  - [Semaphore](docs/Thread/Semaphore.md)
-  - [同步屏障CyclicBarrier](Thread/同步屏障CyclicBarrier.md)
-  - [阻塞队列ArrayBlockingQueu](docs/Thread/J.U.C之阻塞队列(ArrayBlockingQueu).md)
-  - [阻塞队列SynchronousQueue](docs/Thread/JUC之阻塞队列(SynchronousQueue).md)
-  - [JMM内存模型](docs/Thread/JMM内存模型.md)
-  - [ReentrantLock实现原理](docs/Thread/ReentrantLock实现原理.md)
-  - [Synchronize关键字原理](docs/Thread/Synchronize关键字原理.md)
-  - [volatile关键字](docs/Thread/volatile关键字.md)
-  - [乐观锁和悲观锁的实现](docs/Thread/乐观锁和悲观锁的实现.md)
-  - [什么是AQS](docs/Thread/什么是AQS.md)
-  - [什么是CAS](docs/Thread/什么是CAS.md)
-  - [什么是死锁](docs/Thread/什么是死锁.md)
-  
-  
   
 - Spring/SpringBoot/SpringCloud
   - [aop实现原理](docs/Spring/aop.md)
@@ -89,6 +59,37 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
      - [ElasticSearch安装及Api使用](docs/distributed/ElasticSearch.md)
 
 
+- JVM系列
+  - [JVM垃圾回收机制](docs/JVM/JVM垃圾回收机制.md)
+  - [Java内存模型之happens-before](docs/JVM/Java内存模型之happens-before.md)
+  - [Minor GC和Full GC区别](docs/JVM/MinorGC和FullGC区别.md)
+  - [java常量池总结](docs/JVM/java常量池总结.md)
+  - [jvm参数的设置和jvm调优](docs/JVM/jvm参数的设置和jvm调优.md)
+  - [内存分配与回收策略](docs/JVM/内存分配与回收策略.md)
+  - [初始化和清理及类的加载](docs/JVM/初始化和清理及类的加载.md)
+  - [对象的创建与内存分配](docs/JVM/对象的创建与内存分配.md)
+  - [对象的创建和生命周期](docs/JVM/对象的创建和生命周期.md)
+  - [虚拟机类加载机制](docs/JVM/虚拟机类加载机制.md)
+  - [运行时数据区域](docs/JVM/运行时数据区域.md)
+  
+- 多线程系列
+  - [ConcurrentHashMap实现原理](docs/Thread/ConcurrentHashMap实现原理.md)
+  - [CountDownLatch](docs/Thread/CountDownLatch.md)
+  - [Exchanger](docs/Thread/Exchanger.md)
+  - [Semaphore](docs/Thread/Semaphore.md)
+  - [同步屏障CyclicBarrier](Thread/同步屏障CyclicBarrier.md)
+  - [阻塞队列ArrayBlockingQueu](docs/Thread/J.U.C之阻塞队列(ArrayBlockingQueu).md)
+  - [阻塞队列SynchronousQueue](docs/Thread/JUC之阻塞队列(SynchronousQueue).md)
+  - [JMM内存模型](docs/Thread/JMM内存模型.md)
+  - [ReentrantLock实现原理](docs/Thread/ReentrantLock实现原理.md)
+  - [Synchronize关键字原理](docs/Thread/Synchronize关键字原理.md)
+  - [volatile关键字](docs/Thread/volatile关键字.md)
+  - [乐观锁和悲观锁的实现](docs/Thread/乐观锁和悲观锁的实现.md)
+  - [什么是AQS](docs/Thread/什么是AQS.md)
+  - [什么是CAS](docs/Thread/什么是CAS.md)
+  - [什么是死锁](docs/Thread/什么是死锁.md)
+  
+
 
 - 设计模式
   - [创建型模式](docs/DesignPatterns/创建型模式.md)
@@ -96,7 +97,11 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
   - [行为型模式](docs/DesignPatterns/行为型模式.md)
   
 - 数据结构与算法
-
+     - [什么是八皇后问题](https://mp.weixin.qq.com/s/puk7IAZkSe6FCkZnt0jnSA)
+     - [什么是字典序算法](https://mp.weixin.qq.com/s/_mIeGKdvTOH-1jleJ4aADg)
+     - [如何实现抢红包算法](https://mp.weixin.qq.com/s/AIE33sdT2QI6UL8cs1kJCQ)
+     - [什么是拜占庭将军问题](https://mp.weixin.qq.com/s/-dTBkwVaRo6WxZ8uS9DwjQ)
+     - [什么是冒泡排序](https://mp.weixin.qq.com/s/wO11PDZSM5pQ0DfbQjKRQA)
 
 - 其它
     - [Zookeeper面试专题](docs/其它/Zookeeper面试专题.md)
@@ -109,7 +114,7 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
     - [对象的创建和生命周期](docs/其它/对象的创建和生命周期.md)
     - [内部类](docs/其它/内部类.md)
     - [docsify一个神奇的文档生成工具](docs/其它/docsify.md)
-
+    - [Linux服务命令](docs/其它/Linxu服务命令.md)
 # 福利
 私下整理的一一些视频学习资源和电子书籍 需要的可以领取 如果链接被和谐 进群可获取最新的链接
 
