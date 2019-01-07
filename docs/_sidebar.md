@@ -79,11 +79,12 @@
   - [行为型模式](DesignPatterns/行为型模式.md)
   
   - 数据结构与算法
-     - [什么是八皇后问题](https://mp.weixin.qq.com/s/puk7IAZkSe6FCkZnt0jnSA)
-     - [什么是字典序算法](https://mp.weixin.qq.com/s/_mIeGKdvTOH-1jleJ4aADg)
-     - [如何实现抢红包算法](https://mp.weixin.qq.com/s/AIE33sdT2QI6UL8cs1kJCQ)
-     - [什么是拜占庭将军问题](https://mp.weixin.qq.com/s/-dTBkwVaRo6WxZ8uS9DwjQ)
-     - [什么是冒泡排序](https://mp.weixin.qq.com/s/wO11PDZSM5pQ0DfbQjKRQA)
+    - [什么是八皇后问题](https://mp.weixin.qq.com/s/puk7IAZkSe6FCkZnt0jnSA)
+    - [什么是字典序算法](https://mp.weixin.qq.com/s/_mIeGKdvTOH-1jleJ4aADg)
+    - [如何实现抢红包算法](https://mp.weixin.qq.com/s/AIE33sdT2QI6UL8cs1kJCQ)
+    - [什么是拜占庭将军问题](https://mp.weixin.qq.com/s/-dTBkwVaRo6WxZ8uS9DwjQ)
+    - [什么是冒泡排序](https://mp.weixin.qq.com/s/wO11PDZSM5pQ0DfbQjKRQA)
+
 - 其它
     - [Zookeeper面试专题](其它/Zookeeper面试专题.md)
     - [MySQL面试专题.md](其它/MySQL.md)
