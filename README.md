@@ -71,6 +71,7 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
   - [对象的创建和生命周期](docs/JVM/对象的创建和生命周期.md)
   - [虚拟机类加载机制](docs/JVM/虚拟机类加载机制.md)
   - [运行时数据区域](docs/JVM/运行时数据区域.md)
+  - [java字节码简介](docs/JVM/java字节码.md)
   
 - 多线程系列
   - [ConcurrentHashMap实现原理](docs/Thread/ConcurrentHashMap实现原理.md)
