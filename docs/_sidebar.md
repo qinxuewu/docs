@@ -53,6 +53,7 @@
   - [虚拟机类加载机制](JVM/虚拟机类加载机制.md)
   - [运行时数据区域](JVM/运行时数据区域.md)
   - [java字节码简介](JVM/java字节码.md)
+  - [jvm监控命令](JVM/jvm监控命令.md)
   
 - 多线程系列
   - [ConcurrentHashMap实现原理](Thread/ConcurrentHashMap实现原理.md)
