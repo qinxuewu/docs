@@ -98,6 +98,7 @@ Java 知识点学习，收录网上部分文章和看书笔记整理而来,作�
   - [行为型模式](docs/DesignPatterns/行为型模式.md)
   
 - 数据结构与算法
+     - [leetcode数据库算法题](docs/leetcode/sql算法.md)
      - [什么是八皇后问题](https://mp.weixin.qq.com/s/puk7IAZkSe6FCkZnt0jnSA)
      - [什么是字典序算法](https://mp.weixin.qq.com/s/_mIeGKdvTOH-1jleJ4aADg)
      - [如何实现抢红包算法](https://mp.weixin.qq.com/s/AIE33sdT2QI6UL8cs1kJCQ)
