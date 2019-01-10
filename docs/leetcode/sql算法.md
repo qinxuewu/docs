@@ -221,8 +221,8 @@ DELETE p1 FROM Person p1, Person p2  WHERE   p1.Email = p2.Email AND p1.Id > p2.
 |  4 |
 +----+
 ```
-- 使用join 和datediff 日期函数 求差
-- 自链接匹配出有昨天的数据
+- 使用join 和datediff 日期函数 求差  自连接匹配出有昨天的数据
+
 ```
 select * from  weather w1 join weather w2 on DATEDIFF(w1.RecordDate,w2.RecordDate)=1
 
@@ -231,15 +231,18 @@ id  RecordDate    Temperature       w2.id          昨天的日期          w2.T
 4	  2019-01-04	  30	              3	             2019-01-03     	      20
 4	  2019-01-04	  30	              3	             2019-01-03	            20
 
-# 条件帅选今天不昨天温度噶欧的数据 w1.Temperature>w2.Temperature
+条件帅选今天比昨天温度高的数据 w1.Temperature>w2.Temperature
 select w1.id  from  weather w1 join weather w2 on DATEDIFF(w1.RecordDate,w2.RecordDate)=1 where w1.Temperature>w2.Temperature
+
 ```
 
 
 ## 行程和用户
 
 Trips 表中存所有出租车的行程信息。每段行程有唯一键 Id，Client_Id 和 Driver_Id 是 Users 表中 Users_Id 的外键。Status 是枚举类型，枚举成员为 (‘completed’, ‘cancelled_by_driver’, ‘cancelled_by_client’)。
+
 ```
+
 +----+-----------+-----------+---------+--------------------+----------+
 | Id | Client_Id | Driver_Id | City_Id |        Status      |Request_at|
 +----+-----------+-----------+---------+--------------------+----------+
@@ -254,8 +257,12 @@ Trips 表中存所有出租车的行程信息。每段行程有唯一键 Id，Cl
 | 9  |     3     |    10     |    12   |     completed      |2013-10-03| 
 | 10 |     4     |    13     |    12   | cancelled_by_driver|2013-10-03|
 +----+-----------+-----------+---------+--------------------+----------+
+
+
 ```
+
 Users 表存所有用户。每个用户有唯一键 Users_Id。Banned 表示这个用户是否被禁止，Role 则是一个表示（‘client’, ‘driver’, ‘partner’）的枚举类型。
+
 ```
 +----------+--------+--------+
 | Users_Id | Banned |  Role  |
@@ -270,7 +277,9 @@ Users 表存所有用户。每个用户有唯一键 Users_Id。Banned 表示这�
 |    13    |   No   | driver |
 +----------+--------+--------+
 ```
+
 查出 2013年10月1日 至 2013年10月3日 期间非禁止用户的取消率。基于上表，你的 SQL 语句应返回如下结果，取消率（Cancellation Rate）保留两位小数。
+
 ```
 +------------+-------------------+
 |     Day    | Cancellation Rate |
@@ -280,7 +289,8 @@ Users 表存所有用户。每个用户有唯一键 Users_Id。Banned 表示这�
 | 2013-10-03 |       0.50        |
 +------------+-------------------+
 ```
-#### 解法
+
+解法
 
 ```
 #先求出非禁止用户的所有记录
@@ -302,17 +312,9 @@ select t.Request_at as Day,
 ## 换座位
 
 
-小美是一所中学的信息科技老师，她有一张 seat 座位表，平时用来储存学生名字和与他们相对应的座位 id。
+- 小美是一所中学的信息科技老师，她有一张 seat 座位表，平时用来储存学生名字和与他们相对应的座位 id。
+- 其中纵列的 id 是连续递增的 小美想改变相邻俩学生的座位。你能不能帮她写一个 SQL query 来输出小美想要的结果呢？
 
-其中纵列的 id 是连续递增的
-
-小美想改变相邻俩学生的座位。
-
-你能不能帮她写一个 SQL query 来输出小美想要的结果呢？
-
- 
-
-示例：
 ```
 +---------+---------+
 |    id   | student |
@@ -340,7 +342,7 @@ select t.Request_at as Day,
 
 ```
 
-#先把简单的偶数都-1；然后对于非最大的奇数id+1；最后(即else)如果存在未变化的数则值不变
+先把简单的偶数都-1；然后对于非最大的奇数id+1；最后(即else)如果存在未变化的数则值不变
 
 select
     case                                             #如果
