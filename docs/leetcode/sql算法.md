@@ -171,7 +171,7 @@ WHERE 3 >   (
             )
 ```
 
-## 删除重复的电子邮箱（是删除）
+## 删除重复的电子邮箱
 
 编写一个 SQL 查询，来删除 Person 表中所有重复的电子邮箱，重复的邮箱里只保留 Id 最小 的那个。
 ```
@@ -201,6 +201,7 @@ DELETE p1 FROM Person p1, Person p2  WHERE   p1.Email = p2.Email AND p1.Id > p2.
 ## 上升的温度
 
 给定一个 Weather 表，编写一个 SQL 查询，来查找与之前（昨天的）日期相比温度更高的所有日期的 Id。
+
 ```
 +---------+------------------+------------------+
 | Id(INT) | RecordDate(DATE) | Temperature(INT) |
@@ -220,7 +221,7 @@ DELETE p1 FROM Person p1, Person p2  WHERE   p1.Email = p2.Email AND p1.Id > p2.
 |  4 |
 +----+
 ```
-算法：使用join 和datediff 日期函数 求差
+- 使用join 和datediff 日期函数 求差
 - 自链接匹配出有昨天的数据
 ```
 select * from  weather w1 join weather w2 on DATEDIFF(w1.RecordDate,w2.RecordDate)=1
@@ -269,7 +270,7 @@ Users 表存所有用户。每个用户有唯一键 Users_Id。Banned 表示这�
 |    13    |   No   | driver |
 +----------+--------+--------+
 ```
-写一段 SQL 语句查出 2013年10月1日 至 2013年10月3日 期间非禁止用户的取消率。基于上表，你的 SQL 语句应返回如下结果，取消率（Cancellation Rate）保留两位小数。
+查出 2013年10月1日 至 2013年10月3日 期间非禁止用户的取消率。基于上表，你的 SQL 语句应返回如下结果，取消率（Cancellation Rate）保留两位小数。
 ```
 +------------+-------------------+
 |     Day    | Cancellation Rate |
@@ -280,15 +281,15 @@ Users 表存所有用户。每个用户有唯一键 Users_Id。Banned 表示这�
 +------------+-------------------+
 ```
 #### 解法
-- 先求出非禁止用户的所有记录
+
 ```
- select * from  Trips t  join Users  u on t.Client_Id =u.Users_Id  
-        where u.Banned='No' 
-```
+#先求出非禁止用户的所有记录
+ select * from  Trips t  join Users  u on t.Client_Id =u.Users_Id   where u.Banned='No' 
+
 通过if函数加分组 2013年10月1日 至 2013年10月3日 期间非禁止用户的取消率
-* IF(expr1,expr2,expr3)，如果expr1的值为true，则返回expr2的值，如果expr1的值为false，
-* round(x,d)  ，x指要处理的数，d是指保留几位小数
-```
+IF(expr1,expr2,expr3)，如果expr1的值为true，则返回expr2的值，如果expr1的值为false，
+round(x,d)  ，x指要处理的数，d是指保留几位小数
+
 select t.Request_at as Day, 
   round(count( IF ( t.Status !="completed", t.Status, NULL ) ) / count(t.Status),2) as `Cancellation Rate`
     from  Trips t   join Users u on t.Client_Id =u.Users_Id  
@@ -298,8 +299,53 @@ select t.Request_at as Day,
 
 
 
+## 换座位
 
 
+小美是一所中学的信息科技老师，她有一张 seat 座位表，平时用来储存学生名字和与他们相对应的座位 id。
 
+其中纵列的 id 是连续递增的
 
+小美想改变相邻俩学生的座位。
 
+你能不能帮她写一个 SQL query 来输出小美想要的结果呢？
+
+ 
+
+示例：
+```
++---------+---------+
+|    id   | student |
++---------+---------+
+|    1    | Abbot   |
+|    2    | Doris   |
+|    3    | Emerson |
+|    4    | Green   |
+|    5    | Jeames  |
++---------+---------+
+```
+假如数据输入的是上表，则输出结果如下：
+```
++---------+---------+
+|    id   | student |
++---------+---------+
+|    1    | Doris   |
+|    2    | Abbot   |
+|    3    | Green   |
+|    4    | Emerson |
+|    5    | Jeames  |
++---------+---------+
+```
+注意：如果学生人数是奇数，则不需要改变最后一个同学的座位。
+
+```
+
+#先把简单的偶数都-1；然后对于非最大的奇数id+1；最后(即else)如果存在未变化的数则值不变
+
+select
+    case                                             #如果
+    when id%2=0 then id-1                           # id%2为偶数 则返回 id-1 
+    when id<(select max(id) from seat) then id+1   #如果表中最大的ID 小于当前返回的ID 则执行 id+1 也就是取最大ID
+    else id                                          #如果存在未变化的数则值不变
+    end as id,student from seat  order by  id
+  ```
