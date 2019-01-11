@@ -20,16 +20,16 @@
 
 ```
 public static int[] twoSum(int[] nums, int target) {
-		 	int [] result=new int[2];
+	int [] result=new int[2];
 	    for (int i = 0; i < nums.length; i++) {
-				for (int j = i+1; j < nums.length; j++) {
-						if(nums[i]+nums[j]==target){
-							result[0]=i;
-							result[1]=j;
-							return result;
-						}
-				}
-			}		 
+		for (int j = i+1; j < nums.length; j++) {
+			if(nums[i]+nums[j]==target){
+				result[0]=i;
+				result[1]=j;
+				return result;
+			     }
+			}
+		}		 
 	       return result;
 	}
   ```
@@ -39,16 +39,88 @@ hashMap解法
   
 ```
 public static int[] twoSum2(int[] nums, int target) {
-		 	Map<Integer, Integer> map = new HashMap<>();
-		     for (int i = 0; i < nums.length; i++) {
-				int result=target-nums[i];  //比如target=9, 		1: 第一次遍历  9-2=7 , 2: 9-7=2
-				if(map.containsKey(result)){
-					 return new int[] {map.get(result), i };
-				}
-				map.put(nums[i], i);  //第一次map中没有7这个元素 	1: put(2,0)
-			}
-			return null;
+	Map<Integer, Integer> map = new HashMap<>();
+	for (int i = 0; i < nums.length; i++) {
+		int result=target-nums[i];  //比如target=9, 		1: 第一次遍历  9-2=7 , 2: 9-7=2
+		if(map.containsKey(result)){
+			return new int[] {map.get(result), i };
+		}
+		map.put(nums[i], i);  //第一次map中没有7这个元素 	1: put(2,0)
+		}
+	return null;
 		       
 }
 ```
 
+## 无重复字符的最长子串
+给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+```
+示例 1:
+
+输入: "abcabcbb"
+输出: 3 
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+示例 2:
+
+输入: "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+示例 3:
+
+输入: "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+     请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+```
+暴力法
+```
+/**
+	 * 思路：  1 通过两个for循坏嵌套 遍历所有字符串
+	 * @param s
+	 * @return
+	 */
+	 public static int lengthOfLongestSubstring(String s) {
+	        int n = s.length();
+	        int ans = 0;
+	        for (int i = 0; i < n; i++){
+	        	 for (int j = i + 1; j <= n; j++){
+	        		 	/**
+	        		 	 * 内存循坏
+	        		 	 * 第一次遍历：s=abcabcbb, i=0,j=1
+	        		 	 * 第一次遍历：s=abcabcbb, i=0,j=2
+	        		 	 * 第一次遍历：s=abcabcbb, i=0,j=3 
+	        		 	 */
+		                if (allUnique(s, i, j)) {	
+		                	//如果返回true   说明 i 到j下标的字符串是 无重复字符的最长子串
+		                	if(ans==0){
+		                		ans++;
+		                	}
+		                	if(ans<( j - i)){
+		                		ans=j - i;
+		                	}
+		                	 System.err.println("ans:"+ans);
+		                }
+		            }
+	        }
+	           
+	          return ans;
+	    }
+
+	    public  static boolean allUnique(String s, int start, int end) {
+	    	/**
+	    	 * 第一次遍历：s=abcabcbb, start=0,end=1  如果子字符串中的字符都是唯一的，它会返回true
+	    	 */
+	        Set<Character> set = new HashSet<>();
+	        for (int i = start; i < end; i++) {
+	        	// 循坏遍历指定的起-终下标  取出对应下标的字符串
+	            Character ch = s.charAt(i);
+	            if (set.contains(ch)) {
+	            	//如果存在直接返回
+	            	return false;
+	            }
+	            //不存在放入set
+	            set.add(ch);
+	        }
+	        return true;
+	    }
+```
