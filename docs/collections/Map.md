@@ -6,7 +6,7 @@
 1. 树形图TreeHashMap可以对元素进行排序性 使用compareTo()方法使内容按照key有序
 
 
-## HashMap:
+## HashMap
 
 对于 HashMap 及其子类而言，它们采用 Hash 算法来决定集合中元素的存储位置。当系统开始初始化 HashMap 时，系统会创建一个长度为 capacity 的 Entry 数组，这个数组里可以存储元素的位置被称为“桶（bucket）”，每个 bucket 都有其指定索引，系统可以根据其索引快速访问该 bucket 里存储的元素。 
 

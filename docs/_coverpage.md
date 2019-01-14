@@ -11,4 +11,4 @@
 
 [GitHub](https://github.com/a870439570/interview-docs/tree/master)
 [Gitee](https://gitee.com/qinxuewu)
-[Get Started](#quick-start)
+[Get Started](#简介)
