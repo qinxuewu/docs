@@ -150,3 +150,24 @@ public static int reverse(int x) {
 		return rev; 
 	}
 ```
+### 高斯求和
+- 求和  1+2+3+4+5+6…+100 
+- 求和  1+2+3+4+5+6…+n
+```
+	/**
+	 * 1+2+3+4+......+97+98+99+100
+	 * 
+	 * 高斯求和：
+	 * 	1+100=101
+	 *  2+99=101
+	 *  3+98=101
+	 *  4+97=101
+	 * 所以得出结果101 X 50(100的一半)
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		int  sum = 0,n = 100;
+		sum = (1 + n) *(n/2);
+		System.out.println(sum);
+	}
+```
