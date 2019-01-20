@@ -54,16 +54,8 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
   - [什么是死锁](Thread/什么是死锁.md)
 
 ## JAVA虚拟机
-  - [JVM垃圾回收机制](JVM/JVM垃圾回收机制.md)
-  - [Java内存模型之happens-before](JVM/Java内存模型之happens-before.md)
-  - [MinorGC和FullGC区别](JVM/MinorGC和FullGC区别.md)
-  - [java常量池总结](JVM/java常量池总结.md)
-  - [内存分配与回收策略](JVM/内存分配与回收策略.md)
+  - [深入理解JVM](2019/深入理解JVM.md)
   - [初始化和清理及类的加载](JVM/初始化和清理及类的加载.md)
-  - [对象的创建与内存分配](JVM/对象的创建与内存分配.md)
-  - [对象的创建和生命周期](JVM/对象的创建和生命周期.md)
-  - [虚拟机类加载机制](JVM/虚拟机类加载机制.md)
-  - [运行时数据区域](JVM/运行时数据区域.md)
   - [jvm参数的设置和jvm调优](JVM/jvm参数的设置和jvm调优.md)
   - [java字节码简介](JVM/java字节码.md)
 
