@@ -26,39 +26,19 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 
 
 
-
-
-
-
-## JAVA集合
-  * [Map系列](collections/Map.md)
-  * [Set系列](collections/set.md)
-  * [List系列](collections/List.md)
-  * [Collections/Arrays](collections/Collections-Arrays.md)
-
-## JAVA并发
-  - [ConcurrentHashMap实现原理](Thread/ConcurrentHashMap实现原理.md)
-  - [CountDownLatch](Thread/CountDownLatch.md)
-  - [Exchanger](Thread/Exchanger.md)
-  - [Semaphore](Thread/Semaphore.md)
-  - [同步屏障CyclicBarrier](Thread/同步屏障CyclicBarrier.md)
-  - [阻塞队列ArrayBlockingQueu](Thread/J.U.C之阻塞队列(ArrayBlockingQueu).md)
-  - [阻塞队列SynchronousQueue](Thread/JUC之阻塞队列(SynchronousQueue).md)
-  - [JMM内存模型](Thread/JMM内存模型.md)
-  - [ReentrantLock实现原理](Thread/ReentrantLock实现原理.md)
-  - [Synchronize关键字原理](Thread/Synchronize关键字原理.md)
-  - [volatile关键字](Thread/volatile关键字.md)
-  - [乐观锁和悲观锁的实现](Thread/乐观锁和悲观锁的实现.md)
-  - [什么是AQS](Thread/什么是AQS.md)
-  - [什么是CAS](Thread/什么是CAS.md)
-  - [什么是死锁](Thread/什么是死锁.md)
-
-## JAVA虚拟机
+## JAVA复习
   - [深入理解JVM](2019/深入理解JVM.md)
+  - [深入理解JAVA并发](2019/Java并发.md)
   - [初始化和清理及类的加载](JVM/初始化和清理及类的加载.md)
   - [jvm参数的设置和jvm调优](JVM/jvm参数的设置和jvm调优.md)
   - [java字节码简介](JVM/java字节码.md)
-
+  * [Collections/Arrays](collections/Collections-Arrays.md)
+  * [这几道Java集合框架面试题几乎必问](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/这几道Java集合框架面试题几乎必问.md)
+  * [Java 集合框架常见面试题总结](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/Java集合框架常见面试题总结.md)
+  * [ArrayList 源码学习](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/ArrayList.md) 
+  * [【面试必备】透过源码角度一步一步带你分析 ArrayList 扩容机制](https://github.com/Snailclimb/JavaGuide/blob/master/Java相关/ArrayList-Grow.md)    
+  * [LinkedList 源码学习](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/LinkedList.md)   
+  * [HashMap(JDK1.8)源码学习](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/HashMap.md)  
 
 ## Spring系列
   - [aop实现原理](Spring/aop.md)
@@ -83,9 +63,9 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 
 
 ## 设计模式
-  - [创建型模式](DesignPatterns/创建型模式.md)
-  - [结构型模式](DesignPatterns/结构型模式.md)
-  - [行为型模式](DesignPatterns/行为型模式.md)
+  - [创建型模式](2019/创建型模式.md)
+  - [结构型模式](2019/结构型模式.md)
+  - [行为型模式](2019/行为型模式.md)
   
 ##  数据结构与算法
   - [leetcode数据库算法题](leetcode/sql算法.md)
