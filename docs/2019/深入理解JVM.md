@@ -417,7 +417,7 @@ Employee emp5 = (Employee) in.readObject();
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0121/203833_a0988220_1478371.png "屏幕截图.png")
 
-## 各自优点
+### 各自优点
 - 句柄访问最大好处就是references中存储的是稳定的句柄地址，在对象移动(垃圾收集时移动对象是普遍行为)时只会改变句柄中的实列数据指针，references本身不需要修改。
 - 直接指针访问的最大好处是速度快，节省了一次定位的实时间开销。
 
