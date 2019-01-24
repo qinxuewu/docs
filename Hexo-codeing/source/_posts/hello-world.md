@@ -83,3 +83,10 @@ $ hexo list <type>
 $ hexo version
 ```
 
+### hexo自定义页面
+``` bash
+使用：hexo new page "about" 新建一个 关于我 页面。 
+使用： hexo new page tags 新建一个 标签 页面。 
+使用： hexo new page categories 新建一个 分类 页面。 
+使用： hexo new page "guestbook" 新建一个 自定义 页面。 
+```
