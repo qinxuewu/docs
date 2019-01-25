@@ -170,3 +170,4 @@ spring.cloud.nacos.discovery.log-name   日志文件名
 spring.cloud.nacos.discovery.enpoint   #地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
 ribbon.nacos.enabled  #是否集成Ribbon 一般都设置成true即可
 ```
+ **Demmo源码：https://github.com/a870439570/alibaba-cloud** 
