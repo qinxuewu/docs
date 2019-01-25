@@ -1,4 +1,4 @@
-# alibaba-cloud
+## alibaba-cloud
 本项目演示如何使用 spring cloud alibaba系列
 ## 引入依赖
 - 版本 0.2.1.RELEASE 对应的是 Spring Cloud Finchley 版本，
@@ -35,7 +35,7 @@
 ## 服务的注册发现(Nacos Discovery)
 Nacos 是阿里巴巴开源的一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
 如何使用Nacos Discovery Starter 完成 Spring Cloud 应用的服务注册与发现
-## 创建服务提供者
+### 创建服务提供者
 新建一个项目 cloud-client
 
 1. 引入Nacos Discovery Starter
@@ -72,7 +72,7 @@ spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0124/125758_aa62dddb_1478371.png)
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0124/130000_4da3402a_1478371.png "登录界面")
 
-## 启动
+### 启动
 出现如下信息说明注册到nacos成功
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0125/180020_c426127d_1478371.png)
 nacos控制条界面就会出现注册的服务
@@ -152,7 +152,7 @@ public class ConsumerController {
 
 浏览器出现 第一个Nacos 程序service-consumer 到此Over 基于Nacos实现的服务注册发现已经调用就到此为止。入门还是很简单的 阿里巴巴大法好！
 
-## Nacos更多配置信息
+### Nacos更多配置信息
 
 ```
 spring.cloud.nacos.discovery.server-addr  #Nacos Server 启动监听的ip地址和端口
