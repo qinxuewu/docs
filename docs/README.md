@@ -12,8 +12,8 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 ##  关于
 - email:  870439570@qq.com
 - 掘金博客: https://juejin.im/user/5a289b556fb9a0450e760117
-- 个人博客：https://a870439570.github.io/
-
+- 个人博客：https://blog.qinxuewu.club/
+- CSDN: https://blog.csdn.net/u010391342
 
 ## 开源小项目
 -  [boot-actuator](https://github.com/a870439570/boot-actuator):   基于Spring Boot 实现的监控远程服务器多个Java应用JVM性能图形化工具
