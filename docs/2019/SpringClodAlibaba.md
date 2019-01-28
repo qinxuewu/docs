@@ -174,7 +174,7 @@ ribbon.nacos.enabled  #是否集成Ribbon 一般都设置成true即可
 - Sentinel是把流量作为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
 - 默认支持 Servlet、Feign、RestTemplate、Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
 - 自带控台动态修改限流策略。但是每次服务重启后就丢失了。所以它也支持ReadableDataSource 目前支持file, nacos, zk, apollo 这4种类型
-## 接入Sentinel
+### 接入Sentinel
 创建项目cloud-sentinel
 * 1 引入 Sentinel starter
 ``` java
@@ -193,7 +193,7 @@ spring.cloud.sentinel.transport.dashboard=localhost:8080
 #取消Sentinel控制台懒加载
 spring.cloud.sentinel.eager=true
 ```
-## 接入限流埋点
+### 接入限流埋点
 Sentinel 默认为所有的 HTTP 服务提供了限流埋点。引入依赖后自动完成所有埋点。只需要在控制配置限流规则即可
 * 注解埋点
 如果需要对某个特定的方法进行限流或降级，可以通过 @SentinelResource 注解来完成限流的埋点
@@ -208,18 +208,18 @@ public Map<String,Object> hello(){
         return map;
 }
 ```
-## 部署Sentinel控制台
-### 安装
+### 部署Sentinel控制台
+#### 安装
 [Sentinel下载](http://edas-public.oss-cn-hangzhou.aliyuncs.com/install_package/demo/sentinel-dashboard.jar)
-### 启动控制台
+#### 启动控制台
 执行 Java 命令 `java -jar sentinel-dashboard.jar` 默认的监听端口为 `8080`
-### 访问
+#### 访问
 打开http://localhost:8080 即可看到控制台界面
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0128/142828_12667ffe_1478371.png)
 说明cloud-sentinel已经成功和Sentinel完成率通讯
-## 配置限流规则
+### 配置限流规则
 如果控制台没有找到自己的应用，可以先调用一下进行了 Sentinel 埋点的 URL 或方法或着禁用Sentinel 的赖加载`spring.cloud.sentinel.eager=true`
-### 配置 URL 限流规则
+#### 配置 URL 限流规则
 控制器随便添加一个普通的http方法
 ``` Java
   /**
@@ -242,14 +242,14 @@ public Map<String,Object> hello(){
 
 整个URL限流就完成了。但是返回的提示不够友好。
 
-### 配置自定义限流规则(@SentinelResource埋点)
+#### 配置自定义限流规则(@SentinelResource埋点)
 自定义限流规则就不是添加方法的访问路径。 配置的是@SentinelResource注解中value的值。比如` @SentinelResource("resource")`就是配置路径为resource
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0128/144027_2261e5f6_1478371.png)
 - 访问：http://localhost:18084/sentinel/hello
 - 通过`@SentinelResource`注解埋点配置的限流规则如果没有自定义处理限流逻辑，当请求到达限流的阀值时就返回404页面
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0128/144236_3ea6d1b5_1478371.png)
 
-## 自定义限流处理逻辑
+### 自定义限流处理逻辑
 @SentinelResource 注解包含以下属性：
 - value: 资源名称，必需项（不能为空）
 - entryType: 入口类型，可选项（默认为 EntryType.OUT）
@@ -283,7 +283,7 @@ public class ExceptionUtil {
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0128/144957_69a6d3d0_1478371.png)
 
 基本的限流处理就完成了。 但是每次服务重启后 之前配置的限流规则就会被清空因为是内存态的规则对象.所以下面就要用到Sentinel一个特性ReadableDataSource 获取文件、数据库或者配置中心是限流规则
-## 读取文件的实现限流规则
+### 读取文件的实现限流规则
 一条限流规则主要由下面几个因素组成：
 * resource：资源名，即限流规则的作用对象
 * count: 限流阈值
@@ -331,7 +331,7 @@ spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
  **刷新Sentinel 控制台 限流规则就会自动添加进去** 
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0128/154204_aafdbed2_1478371.png)
-## Sentinel的配置
+### Sentinel的配置
 
 ``` bash
 spring.cloud.sentinel.enabled              #Sentinel自动化配置是否生效
