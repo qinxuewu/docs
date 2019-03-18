@@ -26,24 +26,21 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 
 
 ## JAVA复习
-
 - [深入理解JVM](2019/深入理解JVM.md)
 - [深入理解JAVA并发](2019/Java并发.md)
 - [并发编程的艺术](2019/并发编程的艺术.md)
 - [初始化和清理及类的加载](JVM/初始化和清理及类的加载.md)
 - [jvm参数的设置和jvm调优](JVM/jvm参数的设置和jvm调优.md)
-- [java字节码简介](JVM/java字节码.md)
-
+- [java字节码简介](JVM/java字节码.md
 - [Collections/Arrays](collections/Collections-Arrays.md)
 - [这几道Java集合框架面试题几乎必问](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/这几道Java集合框架面试题几乎必问.md)
 - [Java 集合框架常见面试题总结](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/Java集合框架常见面试题总结.md)
 - [ArrayList 源码学习](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/ArrayList.md) 
-- [【面试必备】透过源码角度一步一步带你分析 ArrayList 扩容机制](https://github.com/Snailclimb/JavaGuide/blob/master/Java相关/ArrayList-Grow.md)    
+- [源码角度一步一步带你分析 ArrayList 扩容机制](https://github.com/Snailclimb/JavaGuide/blob/master/Java相关/ArrayList-Grow.md)    
 - [LinkedList 源码学习](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/LinkedList.md)   
 - [HashMap(JDK1.8)源码学习](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/HashMap.md)  
 
 ## Spring系列
-
 - [aop实现原理](Spring/aop.md)
 - [SpringBoot Admin监控集成](Spring/SpringBootAdmin.md)
 - [SpringMvc工作原理](Spring/SpringMvc.md)
@@ -54,7 +51,6 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 - [SpringCloudAlibaba系列](2019/SpringClodAlibaba.md)
 
 ## 分布式
-
 - [什么是Zookeeper](distributed/Zookeeper.md)
 - [基于Zookeeper分布式锁](distributed/Zookeeper_lock.md)
 - [为什么分布式一定要有Redis](distributed/Redis01.md)
@@ -67,7 +63,6 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 
 
 ## 设计模式
-
 - [创建型模式](2019/创建型模式.md)
 - [结构型模式](2019/结构型模式.md)
 - [行为型模式](2019/行为型模式.md)
@@ -80,7 +75,6 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 
 
 ## 面试专题
-
 - [Zookeeper面试专题](其它/Zookeeper面试专题.md)
 - [MySQL面试专题.md](其它/MySQL.md)
 - [jvm面试专题.md](其它/jvm.md)
@@ -92,7 +86,6 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 - [内部类](其它/内部类.md)
 
 ## Storm系列
-
 - [(一)环境搭建安装](storm/storm01.md)
 - [(二)常用shell命令](storm/storm02.md)
 - [(三)Java编写第一个本地模式demo](storm/storm03.md)
@@ -102,7 +95,6 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 - [(七)集成kafka](storm/storm07.md)
 
 ## hadoop系列
-
 - [(一)伪分布式搭建](hadoop/hadoop01.md)
 - [(二)HDFS shell操作](hadoop/hadoop02.md)
 - [(三)HDFS的java api](hadoop/hadoop03.md)
@@ -111,7 +103,6 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 - [HBase之Java API 操作](hadoop/hbase02.md)
 
 ## 随笔
-
 - [docsify一个神奇的文档生成工具](其它/docsify.md)
 - [Linux服务命令](其它/Linxu服务命令.md)
 - [PMP备考练习题](2019/PMP练习题.md)
