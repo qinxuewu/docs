@@ -32,7 +32,7 @@
             </snapshots>
         </repository>
     </repositories>
-## 服务的注册发现(Nacos Discovery)
+## 1.服务的注册发现(Nacos Discovery)
 Nacos 是阿里巴巴开源的一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
 如何使用Nacos Discovery Starter 完成 Spring Cloud 应用的服务注册与发现
 ### 创建服务提供者
@@ -170,7 +170,7 @@ spring.cloud.nacos.discovery.log-name   日志文件名
 spring.cloud.nacos.discovery.enpoint   #地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
 ribbon.nacos.enabled  #是否集成Ribbon 一般都设置成true即可
 ```
-## 限流组件Sentinel
+## 2.限流组件Sentinel
 - Sentinel是把流量作为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
 - 默认支持 Servlet、Feign、RestTemplate、Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
 - 自带控台动态修改限流策略。但是每次服务重启后就丢失了。所以它也支持ReadableDataSource 目前支持file, nacos, zk, apollo 这4种类型
@@ -340,5 +340,81 @@ spring.cloud.sentinel.transport.dashboard   #Sentinel 控制台地址
 spring.cloud.sentinel.transport.heartbeatIntervalMs        #应用与Sentinel控制台的心跳间隔时间
 spring.cloud.sentinel.log.dir            #Sentinel 日志文件所在的目录
 ```
+## 3.Nacos Config配置中心
+
+## 概述
+- Nacos 是阿里巴巴开源的一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+- Nacos Config就是一个类似于SpringCloud Config的配置中心
+
+## 接入
+- SpringCloud项目集成Nacos Config配置中心很简单。只需要部署Nacos 客户端并在里面添加配置即可。然后引入Nacos Config动态读取即可
+
+ **1. 创建一个SpringCloud工程cloud-config 修改 pom.xml 文件，引入 Nacos Config Starter** 
+
+前提得选引入spring-cloud-alibaba-dependencies
+```
+ <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+ </dependency>
+```
+
+ **2. 修改application.properties配置** 
+
+```
+server.port=18085
+management.endpoints.web.exposure.include=*
+```
+ **3. 新建bootstrap.properties文件** 
+
+```
+spring.application.name=cloud-config
+spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+```
+
+ **4. 启动Nacos客户端** 
+* 具体步骤可参考 [上篇文章](https://blog.qinxuewu.club/2019/01/27/spring-xi-lie/springcloudalibaba-zhi-fu-wu-zhu-ce-fa-xian/) 
+
+
+
+ **5. 配置列表新增配置** 
+* `dataId` ：格式如下 `${prefix} - ${spring.profiles.active} . ${file-extension}`
+* prefix 默认为 spring.application.name 的值
+* spring.profiles.active 当前环境对应的 profile
+
+* file-extension 为配置内容的数据格式，可以通过配置项 spring.cloud.nacos.config.file-extension来配置。 目前只支持 properties 类型。
+* group 默认`DEFAULT_GROUP`
+
+`当activeprofile 为空时直接填写 spring.application.name值即可 默认properties`
+
+![](https://images.gitee.com/uploads/images/2019/0130/114945_8addfbe3_1478371.png "添加配置")
+
+ **5. 添加Controller并在类上添加 @RefreshScope动态获取配置中心的值** 
+```
+@RestController
+@RefreshScope
+public class SampleController {
+
+    @Value("${user.name}")
+    String userName;
+
+    @Value("${user.age}")
+    int age;
+
+
+    @RequestMapping("/user")
+    public String simple() {
+        return "获取 Nacos Config配置如下："  + userName + " " + age + "!";
+    }
+}
+```
+
+ **6.启动测试** 
+
+这样就可以获取到配置中心的值。并且配置中心修改值后。可以立即动态刷新获取最新的值
+
+![](https://images.gitee.com/uploads/images/2019/0130/115742_50cdb2ee_1478371.png)
+
+* 案例源码: https://github.com/a870439570/alibaba-cloud
 * 个人博客：https://blog.qinxuewu.club/
 * 案例源码：https://github.com/a870439570/alibaba-cloud
