@@ -415,6 +415,6 @@ public class SampleController {
 
 ![](https://images.gitee.com/uploads/images/2019/0130/115742_50cdb2ee_1478371.png)
 
-* 案例源码: https://github.com/a870439570/alibaba-cloud
+
 * 个人博客：https://blog.qinxuewu.club/
 * 案例源码：https://github.com/a870439570/alibaba-cloud
