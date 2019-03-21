@@ -9,11 +9,15 @@ MapReduce 执行过程
 MapReduce 运行的时候，会通过 Mapper 运行的任务读取 HDFS 中的数据文件，然后调
 用自己的方法，处理数据，最后输出。Reducer 任务会接收 Mapper 任务输出的数据，作为
 自己的输入数据，调用自己的方法，最后输出到 HDFS 的文件中
-![这里写图片描述](https://img-blog.csdn.net/20180914110852895?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+<img src="_media/hadoop3.png">
+
 每个 Mapper 任务是一个 java 进程，它会读取 HDFS 中的文件，解析成很多的键值对，
 经过我们覆盖的 map 方法处理后，转换为很多的键值对再输出。整个 Mapper 任务的处理过
 程又可以分为以下几个阶段
-![这里写图片描述](https://img-blog.csdn.net/20180914110948540?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+<img src="_media/hadoop4.png">
+
 **把 Mapper 任务的运行过程分为六个阶段**
 
  - 第一阶段是把输入文件按照一定的标准分片(InputSplit)，每个输入片的大小是固定的。
@@ -86,7 +90,7 @@ java操作MapReduce
 编写程序代码
 ------
 
-```
+```java
 package com.example;
 import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
@@ -190,7 +194,7 @@ public class Temperature {
 代码完成后，并不能直接在hadoop中运行，还需要将其打包成jvm所能执行的二进制文件，即打包成.jar文件，才能被hadoop所有。
 
 配置主类
-```
+```java
    <build>
     <plugins>
       <plugin>
@@ -230,7 +234,7 @@ HDFS输出位置： 执行输出文件在HDFS中的存储位置，该位置必�
 运行结果如下
 ------
 
-```
+```bash
 [root@web1 hadoop-2.7.7]# bin/hadoop jar hadoop-demo2.jar 
 18/09/14 03:00:29 INFO Configuration.deprecation: session.id is deprecated. Instead, use dfs.metrics.session-id
 18/09/14 03:00:29 INFO jvm.JvmMetrics: Initializing JVM Metrics with processName=JobTracker, sessionId=
@@ -281,7 +285,7 @@ Before Mapper: 228, 2015011023======After Mapper:2015, 23
 查看结果
 ----
 
-```
+```bash
 [root@web1 hadoop-2.7.7]# bin/hdfs dfs -ls /usr/local/output
 Found 2 items
 -rw-r--r--   3 root supergroup          0 2018-09-14 03:00 /usr/local/output/_SUCCESS

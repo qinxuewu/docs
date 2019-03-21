@@ -22,7 +22,7 @@
  3. 每个元组都是一个批处理（没有跳过元组）
 这是一个非常容易理解的事物性spout，将流分为不变的固定批次。Storm 为Kafka 实施了一个事务spout。
 
-**为什么不总是使用事务性spout？**
+## 为什么不总是使用事务性spout？
 它们简单易懂。您可能不使用它的一个原因是因为它们不一定非常容错。例如，TransactionalTridentKafkaSpout的工作方式是txid的批处理将包含来自主题的所有Kafka分区的元组。一旦批次被发出，那么在将来重新发出批次的任何时候都必须发出完全相同的元组集合以满足事务性喷口的语义。现在假设从TransactionalTridentKafkaSpout发出批处理，批处理无法处理，同时其中一个Kafka节点发生故障。您现在无法重播与之前相同的批次（因为节点已关闭且主题的某些分区不可用），
 
 这就是存在“不透明事务”spout的原因 - 它们对丢失源节点具有容错能力，同时仍允许您实现一次性处理语义。
@@ -67,7 +67,7 @@ apple => [count=10, txid=2]
 
 ## Trident代码实例 
 简单输出数据
-```
+```java
 public class TridentTopology1 {
 	
 	/**
@@ -120,7 +120,7 @@ public class TridentTopology1 {
 ## Trident操作 - flters海量数据过滤
 通过要继承BaseFilter，重写isKeep方法
 
-```
+```java
 public class TridentTopology2 {
 	
 	/**
@@ -188,7 +188,7 @@ public class TridentTopology2 {
 
 ## Triden 实现单词计数统计
 
-```
+```java
 public class TridentWordCount {
 	public static class MyFunction extends BaseFunction {
 		private static final long serialVersionUID = 1L;
@@ -234,7 +234,7 @@ public class TridentWordCount {
 
 ## Trident 实现Drpc
 
-```
+```java
 public class TridentDrpc {
     private  static class MyFunction extends BaseFunction{
         public void execute(TridentTuple tridentTuple, TridentCollector tridentCollector) {

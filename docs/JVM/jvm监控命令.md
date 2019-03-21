@@ -6,7 +6,7 @@
 * `jps -m`    输出传递给jvm参数
 * `jps -mlv`  输出进程号,包名,虚拟机参数等所有信息
 
-```
+```bash
 [root@izadux3fzjykx7z ~]# jps -mlv
 12656 sun.tools.jps.Jps -mlv -Dapplication.home=/usr/java/jdk1.8.0_171 -Xms8m
 16418 halo-latest.jar -Xms256m -Xmx256m
@@ -30,7 +30,7 @@
 
 
 - 类的加载信息 jstat -class pid
-```
+```bash
 [root@izadux3fzjykx7z ~]# jstat -class 16418
 Loaded  Bytes  Unloaded  Bytes     Time   
  13293 23828.4        0     0.0      17.14
@@ -43,7 +43,7 @@ Time： 加载总耗时  秒
 ```
 
 - 类编译的统计 jstat -compiler pid
-```
+```bash
 [root@izadux3fzjykx7z ~]# jstat -compiler  16418
 Compiled Failed Invalid   Time   FailedType FailedMethod
    14109      3       0    62.83          1 org/springframework/core/xxxxxx
@@ -54,10 +54,12 @@ Invalid：不可用数量
 Time：编译耗时 秒
 FailedType：失败类型
 FailedMethod：失败的方法
+
 ```
 
 - gc回收统计   jstat -gc pid
-```
+
+```bash
 [root@izadux3fzjykx7z ~]# jstat -gc  16418
  S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT   
 8704.0 8704.0  0.0   5466.6 69952.0  29822.5   174784.0   73377.5   75008.0 71393.1 9472.0 8916.8     53    1.199   3      0.293    1.492
@@ -83,7 +85,8 @@ GCT：垃圾回收消耗总时间
 ```
 
 - 堆内存统计   jstat -gccapacity pid
-```
+
+```bash
 [root@izadux3fzjykx7z ~]# jstat -gccapacity  16418
  NGCMN    NGCMX     NGC     S0C   S1C       EC      OGCMN      OGCMX       OGC         OC       MCMN     MCMX      MC     CCSMN    CCSMX     CCSC    YGC    FGC 
  87360.0  87360.0  87360.0 8704.0 8704.0  69952.0   174784.0   174784.0   174784.0   174784.0      0.0 1114112.0  75008.0      0.0 1048576.0   9472.0     53     3
@@ -106,11 +109,13 @@ CCSMX：最大压缩类空间大小
 CCSC：当前压缩类空间大小
 YGC：年轻代gc次数
 FGC：老年代GC次数
+
 ```
 
 
 - 新生代gc统计 jstat -gcnew  pid
-```
+
+```bash
 [root@izadux3fzjykx7z ~]# jstat -gcnew   16418
  S0C    S1C    S0U    S1U   TT MTT  DSS      EC       EU     YGC     YGCT  
 8704.0 8704.0    0.0 5466.6  6  15 4352.0  69952.0  30899.8     53    1.199
@@ -126,6 +131,7 @@ EC：伊甸园区的大小
 EU：伊甸园区的使用大小
 YGC：年轻代垃圾回收次数
 YGCT：年轻代垃圾回收消耗时间
+
 ```
 
 # jmap
@@ -133,7 +139,8 @@ YGCT：年轻代垃圾回收消耗时间
 各种对象所占内存的大小等等。可以使用jmap生成Heap Dump
 
 * `jmap -heap 16418`   打印heap空间的概要
-```
+
+```bash
 [root@izadux3fzjykx7z ~]# jmap -heap 16418
 Attaching to process ID 16418, please wait...
 Debugger attached successfully.
@@ -185,6 +192,7 @@ tenured generation:                           //老年代
    41.98179967846027% used
 
 30511 interned Strings occupying 3634816 bytes.
+
 ```
 
 * `jmap -dump:live,format=b,file=/home/tess.dump 16418`   产生一个HeapDump文件

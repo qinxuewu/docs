@@ -1,8 +1,8 @@
 # 简介
 
-Java 知识点学习+面试核心知识，收录网上大部分面试题整理加看书笔记整理而来
+个人学习笔记
 
-[![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-924715723-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5PIRvFq)
+<!-- [![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-924715723-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5PIRvFq) -->
 [![码云](https://img.shields.io/badge/Gitee-%E7%A0%81%E4%BA%91-yellow.svg)](https://gitee.com/qinxuewu)
 [![Github](https://img.shields.io/badge/Github-Github-red.svg)](https://github.com/a870439570)
 
@@ -10,7 +10,6 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 
 - email:  870439570@qq.com
 - 掘金博客: https://juejin.im/user/5a289b556fb9a0450e760117
-- 个人博客：https://blog.qinxuewu.club/
 - CSDN: https://blog.csdn.net/u010391342
 
 ## 开源小项目
@@ -21,45 +20,31 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 
 
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1225/094055_a1254ebd_1478371.png "wuliao2.png")
-
-
-
-## JAVA复习
+## JAVA 
 - [深入理解JVM](2019/深入理解JVM.md)
-- [深入理解JAVA并发](2019/Java并发.md)
-- [并发编程的艺术](2019/并发编程的艺术.md)
-- [初始化和清理及类的加载](JVM/初始化和清理及类的加载.md)
-- [jvm参数的设置和jvm调优](JVM/jvm参数的设置和jvm调优.md)
-- [java字节码简介](JVM/java字节码.md)
-- [Collections/Arrays](collections/Collections-Arrays.md)
-- [这几道Java集合框架面试题几乎必问](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/这几道Java集合框架面试题几乎必问.md)
-- [Java 集合框架常见面试题总结](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/Java集合框架常见面试题总结.md)
-- [ArrayList 源码学习](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/ArrayList.md) 
-- [源码角度一步一步带你分析 ArrayList 扩容机制](https://github.com/Snailclimb/JavaGuide/blob/master/Java相关/ArrayList-Grow.md)    
-- [LinkedList 源码学习](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/LinkedList.md)   
-- [HashMap(JDK1.8)源码学习](https://github.com/Snailclimb/Java-Guide/blob/master/Java相关/HashMap.md)  
+- [jvm监控命令](JVM/jvm监控命令.md)
+- [(深入理解JUC)什么是AQS队列同步器](https://blog.csdn.net/u010391342/article/details/88657920)
+- [(深入理解JUC)分析ReentrantLock源码](https://blog.csdn.net/u010391342/article/details/88686965)
+- [ELK分布式日志平台搭建](https://blog.csdn.net/u010391342/article/details/82895385)
+- [Netty入门(一)HelloWorld程序编写](https://blog.csdn.net/u010391342/article/details/83011198)
+- [Netty入门(二)TCP粘包与拆包问题处理](https://blog.csdn.net/u010391342/article/details/83011294)
+- [基于Zookeeper实现分布式锁和队列](https://blog.csdn.net/u010391342/article/details/82192933)
+- [ElasticSearch本地快速搭建与使用](https://blog.csdn.net/u010391342/article/details/82117389)
 
-## Spring系列
-- [aop实现原理](Spring/aop.md)
+
+## SpringBoot/SpringCloud/Spring
 - [SpringBoot Admin监控集成](Spring/SpringBootAdmin.md)
-- [SpringMvc工作原理](Spring/SpringMvc.md)
-- [eureka注册中心访问权限](Spring/eureka注册中心访问权限.md)
-- [Consul实现服务注册中心](Spring/Consul实现服务注册中心.md)
+- [SpringBoot集成ElasticSearch6.2版本](https://blog.csdn.net/u010391342/article/details/82153709)
+- [SpringBoot集成Kafka](https://blog.csdn.net/u010391342/article/details/81430402)
+- [SpringCloud集成eureka注册中心访问权限](https://blog.csdn.net/u010391342/article/details/83086519)
+- [SpringCloud集成Consul实现服务注册中心](https://blog.csdn.net/u010391342/article/details/83082801)
 - [SpringCloud服务链路追踪](Spring/Springcloud服务链路追踪.md)
+- [SpringCloud Alibaba系列(一)服务注册](https://blog.csdn.net/u010391342/article/details/86655712)
+- [SpringCloud Alibaba系列(二)Sentinel应用的限流管理](https://blog.csdn.net/u010391342/article/details/86678637)
+- [SpringCloud Alibaba系列(三)Nacos Config配置中心](https://blog.csdn.net/u010391342/article/details/86702084)
 - [Spring集成dubbo实现服务降级](Spring/Spring集成dubbo集群实现服务降级.md)
-- [SpringCloudAlibaba系列](2019/SpringClodAlibaba.md)
-
-## 分布式
-- [什么是Zookeeper](distributed/Zookeeper.md)
-- [基于Zookeeper分布式锁](distributed/Zookeeper_lock.md)
-- [为什么分布式一定要有Redis](distributed/Redis01.md)
-- [基于Redis分布式锁](distributed/Redis02.md)
-- [什么是分布式事物 ](distributed/Transactional.md)
-- [nginx实现负载均衡](distributed/nginx.md)
-- [RocketMQ安装配置及Api使用](distributed/RocketMQ.md)
-- [ElasticSearch安装及Api使用](distributed/ElasticSearch.md)
-
+- [SpringMVC生命周期](Spring/SpringMvc生命周期.md)
+- [Spring Aop](Spring/aop.md)
 
 
 ## 设计模式
@@ -70,20 +55,13 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 ## 数据结构与算法
 - [leetcode算法题](leetcode/leetcodeJava.md)
 - [leetcode数据库算法题](leetcode/sql算法.md)
-- [排序算法题](leetcode/排序算法.md)
-- [重拾数据结构与算法](2019/数据结构与算法.md)
-
-
-## 面试专题
-- [Zookeeper面试专题](其它/Zookeeper面试专题.md)
-- [MySQL面试专题.md](其它/MySQL.md)
-- [jvm面试专题.md](其它/jvm.md)
-- [redis面试专题.md](其它/redis面试.md)
-- [spring面试专题.md](其它/spring.md)
-- [多线程面试专题.md](其它/多线程.md)
-- [Java中的初始化和清理及类的加载](其它/Java中的初始化和清理及类的加载.md)
-- [对象的创建和生命周期](其它/对象的创建和生命周期.md)
-- [内部类](其它/内部类.md)
+- [(大话数据结构01)顺序表和单链表的比较](https://blog.csdn.net/u010391342/article/details/86760777)
+- [(大话数据结构02)循环列表的实现](https://blog.csdn.net/u010391342/article/details/86767093)
+- [(大话数据结构03)什么是双向链表](https://blog.csdn.net/u010391342/article/details/86768074)
+- [(大话数据结构04)什么是栈](https://blog.csdn.net/u010391342/article/details/86773596)
+- [(大话数据结构05)什么是队列](https://blog.csdn.net/u010391342/article/details/86775025)
+- [(大话数据结构06)什么是二叉树](https://blog.csdn.net/u010391342/article/details/86990584)
+- [(大话数据结构07)查找算法](https://blog.csdn.net/u010391342/article/details/88715233)
 
 ## Storm系列
 - [(一)环境搭建安装](storm/storm01.md)
@@ -101,6 +79,12 @@ Java 知识点学习+面试核心知识，收录网上大部分面试题整理�
 - [(四)MapReduce分布式计算利器](hadoop/hadoop04.md)
 - [HBase安装以及基本操作](hadoop/hbase01.md)
 - [HBase之Java API 操作](hadoop/hbase02.md)
+
+## 知识点总结
+- [Zookeeper面试专题](其它/Zookeeper面试专题.md)
+- [redis面试专题.md](其它/redis面试.md)
+- [spring面试专题.md](其它/spring.md)
+- [多线程和JVM知识总结](2019/多线程和JVM知识总结.md)
 
 ## 随笔
 - [docsify一个神奇的文档生成工具](其它/docsify.md)

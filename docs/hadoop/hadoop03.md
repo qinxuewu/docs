@@ -13,7 +13,7 @@ HDFS Api常用类
  - FSDataInputStream：HDFS的文件输入流，FileSystem.open()方法返回的即是此类。
  - FSDataOutputStream：HDFS的文件输入出流，FileSystem.create()方法返回的即是此类。
 
-```
+```java
 package com.example;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -197,3 +197,4 @@ public class FileSystemApi {
 }
 
 ```
+

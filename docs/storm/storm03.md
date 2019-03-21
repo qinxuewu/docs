@@ -9,18 +9,20 @@ NOTE: 在本地模式下，跟在集群环境运行很像。不过很有必要�
 在远程模式下，我们向Storm集群提交拓扑，它通常由许多运行在不同机器上的流程组成。远程模式不会出现调试信息， 因此它也称作生产模式。不过在单一开发机上建立一个Storm集群是一个好主意，可以在部署到生产环境之前，用来确认拓扑在集群环境下没有任何问题。
 
 ## 常用Java api
-1）基本接口
+### 1）基本接口
 
-       （1）IComponent接口
-       （2）ISpout接口
-       （3）IRichSpout接口
-       （4）IStateSpout接口
-       （5）IRichStateSpout接口
-       （6）IBolt接口
-       （7）IRichBolt接口
-       （8）IBasicBolt接口
+```java
+   （1）IComponent接口
+   （2）ISpout接口
+   （3）IRichSpout接口
+   （4）IStateSpout接口
+   （5）IRichStateSpout接口
+   （6）IBolt接口
+   （7）IRichBolt接口
+   （8）IBasicBolt接口
+```
 
-2）基本抽象类
+### 2）基本抽象类
 
     （1）BaseComponent抽象类
     （2）BaseRichSpout抽象类
@@ -28,9 +30,9 @@ NOTE: 在本地模式下，跟在集群环境运行很像。不过很有必要�
     （4）BaseTransactionalBolt抽象类
     （5）BaseBasicBolt抽象类
 
-创建数据源（Spouts )
+### 创建数据源（Spouts )
 
-```
+```java
 package com.qxw.spout;
 import java.util.HashMap;
 import java.util.Map;
@@ -160,9 +162,9 @@ public class DataSource  extends BaseRichSpout {
 }
 
 ```
-数据流处理组件
+### 数据流处理组件
 
-```
+```java
 package com.qxw.bolt;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -205,7 +207,7 @@ public class OutBolt extends BaseBasicBolt {
 
 ```
 
-```
+```java
 package com.qxw.bolt;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -245,9 +247,9 @@ public class OutBolt2 extends BaseBasicBolt {
 }
 
 ```
-构造拓扑图
+### 构造拓扑图
 
-```
+```java
 package com.qxw.topology;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
@@ -288,10 +290,12 @@ public class TopologyTest {
 ```
 
 ## storm实现单词计数器统计
+
 ![在这里插入图片描述](https://img-blog.csdn.net/20180918115939860?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
-**数据源Spout**
-```
+### 数据源Spout
+
+```java
 package com.qxw.wordCount;
 import java.util.Map;
 import org.apache.storm.spout.SpoutOutputCollector;
@@ -389,9 +393,9 @@ public class WordSpout implements IRichSpout{
 }
 
 ```
-**切割组件**
+### 切割组件
 
-```
+```java
 public class WordSplitBolt implements IRichBolt {
 
 	private static final long serialVersionUID = 1L;
@@ -439,9 +443,9 @@ public class WordSplitBolt implements IRichBolt {
 
 }
 ```
-**统计组件**
+### 统计组件
 
-```
+```java
 public class WordCountBolt implements IRichBolt{
 
 	private static final long serialVersionUID = 1L;
@@ -496,9 +500,9 @@ public class WordCountBolt implements IRichBolt{
 }
 
 ```
-**输出组件**
+### 输出组件
 
-```
+```java
 public class WordReportBolt implements IRichBolt {
 
 	
@@ -544,9 +548,9 @@ public class WordReportBolt implements IRichBolt {
 }
 
 ```
-**Topology主函数类**
+### Topology主函数类
 
-```
+```java
 public class WordTopology {
 
 	public static void main(String[] args) throws InterruptedException {
@@ -567,6 +571,6 @@ public class WordTopology {
       //提交拓扑图  会一直轮询执行
        cluster.submitTopology("wordcount-topo", cfg, builder.createTopology());
 	}
-}
+}![在这里插入图片描述](https://img-blog.csdn.net/20180918131421260?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 ```
-![在这里插入图片描述](https://img-blog.csdn.net/20180918131421260?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+<img src="_media/storm2.png">

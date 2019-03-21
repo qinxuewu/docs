@@ -8,7 +8,7 @@
 AspectJ是静态代理的增强，所谓的静态代理就是AOP框架会在编译阶段生成AOP代理类，因此也称为编译时增强。
 
 首先我们有一个普通的Hello类
-```
+```java
 package com.example.Proxy.aspectJ;
 
 /**
@@ -31,7 +31,7 @@ public class HelloTest {
 ```
 使用AspectJ编写一个Aspect
 
-```
+```java
 public aspect TxAspect {
     void around():call(void Hello.sayHello()){
         System.out.println("开始事务 ...");
@@ -71,7 +71,7 @@ AOP已经生效了,它会在编译阶段将Aspect织入Java字节码中， 运�
 - @AfterThrowing：异常通知，在方法抛出异常之后
 - @Around：环绕通知，围绕着方法执行
 
-```
+```java
 package com.example.aspect;
 
 import java.util.Arrays;
@@ -140,7 +140,7 @@ public class WebLogAspect {
 ```
 ## jdk动态代理实现
 
-```
+```java
 //定义一个接口
 public interface UserService {
 	public String getName(int id);  
@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService {
 }
 ```
 
-```
+```java
 /**
  * jdk动态代理实现
  * @author qxw
@@ -247,7 +247,7 @@ public class ProxyTest {
 ```
 ## cglib 动态代理
 
-```
+```java
 public class UserDaoImpl {
 
     public void add(Object o) {
@@ -261,7 +261,7 @@ public class UserDaoImpl {
 
 ```
 
-```
+```java
 public class CGLibProxyFactory {
         public  Object target;
         public CGLibProxyFactory(Object target) {

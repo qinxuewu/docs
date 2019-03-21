@@ -2,7 +2,7 @@
 Apache Storm是一个分布式实时大数据处理系统。Storm设计用于在容错和水平可扩展方法中处理大量数据。它是一个流数据框架，具有最高的摄取率。虽然Storm是无状态的，它通过Apache ZooKeeper管理分布式环境和集群状态。它很简单，您可以并行地对实时数据执行各种操作。
 
 ## Apache Storm 和 Hadoop对比
-![输入图片说明](https://images.gitee.com/uploads/images/2018/0912/134803_4d3bcaaa_1478371.png "屏幕截图.png")
+<img src="_media/storm1.png">
 
 ## Apache Storm优势
 - storm是开源的，强大的，用户友好的。它可以用于小公司和大公司。
@@ -62,7 +62,7 @@ Apache Storm是一个分布式实时大数据处理系统。Storm设计用于在
 
 https://www.apache.org/dyn/closer.lua/storm/apache-storm-1.2.2/apache-storm-1.2.2.tar.gz
 下载解压，编辑conf/storm.yaml文件
-```
+```bash
 ##填写zookeeper集群的ip地址或者主机名
 ########### These MUST be filled in for a storm configuration
 storm.zookeeper.servers:
@@ -92,7 +92,7 @@ supervisor.slots.ports:
 ## 启动
 最后一步是启动所有的Storm守护进程。 在监督下运行这些守护进程是非常重要的。 Storm是一个快速失败(fail-fast)系统，意味着只要遇到意外错误，进程就会停止。 Storm的设计可以在任何时候安全停止，并在重新启动过程时正确恢复。 这就是为什么Storm在进程中不保持状态 - 如果Nimbus或Supervisors重新启动，运行的拓扑结构不受影响。 以下是如何运行Storm守护进程：
 
-```
+```bash
 Nimbus：在Storm主控节点上运行命令bin/storm nimbus &，启动Nimbus后台程序，并放到后台执行。
 
 Supervisor：在Storm各个工作节点上运行命令bin/storm supervisor &。

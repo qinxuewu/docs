@@ -1,26 +1,25 @@
 
 ###  HBase的管理Java API
- **中止服务器或客户端。** 
+ #### 中止服务器或客户端。
 
 ```
 void abort(String why,Throwable e)
 ```
- **检查服务器或客户端是否已中止。** 
+ #### 检查服务器或客户端是否已中止。
 
 ```
 boolean isAborted()  
 ```
- **返回此对象使用的连接。** 
-
+#### 返回此对象使用的连接。
 ```
 Connection getConnection()
 ```
- **判断表述否已存在，不存在则创建表** 
+#### 判断表述否已存在，不存在则创建表
 
 ```
 boolean tableExists 
 ```
- **列出所有用户空间表** 
+#### 列出所有用户空间表
 ```
 #已过时。 自2.0版本以来，将在3.0版本中删除,使用listTableDescriptors（）。
 HTableDescriptor[] listTables() 
@@ -29,14 +28,14 @@ HTableDescriptor[] listTables(Pattern pattern,boolean includeSysTables)
 List<TableDescriptor> listTableDescriptors()
 ```
 
-#正则匹配查询所有的表
+#### 正则匹配查询所有的表
 ```
 #已过时。 自2.0版本以来，将在3.0版本中删除。 
 HTableDescriptor[] listTables(Pattern pattern)throws IOException
 #新版本使用
 List<TableDescriptor> listTableDescriptors(Pattern pattern)throws IOException
 ```
- **列出用户空间表的所有名称。** 
+#### 列出用户空间表的所有名称。
 
 ```
 TableName[] listTableNames()
@@ -45,7 +44,7 @@ TableName[] listTableNames(String regex)
 TableName[] listTableNames(Pattern pattern, boolean includeSysTables)
 ```
 
- **获取表描述符。** 
+#### 获取表描述符
 
 ```
 #已过时。 自2.0版本以来，将在3.0版本中删除
@@ -54,7 +53,7 @@ HTableDescriptor getTableDescriptor(TableName tableName)
 TableDescriptor getDescriptor(TableName tableName)
 ```
 
- **创建表** 
+#### 创建表
 ```
 void createTable(TableDescriptor desc)
 void createTable(TableDescriptor desc, byte[] startKey, byte[] endKey,int numRegions)
@@ -64,22 +63,22 @@ Future<Void> createTableAsync(HTableDescriptor desc, byte[][] splitKeys)
 ```
 
 
- **删除表** 
+#### 删除表
 ```
 void deleteTable(TableName tableName)
-#异步删除
+#### 异步删除
 Future<Void> deleteTableAsync(TableName tableName)
 #已过时。 自2.0版本以来，将在3.0版本中删除
 HTableDescriptor[] deleteTables(String regex)
 HTableDescriptor[] deleteTables(Pattern pattern)
 ```
- **截断表。 同步操作。** 
+#### 截断表。 同步操作。
 ```
 void truncateTable(TableName tableName,boolean preserveSplits)
-#异步截断
+#### 异步截断
 Future<Void> truncateTableAsync(TableName tableName,boolean preserveSplits)
 ```
- **启用表** 
+#### 启用表
 ```
 void enableTable(TableName tableName)
 Future<Void> enableTableAsync(TableName tableName)
@@ -90,7 +89,7 @@ HTableDescriptor[] enableTables(Pattern pattern)
 boolean isTableEnabled(TableName tableName)
 ```
 
- **禁用表** 
+#### 禁用表
 ```
 #已过时。 自2.0版本以来，将在3.0版本中删除
 HTableDescriptor[] disableTables(String regex)
@@ -99,7 +98,7 @@ Future<Void> disableTableAsync(TableName tableName)
 #是否禁用
 boolean isTableDisabled(TableName tableName)
 
-#是否可用
+#### 是否可用
 boolean isTableAvailable(TableName tableName)
 ```
  **将列族添加到现有表** 
@@ -128,10 +127,10 @@ void modifyColumnFamily(TableName tableName,ColumnFamilyDescriptor columnFamily)
 Future<Void> modifyColumnFamilyAsync(TableName tableName,ColumnFamilyDescriptor columnFamily)
 ```
 
+#### JAVA操作Habase
 
 
-
-```
+```java
 /**
  * 
  * 

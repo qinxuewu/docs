@@ -21,9 +21,9 @@ HDFS 的 shell 操作(Hadoop2.7版本)
  - hadoop fs: 说该命令可以用于其他文件系统，不止是hdfs文件系统内，也就是说该命令的使用范围更广
  - hadoop dfs 专门针对hdfs分布式文件系统
  - hdfs dfs 和上面的命令作用相同，相比于上面的命令更为推荐，并且当使用hadoop dfs时内部会被转为hdfs dfs命令
- 
+
 **查看hdfs帮助命令**
-```
+```bash
 [root@web1 bin]# hdfs dfs
  Usage: hadoop fs [generic options]
   [-appendToFile <localsrc> ... <dst>]  #将本地文件或标准输入（stdin）追加到目标文件系统
@@ -69,11 +69,11 @@ HDFS 的 shell 操作(Hadoop2.7版本)
 ```
 **创建一个目录**
 功能：在 hdfs 上创建目录，-p 表示会创建路径中的各级父目录。
-```
+```bash
 [root@web1 bin]# hdfs dfs -mkdir -p /usr/local/input
 ```
 **显示目录结构**
-```
+```bash
 [root@web1 bin]# hdfs dfs -ls -help
 -ls: Illegal option -help
 Usage: hadoop fs [generic options] -ls [-d] [-h] [-R] [<path> ...]
@@ -88,19 +88,20 @@ drwxr-xr-x   - root supergroup          0 2018-09-12 19:42 /usr/local/input
 [root@web1 bin]# 
 ```
 **展示文件和目录的大小**
-```
+
+```bash
 [root@web1 bin]# hdfs dfs -du /usr/local/
 0  /usr/local/hduser
 0  /usr/local/input
 [root@web1 bin]# 
 ```
 **-count 统计文件(夹)数量**
-```
+```bash
 hdfs dfs -count /usr/local/
 ```
 -put 上传文件
 该命令选项表示把 linux 上的文件复制到 hdfs 中
-```
+```bash
 [root@web1 bin]# hdfs dfs -put /usr/local/redis-3.2.12.tar.gz  /usr/local/hduser
 [root@web1 bin]# hdfs dfs -ls /usr/local/hduser
 Found 1 items
@@ -111,7 +112,7 @@ Found 1 items
 -mv 移动
 该命令选项表示移动 hdfs 的文件到指定的 hdfs 目录中。后面跟两个路径，第一个
 表示源文件，第二个表示目的目录
-```
+```bash
 [root@web1 bin]# hdfs dfs -mv /usr/local/hduser/redis-3.2.12.tar.gz /usr/local/input
 [root@web1 bin]# hdfs dfs -ls /usr/local/input
 Found 1 items
@@ -120,7 +121,8 @@ Found 1 items
 ```
 -cp 复制
 该命令选项表示复制 hdfs 指定的文件到指定的 hdfs 目录中。后面跟两个路径，第一个是被复制的文件，第二个是目的地
-```
+
+```bash
 [root@web1 bin]# hdfs dfs -cp /usr/local/input/redis-3.2.12.tar.gz /usr/local/hduser
 [root@web1 bin]# hdfs dfs -ls /usr/local/hduser
 Found 1 items
@@ -132,16 +134,14 @@ Found 1 items
 -ignorecrc：跳过对下载文件的 CRC 检查。
 -crc：为下载的文件写 CRC 校验和。
 功能：将文件复制到本地文件系统。
-```
+```bash
 [root@web1 bin]# hdfs dfs -get hdfs://192.168.1.191:9000/usr/local/hduser/redis-3.2.12.tar.gz /usr
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180913140346970?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
-
+<img src="_media/hadoop2.png">
 
 参考：https://blog.csdn.net/qq_35379598/article/details/80925458
 
-HDFS 体系结构与基本概念
---------------
+#### HDFS 体系结构与基本概念
 
  - 我们通过 hadoop shell 上传的文件是存放在 DataNode 的 block 中，通过 linux shell 是看
    不到文件的，只能看到 block。
@@ -149,7 +149,7 @@ HDFS 体系结构与基本概念
 
 **NameNode**
  - NameNode 的作用是管理文件目录结构，是管理数据节点的。名字节点维护两套数据，
-  一套是文件目录与数据块之间的关系，另一套是数据块与节点之间的关系。前一套数据是静 态的，是存放在磁盘上的，通过 fsimage 和edits 文件来维护；后一套数据是动态的，不持 久化到磁盘的，每当集群启动的时候，会自动建立这些信息。
+    一套是文件目录与数据块之间的关系，另一套是数据块与节点之间的关系。前一套数据是静 态的，是存放在磁盘上的，通过 fsimage 和edits 文件来维护；后一套数据是动态的，不持 久化到磁盘的，每当集群启动的时候，会自动建立这些信息。
 
 DataNode
 --------

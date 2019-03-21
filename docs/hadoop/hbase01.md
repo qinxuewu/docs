@@ -17,7 +17,7 @@
 
 ### 安装  独立HBase
 HBase要求安装JDK。有关支持的JDK版本的信息
-![输入图片说明](https://images.gitee.com/uploads/images/2018/0809/161554_01933e92_1478371.png "屏幕截图.png")
+<img src="_media/hbase01.png">
 
 从此Apache下载镜像列表中选择一个下载站点。单击建议的顶部链接。这将带您进入HBase版本的镜像。单击名为stable的文件夹，然后将以.tar.gz结尾的二进制文件下载到本地文件系统。暂时不要下载以src.tar.gz结尾的文件。
 
@@ -36,7 +36,7 @@ export JAVA_HOME=/usr/local/java/jdk1.7.0_79
 ```
 编辑conf/hbase-site.xml，这是主要的HBase配置文件
 
-```
+```bash
 <configuration>
   <property>
   <!--  配置hbase存在位置-->
@@ -52,12 +52,12 @@ export JAVA_HOME=/usr/local/java/jdk1.7.0_79
 ```
 到此 HBase 的安装配置已成功完成。可以通过使用 HBase 的 bin 文件夹中提供 start-hbase.sh 脚本启动 HBase
 
-```
+```bash
 $ ./bin/start-hbase.sh
 ```
 运行HBase启动脚本，它会提示一条消息：HBase has started
 
-```
+```bash
 starting master, logging to /usr/local/HBase/bin/../logs/hbase-tpmaster-localhost.localdomain.out
 ```
 - 该./start-hbase.sh脚本是作为启动HBase的一种便捷方式。发出命令，如果一切顺利，将在标准输出中记录一条消息，显示HBase已成功启动。您可以使用该jps命令验证是否有一个正在运行的进程HMaster。在独立模式下，HBase运行此单个JVM中的所有守护程序，即HMaster，单个HRegionServer和ZooKeeper守护程序。转到`http：// localhost：16010`以查看HBase Web UI。
@@ -65,7 +65,7 @@ starting master, logging to /usr/local/HBase/bin/../logs/hbase-tpmaster-localhos
 ### HBase Shell
 要访问HBase shell，必须导航进入到HBase的主文件夹。
 
-```
+```bash
 #进入shell
 /bin/hbase shell
 
@@ -75,7 +75,7 @@ TABLE
 ```
  **通用命令** 
 
-```
+```bash
 status: 提供HBase的状态，例如，服务器的数量。
 version: 提供正在使用HBase版本。
 table_help: 表引用命令提供帮助
@@ -126,7 +126,7 @@ HOSTNAME=CentOS124   #名字随便
 #查看hbase ip绑定是否成功
 [root@CentOS124 hbase-1.2.6.1]# netstat -anp|grep 16010
 ```
-![输入图片说明](https://images.gitee.com/uploads/images/2018/0809/183717_9b723e58_1478371.png "屏幕截图.png")
+<img src="_media/hbase02.png">
 
  **3、配置访问windows的hosts** 
 ```
@@ -136,7 +136,7 @@ HOSTNAME=CentOS124   #名字随便
 
 
 # Java 操作远程hbase
-```
+```java
 public class HbaseTest {
   public static  Connection connection;
   public static Configuration configuration; 
@@ -185,5 +185,3 @@ public class HbaseTest {
 }
 ```
 
-**demo地址**
-https://gitee.com/qinxuewu/spring-cloud/tree/master/kafka-demo

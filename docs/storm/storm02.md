@@ -1,6 +1,6 @@
 # 官方文档
 http://storm.apache.org/releases/1.2.2/Command-line-client.html
-```
+```bash
 [root@web1 apache-storm-1.2.2]# bin/storm help
 Commands:
 	activate
@@ -44,11 +44,11 @@ Configs can be overridden using one or more -c flags, e.g. "storm list -c nimbus
 ```
 
 ## activate 激活指定拓扑的spouts
-```
+```bash
 语法：storm activate topology-name
 ```
 ## classpath 在运行命令时打印storm客户端使用的类路径
-```
+```bash
 storm classpath
 ```
 ## deactivate 停用指定拓扑的spouts

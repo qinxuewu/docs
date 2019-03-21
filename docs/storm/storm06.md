@@ -9,12 +9,12 @@ DRPC其实不能算是storm本身的一个特性， 它是通过组合storm的�
  - 从storm topology接收结果
  - 把结果发回给等待的客户端。从客户端的角度来看一个DRPC调用跟一个普通的RPC调用没有任何区别
 
-![在这里插入图片描述](https://img-blog.csdn.net/20180919152048659?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+<img src="_media/storm6.png">
 
 ## 要使用DRPC首先要修改storm配置文件
 
 apache-storm-1.2.2/conf/storm.yaml
-```
+```bash
 storm.zookeeper.servers:
       - "192.168.1.191"
 storm.zookeeper.port: 2181
@@ -35,9 +35,9 @@ drpc.servers:
 ```
 bin/storm drpc &
 ```
-**编写drpc服务代码**
+## 编写drpc服务代码
 
-```
+```java
 public class DrpcTopology {
 	public static class ExclaimBolt extends BaseBasicBolt {
 	    public void execute(Tuple tuple, BasicOutputCollector collector) {
@@ -82,7 +82,7 @@ public class DrpcTopology {
 		}
 	}
 ```
-**打包提交到storm集群**
+## 打包提交到storm集群
 语法：bin/storm jar  (jar包名) | 主函数路径 | Topology名称
 ```
 bin/storm jar stom-demo-1.0.jar com.qxw.drpc.DrpcTopology exclamation
@@ -90,18 +90,18 @@ bin/storm jar stom-demo-1.0.jar com.qxw.drpc.DrpcTopology exclamation
 
 ## 访问UI查看是否提交成功
 http://192.168.1.191:8080
-![在这里插入图片描述](https://img-blog.csdn.net/20180919152739275?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+<img src="_media/storm7.png">
 
 **linux查看正在运行的Topology**
-```
+```bash
 [root@web1 apache-storm-1.2.2]# bin/storm list
 3893 [main] INFO  o.a.s.u.NimbusClient - Found leader nimbus : web1:6627
 Topology_name        Status     Num_tasks  Num_workers  Uptime_secs
 -------------------------------------------------------------------
 exclamation          ACTIVE     0          0            1020   
 ```
-**调用集群的drpc**
-```
+## 调用集群的drpc
+```java
 public class DrpcTest {
 	public static void main(String[] args) {
 		try {

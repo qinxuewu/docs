@@ -11,7 +11,7 @@ hadoop 的安装分为本地模式、伪分布模式、集群模式。本地模�
 - 是“/usr/local/hadoop”。
 
 ### 配置 hadoop 的环境变量
-```
+```bash
 修改文件 vi /etc/profile
 
 JAVA_HOME=/usr/local/java/jdk1.8.0_181
@@ -26,7 +26,7 @@ source /etc/profile
 ```
 在任意目录下，输入 hadoop，出现如下信息即配置成功
 
-```
+```bash
 [root@web1 hadoop-2.7.7]# hadoop
 Usage: hadoop [--config confdir] [COMMAND | CLASSNAME]
   CLASSNAME            run the class named CLASSNAME
@@ -51,7 +51,7 @@ Most commands print help when invoked w/o parameters.
 
 ### 修改配置文件
 hadoop 配置文件默认是本地模式，我们修改四个配置文件，这些文件都位于/usr/local/hadoop-2.7.7/etc/hadoop 目录下。
-```
+```bash
 #第一个是 hadoop 环境变量脚本文件 hadoop-env.sh
 export JAVA_HOME=/usr/local/java/jdk1.8.0_181
 
@@ -93,13 +93,13 @@ export JAVA_HOME=/usr/local/java/jdk1.8.0_181
 ### 格式化文件系统
 hdfs 是 文 件 系 统 ， 所 以 在 第 一 次 使 用 之 前 需 要 进 行 格 式 化
 
-```
+```bash
 bin/hdfs namenode -format
 ```
 ### 启动 hdfs 
 hadoop 启动的三种方式：
 
-```
+```bash
 #第一种，一次性全部启动
 执行 start-all.sh 启动 hadoop
 
@@ -125,7 +125,7 @@ hadoop 启动的三种方式：
 ```
 ### 解决hadoop启动总是提示输入密码
 
-```
+```bash
 #配置本机的免秘钥登录 第二步一直回车
 cd ~/.ssh
 ssh-keygen -t rsa  
@@ -155,7 +155,7 @@ sbin/start-all.sh
  **访问 http://192.168.1.191:50070 查看hadoop服务** 
  **访问集群中的所有应用程序的默认端口号为8088。使用以下URL访问该服务  http://192.168.1.191:8088** 
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/0912/174408_81e9916a_1478371.png "屏幕截图.png")
+<img src="_media/hadoop1.png">
 
 解决hadoop启动时报错
 -------------
