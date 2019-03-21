@@ -1,8 +1,5 @@
 
 
-<div align="center">  
-<img src="https://images.gitee.com/uploads/images/2019/0103/191141_7edb20c3_1478371.png" width=""/>
-</br>
 
 
 # 简介
