@@ -1,6 +1,6 @@
 # 简介
 
-个人学习笔记
+Java知识学习总结+JDK源码阅读笔记
 
 <!-- [![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-924715723-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5PIRvFq) -->
 [![码云](https://img.shields.io/badge/Gitee-%E7%A0%81%E4%BA%91-yellow.svg)](https://gitee.com/qinxuewu)
