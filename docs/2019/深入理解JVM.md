@@ -1,7 +1,7 @@
 ## 1. 运行时数据区域
 - Java虚拟机在执行Java程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域有各自的用途,以及创建和销毁的时间，有的区域随着虚拟机进程的启动而存在，有些区域则是依赖用户线程的启动和结束而建立和销毁。
 
-![](https://images.gitee.com/uploads/images/2019/0120/110634_7e0e2b98_1478371.jpeg)
+![运行时数据区域](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bbk4bc68j30g20anab3.jpg)
 - 线程私有的：虚拟机栈，本地方法栈，程序计数器
 - 线程共享的 方法区，堆
 
@@ -162,7 +162,7 @@ public class AllocationTest {
 - 永久代的垃圾主要回收两部分内容：废弃常量和无用的类。
 - 回收废弃常量于回收`Java堆`中的对象非常相似。以常量池中字面量的回收为列，假如一个字符串“`abc`"已经进入常量池中，但是当前系统没有任何一个String对象叫做”`abc`"的，换句话就是没有任何Sting对象引用常量池中的"abc",也没有其它地方引用了这个字面变量，如果这时候发生内存回收，而且必要的话，这个“`abc`"常量就会被系统请出常量池，常量池中的其它类，接口，方法，字段的符号引用也与此类似。
 
-![输入图片说明](https://gitee.com/uploads/images/2018/0703/173826_78dcbdc8_1478371.png "image.png")
+![](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bblyvtcpj30mx04x415.jpg)
 
 ### Java中对象访问是如何进行的
 
@@ -182,7 +182,7 @@ Object obj=new Object();
 - 根搜索算法：Java是使用根搜索算法判断对象是否存活的。
 - 这个算法的思路就是通过一系列的名为“GC roots"的对象作为起点，从这些节点开始向下搜索，搜索走过的路径称为引用链，当一个对象的GC roots没有任何引用链相连时，则证明此对象是不可用的。如下图所示，对象object5,object6,object7虽然相互关联，但是他们的GC roots是不可达到的，所以它们将会被判定是可回收的对象。
 
-![输入图片说明](https://gitee.com/uploads/images/2018/0703/173354_410e32c9_1478371.png "image.png")
+![](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bbmje0uuj30fu0c2tay.jpg)
 
 ### 作为GC roots的几种对象
 - 虚拟机栈(栈中的本地变量表)中的引用对象。
@@ -194,7 +194,7 @@ Object obj=new Object();
 ### 类加载的时机
 
 - 类从被加载到虚拟机内存中开始，到卸载出内存为止，它的整个生命周期包括：加载（Loading）、验证（Verification）、准备(Preparation)、解析(Resolution)、初始化(Initialization)、使用(Using)和卸载(Unloading)7个阶段。其中准备、验证、解析3个部分统称为连接（Linking）
-![输入图片说明](https://images.gitee.com/uploads/images/2019/0120/145642_5617ec80_1478371.png "在这里输入图片标题")
+![](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bbnlpc6bj30hf06774b.jpg)
 
 - 加载、验证、准备、初始化和卸载这5个阶段的顺序是确定的，类的加载过程必须按照这种顺序按部就班地开始，而解析阶段则不一定：它在某些情况下可以在初始化阶段之后再开始，这是为了支持Java语言的运行时绑定（也称为动态绑定或晚期绑定）。
 
@@ -276,7 +276,7 @@ public static int value=123;
 
 -  一个java类的完整的生命周期会经历加载、连接、初始化、使用、和卸载五个阶段，当然也有在加载或者连接之后没有被初始化就直接被使用的情况
 
-![输入图片说明](https://gitee.com/uploads/images/2018/0704/125820_a13e503b_1478371.png "微信图片_20180704125805.png")
+![](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bboaruavj30830el0sy.jpg)
 
 ### 类加载器
 - 通过一个类的全限定名来获取描述此类的二进制字节流,这个动作放到java虚拟机外部去实现。以便让应用程序自己决定如何去获取所需要的类。实现各动作的代码模块称为“类加载器”。
@@ -376,7 +376,7 @@ ObjectInputStream in = new ObjectInputStream(new FileInputStream("data.obj"));
 Employee emp5 = (Employee) in.readObject();
 ```
 
-![对象的创建](https://images.gitee.com/uploads/images/2019/0120/151315_16e661d8_1478371.png)
+![对象的创建](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bboaruavj30830el0sy.jpg)
 
 
 
@@ -445,12 +445,12 @@ Employee emp5 = (Employee) in.readObject();
 #### 句柄定位
 使用句柄访问时，Java堆中会划分出一块内存来作为句柄池，references中存储的就是对象的句柄地址。句柄中包含对象实列数据与类型数据各组的具体地址信息  references->句柄池->java堆
 
-![输入图片说明](https://images.gitee.com/uploads/images/2019/0121/203615_b37c5a59_1478371.png "屏幕截图.png")
+![](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bbpgjsioj30ih0900uu.jpg)
 
 #### 直接指针定位
 如果是直接指针访问，Java堆的布局就必须考虑如何放置访问类型数据相关。
 
-![输入图片说明](https://images.gitee.com/uploads/images/2019/0121/203833_a0988220_1478371.png "屏幕截图.png")
+![](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bbpxha4lj30kf09bwgj.jpg)
 
 #### 各自优点
 - 句柄访问最大好处就是references中存储的是稳定的句柄地址，在对象移动(垃圾收集时移动对象是普遍行为)时只会改变句柄中的实列数据指针，references本身不需要修改。
@@ -474,7 +474,7 @@ class constant pool
 
 常量池的每一项常量都是一个表，一共有如下表所示的11种各不相同的表结构数据，这每个表开始的第一位都是一个字节的标志位（取值1-12），代表当前这个常量属于哪种常量类型。 
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1024/155541_2eec5e16_1478371.png "屏幕截图.png")
+![](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bbqe1waij30mp099go2.jpg)
 
 
 ### 运行时常量池（runtime constant pool）
@@ -520,14 +520,14 @@ public class HelloWorld {
 
 符号引用包括：1.类的全限定名，2.字段名和属性，3.方法名和属性。
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1024/165202_c3ff9d88_1478371.png "屏幕截图.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1024/165214_c6ff9536_1478371.png "屏幕截图.png")
+![](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bbqzm910j30jh0bnjry.jpg)
+![](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bbrhy9jzj30k90b8abh.jpg)
 
  可以看到在方法区里的class文件信息包括：魔数，版本号，常量池，类，父类和接口数组，字段，方法等信息，其实类里面又包括字段和方法的信息。
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1024/165252_dced1999_1478371.png "屏幕截图.png")
+![](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bbrzbkpdj30o90jzt9j.jpg)
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1024/165306_6bb9129a_1478371.png "屏幕截图.png")
+![输入图片说明](http://wx1.sinaimg.cn/large/006b7Nxngy1g1bbsjfbubj30nz0e30ui.jpg)
 
 ### class文件常量池和运行时常量池的关系以及区别
 - class文件常量池存储的是当class文件被java虚拟机加载进来后存放在方法区的一些字面量和符号引用，字面量包括字符串，基本类型的常量。
