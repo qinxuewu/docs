@@ -29,6 +29,8 @@ Java知识学习总结+JDK源码阅读笔记
 - [(深入理解JUC)分析CountDownLatch源码](2019/分析CountDownLatch源码.md)
 - [(深入理解JUC)分析CyclicBarrier同步屏障源码](2019/CyclicBarrier.md)
 - [(深入理解JUC)分析Semaphore信号量源码](2019/Semaphore.md)
+- [(深入理解JUC)ThreadLocal源码](https://blog.qinxuewu.club/2019/03/28/java/shen-ru-li-jie-threadlocal-yuan-ma)
+- [(深入理解JUC)ConcurrentLinkedQueue源码](https://blog.qinxuewu.club/2019/03/29/java/shen-ru-li-jie-concurrentlinkedqueue-yuan-ma)
 - [ELK分布式日志平台搭建](https://blog.csdn.net/u010391342/article/details/82895385)
 - [Netty入门(一)HelloWorld程序编写](https://blog.csdn.net/u010391342/article/details/83011198)
 - [Netty入门(二)TCP粘包与拆包问题处理](https://blog.csdn.net/u010391342/article/details/83011294)
