@@ -12,6 +12,7 @@ Java知识学习总结+JDK源码阅读笔记
 - CSDN: https://blog.csdn.net/u010391342
 - 简书: https://www.jianshu.com/u/65eeb288a0d9
 - 掘金: https://juejin.im/user/5a289b556fb9a0450e760117
+- 个人博客：https://blog.qinxuewu.club
 
 ## 开源小项目
 
