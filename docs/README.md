@@ -92,10 +92,12 @@ Java知识学习总结+JDK源码阅读笔记
 - [HBase之Java API 操作](hadoop/hbase02.md)
 
 ## 知识点总结
+- [多线程和JVM知识总结](2019/多线程和JVM知识总结.md)
+- [JAVA核心技术36讲](2019/JAVA核心技术36讲.md)
 - [Zookeeper面试专题](其它/Zookeeper面试专题.md)
 - [redis面试专题.md](其它/redis面试.md)
 - [spring面试专题.md](其它/spring.md)
-- [多线程和JVM知识总结](2019/多线程和JVM知识总结.md)
+
 
 ## 随笔
 - [docsify一个神奇的文档生成工具](其它/docsify.md)
