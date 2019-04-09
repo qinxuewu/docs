@@ -128,4 +128,281 @@
 * 就绪（RUNNABLE），表示该线程已经在JVM中执行，当然由于执行需要计算资源，它可能是正在运行，也可能还在等待系统分配给它CPU片段，在就绪队列里面排队。
 * 阻塞（BLOCKED），这个状态和我们前面两讲介绍的同步非常相关，阻塞表示线程在等待Monitor lock。比如，线程试图通过synchronized去获取某个锁，但是其他线程已经独占了，那么当前线程就会处于阻塞状态。
 * 等待（WAITING），表示正在等待其他线程采取某些操作。一个常见的场景是类似生产者消费者模式，发现任务条件尚未满足，就让当前消费者线程等待（wait），另外的生产者线程去准备任务数据，然后通过类似notify等动作，通知消费线程可以继续工作了。 Thread.join()也会令线程进入等待状态。
-* 计时等待（TIMED_WAIT），其进入条件和等待状态类似，但是调用的是存在超时条件的方法，比如wait或join等方法的指定超时版本，如下面示例：
+* 计时等待（TIMED_WAIT），其进入条件和等待状态类似，但是调用的是存在超时条件的方法，比如wait或join等方法的指定超时版本
+
+#### 什么情况下Java程序会产生死锁?如何定位、修复?
+* `死锁`是一种特定的程序状态,在实体之间,由于`循环依赖导致`彼此一直处于等待之中,没有任何个体可以继续前进。死锁不仅仅是在线程之间会发生,存在资源独占的进程之间同样也可能出现死锁。通常来说,我们大多是聚焦在多线程场景中的死锁,指两个或多个线程之间,由于互`相持有对方需要的锁`,而永久处于阻塞的状态。
+![](https://img-blog.csdnimg.cn/20190408224832820.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+* `定位死锁`最常见的方式就是利用`jstack`等工具`获取线程栈`,然后定位互相之间的依赖关系,进而找到死锁。如果是比较明显的死锁,往往jstack等就能直接定位,类似JConsole甚至 可以在图形界面进行有限的死锁检测。
+* 使用Java提供的标准管理API,ThreadMXBean,其直接就提供 fndDeadlockedThreads﻿()方法用于定位死锁。但是要注意的是,对线程进行快照本身是一个相对重量级的操作,还是要慎重选择频度和时机。
+
+```java
+public class ThreadMXBeanTest {
+    public static void main(String[] args) {
+        ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
+
+        Runnable dlCheck = new Runnable() {
+            @Override
+            public void run() {
+                long[] threadIds = mbean.findDeadlockedThreads();
+                if (threadIds != null) {
+                    ThreadInfo[] threadInfos = mbean.getThreadInfo(threadIds);
+                    System.out.println("Detected deadlock threads:");
+                    for (ThreadInfo threadInfo : threadInfos) {
+                        System.out.println(threadInfo.getThreadName());
+                    }
+                }
+            }
+        };
+
+        ScheduledExecutorService scheduler =Executors.newScheduledThreadPool(1);
+        // 稍等5秒,然后每10秒进行一次死锁扫描
+        scheduler.scheduleAtFixedRate(dlCheck, 5L, 10L, TimeUnit.SECONDS);
+        Test1  t=new Test1();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                t.t1();
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                t.t2();
+            }
+        }).start();
+    }
+
+
+    public  static  class Test1{
+        Object obj1=new Object();
+        Object obj2=new Object();
+
+        public void  t1(){
+            synchronized (obj1){
+                System.out.println(Thread.currentThread().getName()+":    obj1--------");
+                try {
+                    Thread.sleep(1000);
+                    synchronized (obj2){
+                        System.out.println(Thread.currentThread().getName()+"   obj2--------");
+                    }
+                }catch (InterruptedException e){
+
+                }
+
+            }
+        }
+
+        public void  t2(){
+            synchronized (obj2){
+                System.out.println(Thread.currentThread().getName()+"    t2  obj2--------");
+                try {
+                    Thread.sleep(1000);
+                    synchronized (obj1){
+                        System.out.println(Thread.currentThread().getName()+"   t2  obj1--------");
+                    }
+                }catch (InterruptedException e){
+
+                }
+
+
+            }
+        }
+
+    }
+}
+
+```
+
+> 如`何在编程中尽量预防死锁呢?`
+> 尽量避免使用多个锁,并且只有需要时才持有锁
+> 如果必须使用多个锁,尽量设计好锁的获取顺序
+> 使用带超时的方法,为程序带来更多可控性。
+> `有时候并不是阻塞导致的死锁,只是某个线程进入了死循环,导致其他线程一直等待,这种问题如何诊断呢?`
+> 可以通过linux下top命令查看cpu使用率较高的java进程,进而用`top -Hp pid`查看该java进程下cpu使用率较高的线程。再用jstack命令查看线程具体调用情况,排查问题
+
+#### Java并发包提供了哪些并发工具类？
+* 提供了比synchronized更加高级的各种同步结构，包括`CountDownLatch`、 `CyclicBarrier`、 `Semaphore`等。CountDownLatch，允许一个或多个线程等待某些操作完成。CyclicBarrier，一种辅助性的同步结构，允许多个线程等待到达某个屏障。Semaphore， Java版本的信号量实现，它通过控制一定数量的允许（permit）的方式，来达到限制通用资源访问的目的。
+* 各种`线程安全的容器`，比如最常见的`ConcurrentHashMap`、有序的`ConcunrrentSkipListMap`，或者通过类似快照机制，实现线程安全的动态数组`CopyOnWriteArrayList`等。
+* 各种`并发队列`实现，如各种`BlockedQueue`实现，比较典型的`ArrayBlockingQueue`、 `SynchorousQueue`或针对特定场景的`PriorityBlockingQueue`等。
+* 强大的`Executor`框架，可以创建各种不同类型的线程池，调度任务运行等，绝大部分情况下，不再需要自己从头实现线程池和任务调度器。
+
+> `你使用过类似CountDownLatch的同步结构解决实际问题吗？`
+> 一个页面有A,B,C三个网络请求，其中请求C需要请求A和请求B的返回数据作为参数，用过CountdownLatch解决。
+> 需求是每个对象一个线程，分别在每个线程里计算各自的数据，最终等到所有线程计算完毕，我还需要将每个有共通的对象进行合并，所以用它很合适。
+
+#### 并发包中的ConcurrentLinkedQueue和LinkedBlockingQueue有什么区别？
+![线程安全队列一览](https://img-blog.csdnimg.cn/20190409124720516.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+* `Concurrent`类型基于`lock-free`，在常见的多线程访问场景，一般可以提供较高吞吐量。而`LinkedBlockingQueue`内部则是`基于锁`，并提供了`BlockingQueue`的等待性方法。
+* `ArrayBlockingQueue`是最典型的的有界队列，其内部以`fnal`的数组保存数据，数组的大小就决定了队列的边界，所以我们在创建ArrayBlockingQueue时，都要指定容量
+* `LinkedBlockingQueue`，容易被`误解为无边界`，但其实其行为和内部代码都是`基于有界的逻辑实现`的，只不过如果我们没有在创建队列时就指定容量，那么其容量限制就自动被设置为`Integer.MAX_VALUE`，成为了无界队列。
+* `SynchronousQueue`，这是一个非常奇葩的队列实现，每个删除操作都要等待插入操作，反之每个插入操作也都要等待删除动作。其内`部容量是0`
+* `PriorityBlockingQueue`是无边界的优先队列，虽然严格意义上来讲，其大小总归是要受系统资源影响
+* `DelayedQueue`和`LinkedTransferQueue`同样是`无边界的队列`。对于无边界的队列，有一个自然的结果，就是put操作永远也不会发生其他`BlockingQueue`的那种等待情况。
+
+> `在日常的应用开发中，如何进行选择呢？`
+> 考虑应用场景中`对队列边界的要求`。 ArrayBlockingQueue是有明确的容量限制的，而LinkedBlockingQueue则取决于我们是否在创建时指定， SynchronousQueue则干脆不能缓存任何元素。
+> `从空间利用角度`，数组结构的ArrayBlockingQueue要比LinkedBlockingQueue紧凑，因为其不需要创建所谓节点，但是其初始分配阶段就需要一段连续的空间，所以初始内存需求更大。
+> `通用场景中`， LinkedBlockingQueue的吞吐量一般优于ArrayBlockingQueue，因为它实现了更加细粒度的锁操作。
+> ArrayBlockingQueue实现比较简单，性能更好预测，属于表现稳定的“选手”。
+> 如果我们需要实现的是两个线程之间接力性（handof）的场景，你可能会选择CountDownLatch，但是SynchronousQueue也是完美符合这种场景的，而且线程间协调和数据传输统一起来，代码更加规范。
+
+#### Java并发类库提供的线程池有哪几种？ 分别有什么特点？
+Executors目前提供了5种不同的线程池创建配置：
+* `newCachedThreadPool()`，它是一种用来处理大量短时间工作任务的线程池，具有几个鲜明特点：它会试图缓存线程并重用，当无缓存线程可用时，就会创建新的工作线程；如果线程闲置的时间超过60秒，则被终止并移出缓存；长时间闲置时，这种线程池，不会消耗什么资源。其内部使用`SynchronousQueue`作为工作队列。
+* `newFixedThreadPool(int nThreads)`，重用`指定数目`（nThreads）的线程，其背后使用的是`无界的工作队列`，任何时候最多有nThreads个工作线程是活动的。这意味着，如果任务数量超过了活动队列数目，将在工作队列中等待空闲线程出现；如果有工作线程退出，将会有新的工作线程被创建，以补足指定的数目nThreads。
+* `newSingleThreadExecutor()`，它的特点在于`工作线程数目被限制为1`，操作一个`无界的工作队列`，所以它保证了所有任务的都是被`顺序执行`，最多会有`一个任务处于活动状态`，并且不允许使用者改动线程池实例，因此可以避免其改变线程数目。
+* `newSingleThreadScheduledExecutor()`和`newScheduledThreadPool(int corePoolSize)`，创建的是`ScheduledExecutorService`，可以进行定时或周期性的工作调度，区别在于单一工作线程还是多个工作线程
+* `newWorkStealingPool(int parallelism)`，这是一个经常被人忽略的线程池， `Java 8才加入这个创建方法`，其内部会构建`ForkJoinPool`，利用`Work-Stealing算法`，并行地处理任务，不保证处理顺序。
+
+> `ThreadPoolExecutor参数详解`
+> corePoolSize，所谓的核心线程数，可以大致理解为长期驻留的线程数目。于不同的线程池，这个值可能会有很大区别，比如newFixedThreadPool会将其设置为nThreads，而对于newCachedThreadPool则是为0。
+> maximumPoolSize，顾名思义，就是线程不够时能够创建的最大线程数
+> keepAliveTime和TimeUnit，这两个参数指定了额外的线程能够闲置多久，显然有些线程池不需要它。
+> workQueue，工作队列，必须是BlockingQueue。
+> `线程池大小的选择策略：`
+> 如果我们的任务主要是进行计算，那么就意味着CPU的处理能力是稀缺的资源。如果线程太多，反倒可能导致大量
+的上下文切换开销。所以，这种情况下，通常建议按照CPU核的数目N或者N+1。
+如果是需要较多等待的任务，例如I/O操作比较多，可以参考Brain Goetz推荐的计算方法：`线程数 = CPU核数 × （1 + 平均等待时间/平均工作时间）`
+
+#### AtomicInteger底层实现原理是什么？如何在自己的产品代码中应用CAS操作？
+* `AtomicIntger`是对int类型的一个封装，提供原子性的访问和更新操作，其原子性操作的实现是基于`CAS（compare-and-swap）`技术。
+* 所谓CAS，表征的是一些列操作的集合，获取当前数值，进行一些运算，利用CAS指令试图进行更新。如果当前数值未变，代表没有其他线程进行并发修改，则成功更新。否则，可能出现不同的选择，要么进行重试，要么就返回一个成功或者失败的结果。
+* 于CAS的使用，你可以设想这样一个场景：在数据库产品中，为保证索引的一致性，一个常见的选择是，保证只有一个线程能够排他性地修改一个索引分区，
+
+#### 请介绍类加载过程，什么是双亲委派模型？
+* 一般来说，我们把Java的类加载过程分为三个主要步骤：加载、链接、初始化，具体行为在Java虚拟机规范里有非常详细的定义。
+* `首先是加载阶段`（Loading），它是Java将字节码数据从不同的数据源读取到JVM中，并映射为JVM认可的数据结构（Class对象），这里的数据源可能是各种各样的形态，如jar文件、 class文件，甚至是网络数据源等；如果输入数据不是ClassFile的结构，则会抛出ClassFormatError。加载阶段是用户参与的阶段，我们可以自定义类加载器，去实现自己的类加载过程。
+* `第二阶段是链接`（Linking），这是核心的步骤，简单说是把原始的类定义信息平滑地转化入JVM运行的过程中。这里可进一步细分为三个步骤：
+> `验证`: 这是虚拟机安全的重要保障，JVM需要核验字节信息是符合Java虚拟机规范的，否则就被认为是VerifyError，这样就防止了恶意信息或者不合规的信息害JVM的运行，验证阶段有可能触发更多class的加载。
+> `准备`，创建类或接口中的静态变量，并初始化静态变量的初始值。但这里的“初始化”和下面的显式初始化阶段是有区别的，侧重点在于分配所需要的内存空间，不会去执行更进一步的JVM指令
+> `解析`，在这一步会将常量池中的`符号引用`替换为`直接引用`。在Java虚拟机规范中，详细介绍了类、接口、方法和字段等各个方面的解析。
+*  `最后是初始化阶段`（initialization），这一步真正去执行类初始化的代码逻辑，包括静态字段赋值的动作，以及执行类定义中的静态初始化块内的逻辑，编译器在编译阶段就会把这部分逻辑整理好，父类型的初始化逻辑优先于当前类型的逻辑。
+* 再来谈谈`双亲委派模型`，简单说就是当类加载器（Class-Loader）试图加载某个类型的时候，除非父加载器找不到相应类型，否则尽量将这个任务代理给当前加载器的父加载器去做。使用委派模型的目的是避免重复加载Java类型。
+![双亲委派模型](https://img-blog.csdnimg.cn/20190409151248407.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+
+#### 有哪些方法可以在运行时动态生成一个Java类？
+* 我们可以从常见的Java类来源分析，通常的开发过程是，开发者编写Java代码，调用javac编译成class文件，然后通过类加载机制载入JVM，就成为应用运行时可以使用的Java类了。
+* 有一种笨办法，直接用ProcessBuilder之类启动javac进程，并指定上面生成的文件作为输入，进行编译。最后，再利用类加载器，在运行时加载即可。
+* 你可以考虑使用Java Compiler API，这是JDK提供的标准API，里面提供了与javac对等的编译器功能，具体请参考java.compiler相关文档。
+
+#### 谈谈JVM内存区域的划分，哪些区域可能发生OutOfMemoryError？
+* 通常可以把`JVM`内存区域分为下面几个方面，其中，有的区域是`以线程为单位`，而有的区域则是`整个JVM`进程唯一的。
+* `程序计数器`：在JVM规范中，每个线程都有它自己的程序计数器，并且任何时间一个线程都只有一个方法在执行，也就是所谓的当前方法。程序计数器会存储当前线程正在执行的Java方法的JVM指令地址；或者，如果是在执行本地方法，则是未指定值（undefned）。
+* `Java虚拟机栈`：早期也叫`Java栈`。每个线程在创建时都会创建一个虚拟机栈，其内部保存一个个的`栈帧`（Stack Frame），对应着一次次的Java方法调用。前面谈程序计数器时，提到了当前方法；同理，在一个时间点，对应的只会有一个活动的栈帧，通常叫作`当前帧`，方法所在的类叫作当前类。如果在该方法中调用了其他方法，对应的新的栈帧会被创建出来，成为新的当前帧，一直到它返回结果或者执行结束。 JVM直接对Java栈的操作只有两个，就是对栈帧的`压栈和出栈`。栈帧中存储着`局部变量表`、`操作数栈`、`动态链接`、`方法正常退出`或者`异常退出`的定义等
+*  `堆（Heap）`，它是Java内存管理的核心区域，用来`放置Java对象实例`，几乎所有创建的Java`对象实例都是被直接分配在堆上`。堆被`所有的线程共享`，在虚拟机启动时，我们指定的`“Xmx”`之类参数就是用来指定最大堆空间等指标。堆也是垃圾收集器重点照顾的区域，所以堆内空间还会被不同的垃圾收集器进行进一步的细分，最有名的就是`新生代`、老`年代`的划分。
+*  `方法区（Method Area）`。这也是所有`线程共享的一块内存区域`，用于存储所谓的`元（Meta）数据`，例如`类结构信息`，以及对应的`运行时常量池`、`字段`、`方法代码`等。由于早期的Hotspot JVM实现，很多人习惯于将方法区称为永久代， Oracle JDK 8中将永久代移除，同时`增加了元数据区`（Metaspace）
+* `运行时常量池`，这是`方法区的一部分`。如果仔细分析过反编译的类文件结构，你能看到`版本号`、`字段`、`方法`、`超类`、`接口`等各种信息，还有一项信息就是`常量池`。 Java的常量池可以存放各种常量信息，不管是编译期生成的各种字面量，还是需要在运行时决定的符号引用，所以它比一般语言的符号表存储的信息更加宽泛。
+* `本地方法栈`（Native Method Stack）。它和Java虚拟机栈是非常相似的，支持对本地方法的调用，也是每个线程都会创建一个
+
+![](https://img-blog.csdnimg.cn/20190409170529393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+#### Java对象是不是都创建在堆上的呢？
+*  有一些观点，认为通过逃逸分析， JVM会在栈上分配那些不会逃逸的对象，这在理论上是可行的，但是取决于JVM设计者的选择
+*  目前很多书籍还是基于JDK 7以前的版本， JDK已经发生了很大变化， Intern字符串的缓存和静态变量曾经都被分配在永久代上，而永久代已经被元数据区取代。但是， Intern字符串缓存和静态变量并不是被转移到元数据区，而是直接在堆上分配，所以这一点同样符合对象实例都是分配在堆上。
+
+#### 什么是OOM问题，它可能在哪些内存区域发生？
+* OOM如果通俗点儿说，就是JVM内存不够用了， javadoc中对`OutOfMemoryError`的解释是，没有空闲内存，并且垃圾收集器也无法提供更多内存。在抛出OutOfMemoryError之前，通常垃圾收集器会被触发，尽其所能去清理出空间。当然，也不是在任何情况下垃圾收集器都会被触发的，比如，我们去分配一个超大对象，类似一个超大数组超过堆的最大值， JVM可以判断出垃圾收集并不能解决这个问题，所以直接抛出OutOfMemoryError。
+>从我前面分析的数据区的角度，除`了程序计数器，其他区域都有可能会因为可能的空间不足发OutOfMemoryError，简单总结如下`：
+* `堆内存不足是最常见的OOM原因之一`，抛出的错误信息是“java.lang.OutOfMemoryError:Java heap space”，原因可能千奇百怪，例如，可能存在内存泄漏问题；也很有可能就是堆的大小不合理，比如我们要处理比较可观的数据量，但是没有显式指定JVM堆大小或者指定数值偏小；或者出现JVM处理引用不及时，导致堆积起来，内存无法释放等。
+* 而对于Java虚拟机栈和本地方法栈，这里要稍微复杂一点。如果我们写一段程序不断的进行递归调用，而且没有退出条件，就会导致不断地进行压栈。类似这种情况， JVM实际会抛出StackOverFlowError；当然，如果JVM试图去扩展栈空间的的时候失败，则会抛出OutOfMemoryError。
+* `对于老版本的Oracle JDK`，因为永久代的大小是有限的，并且JVM对永久代垃圾回收（`如，常量池回收、卸载不再需要的类型`）非常不积极，所以当我们不断添加新类型的时候，永久代出现`OutOfMemoryError`也非常多见，尤其是在运行时存在大量动态类型生成的场合；类似Intern字符串缓存占用太多空间，也会导致`OOM`问题。对应的异常信息，会标记出来和永久代相关： “`java.lang.OutOfMemoryError: PermGen space`”。
+* `随着元数据区的引入`，方法区内存已经不再那么窘迫，所以相应的OOM有所改观，出现OOM，异常信息则变成了： “`java.lang.OutOfMemoryError: Metaspace`”。
+* 直接内存不足，也会导致OOM
+
+> 我在试图分配一个100M bytes大数组的时候发生了OOME，但是GC日志显示，明明堆上还有远不止100M的空
+间，你觉得可能问题的原因是什么？想要弄清楚这个问题，还需要什么信息呢？
+
+* 从不同的垃圾收集器角度来看：首先，数组的分配是需要连续的内存空间的。所以对于使用年轻代和老年代来管理内存的垃圾收集器，堆大于 100M，表示的是新生代和老年代加起来总和大于100M，而新生代和老年代各自并没有大于 100M 的连续内存空间。进一步，又由于大数组一般直接进入老年代（会跳过对对象的年龄的判断），所以，是否可以认为老年代中没有连续大于 100M 的空间呢。
+* 对于 G1 这种按 region 来管理内存的垃圾收集器，可能的情况是没有多个连续的 region，它们的内存总和大于 100M。当然，不管是哪种垃圾收集器以及收集算法，当内存空间不足时，都会触发 GC，只不过，可能 GC 之后，还是没有连续大于 100M 的内存空间，于是 OOM了。
+
+#### 如何监控和诊断JVM堆内和堆外内存使用？
+* 可以使用综合性的图形化工具，如JConsole、 VisualVM（注意，从Oracle JDK 9开始， VisualVM已经不再包含在JDK安装包中）等。这些工具具体使用起来相对比较直观，直接连接到Java进程，然后就可以在图形化界面里掌握内存使用情况。
+> 以JConsole为例，其内存页面可以显示常见的堆内存和各种堆外部分使用状态。
+* 也可以使用命令行工具进行运行时查询，如jstat和jmap等工具都提供了一些选项，可以查看堆、方法区等使用数据。
+* 或者，也可以使用jmap等提供的命令，生成堆转储（Heap Dump）文件，然后利用jhat或Eclipse MAT等堆转储分析工具进行详细分析。
+* 如果你使用的是Tomcat、 Weblogic等Java EE服务器，这些服务器同样提供了内存管理相关的功能。
+* 另外，从某种程度上来说， GC日志等输出，同样包含着丰富的信息。
+* [JConsole官方教程](https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html)。我这里特别推荐[Java Mission Control（JMC）](https://www.oracle.com/technetwork/java/javaseproducts/mission-control/java-mission-control-1998576.html)，这是一个非常强大的工具，不仅仅能够使用JMX进行普通的管理、监控任务，还可以配合Java Flight Recorder（JFR）技术，以非常低的开销，收集和分析JVM底层的Profling和事件等信息。
+
+**堆内部是什么结构？**
+![](https://img-blog.csdnimg.cn/20190409174432758.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70) 
+你可以看到，按照通常的GC年代方式划分， Java堆内分为：
+
+**新生代**
+* 新生代是大部分对象创建和销毁的区域，在通常的Java应用中，绝大部分对象生命周期都是很短暂的。其内部又分为Eden区域，作为对象初始分配的区域；两个Survivor，有时候也叫from、 to区域，被用来放置从Minor GC中保留下来的对象。
+* JVM会随意选取一个Survivor区域作为“to”，然后会在GC过程中进行区域间拷贝，也就是将Eden中存活下来的对象和from区域的对象，拷贝到这个“to”区域。这种设计主要是为了防止内存的碎片化，并进一步清理无用对象。
+* 从内存模型而不是垃圾收集的角度，对Eden区域继续进行划分， Hotspot JVM还有一个概念叫做（TLAB）。这是JVM为每个线程分配的一个私有缓存区域，否则，多线程同时分配内存时，为避免操作同一地址，可能需要使用加锁等机制，进而影响分配速度，TLAB仍然在堆上，它是分配在Eden区域内的。其内部结构比较直观易懂， start、 end就是起始地址， top（指针）则表示已经分配到哪里了。所以我们分配新对象， JVM就会移动top，当top和end相遇时，即表示该缓存已满， JVM会试图再从Eden里分配一块儿。
+
+![](https://img-blog.csdnimg.cn/20190409174715206.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+
+**老年代**
+* 放置长生命周期的对象，通常都是从Survivor区域拷贝过来的对象。当然，也有特殊情况，我们知道普通的对象会被分配在TLAB上；如果对象较大， JVM会试图直接分配在Eden其他位置上；如果对象太大，完全无法在新生代找到足够长的连续空闲空间， JVM就会直接分配到老年代。
+
+**永久代**
+* 这部分就是早期Hotspot JVM的方法区实现方式了，储存Java类元数据、常量池、 Intern字符串缓存，在JDK 8之后就不存在永久代这块儿了。
+
+ **利用JVM参数，直接影响堆和内部区域的大小**
+* 最大堆体积：`-Xmx value`
+* 初始的最小堆体积：`-Xms value`
+* 老年代和新生代的比例：`-XX:NewRatio=value`。默认情况下，这个数值是3，意味着老年代是新生代的3倍大；换句话说，新生代是堆大小的1/4。也可以不用比例的方式调整新生代的大小，直接`-XX:NewSize=value`参数，设定具体的内存大小数值。
+
+#### Java常见的垃圾收集器有哪些？
+* `Serial GC`，它是最古老的垃圾收集器， “Serial”体现在其收集`工作是单线程`的，并且在进行垃圾收集过程中，会进入臭名昭著的`“Stop-The-World”`状态。当然，其`单线程设计`也意味着精简的GC实现，无需维护复杂的数据结构，初始化也简单，所以一直是Client模式下JVM的默认选项。
+* 从年代的角度，通常将其老年代实现单独称作`Serial Old`，它采用了标记-整理（Mark-Compact）算法，区别于新生代的复制算法。Serial GC的对应JVM参数是：`-XX:+UseSerialGC`
+* `ParNew GC`，很明显是个`新生代GC`实现，它实际`是Serial GC的多线程版本`，最常见的应用场景是配合老年代的CMS GC工作，下面是对应参数 `-XX:+UseConcMarkSweepGC -XX:+UseParNewGC`
+* `CMS GC`，基于标记-清除（Mark-Sweep）算法 设计目标是尽量减少停顿时间，这一点对于Web等反应时间敏感的应用非常重要，一直到今天，仍然有很多系统使用CMS GC。但是， CMS采用的`标记-清除算法`，存在着`内存碎片化`问题，所以难以避免在长时间运行等情况下发生`full GC`，导致恶劣的停顿。另外，既然强调了并发（Concurrent）， CMS会`占用更多CPU资源`，并和用户线程争抢。
+* `Parrallel GC`，在早期JDK 8等版本中，它是server模式JVM的默认GC选择,也被称作是吞吐量优先的GC。它的算法和Serial GC比较相似，尽管实现要复杂的多，其特点是`新生代和老年代GC都是并行进行`的，在常见的服务器环境中更加高效。开启选项是：`-XX:+UseParallelGC`  另外， Parallel GC引入了开发者友好的配置项，我们可以直接设置暂停时间或吞吐量等目标， JVM会自动进行适应性调整，例如下面参数：
+>`-XX:MaxGCPauseMillis=value`,
+> -XX:GCTimeRatio=N		 //GC时间和用户时间比例 = 1 / (N+1)
+> `查看jdk垃圾收集器`：java -XX:+PrintCommandLineFlags -version  
+
+* G1 GC这是一种兼顾吞吐量和停顿时间的GC实现，是Oracle JDK 9以后的默认GC选项。 G1可以直观的设定停顿时间的目标，相比于CMS GC， G1未必能做到CMS在最好情况下的延时停顿，但是最差情况要好很多。
+* G1 GC仍然存在着年代的概念，但是其内存结构并不是简单的条带式划分，而是类似棋盘的一个个region。 Region之间是复制算法，但整体上实际可看作是标记-整理（MarkCompact）算法，可以有效地避免内存碎片，尤其是当Java堆非常大的时候， G1的优势更加明显。
+* G1吞吐量和停顿表现都非常不错，并且仍然在不断地完善，与此同时CMS已经在JDK 9中被标记为废弃（deprecated），所以G1 GC值得你深入掌握。
+
+#### 如何判断一个对象是否可以回收
+主要是两种基本算法， 引用计数和可达性分析
+* `引用计数算法`，顾名思义，就是为对象添加一个引用计数，用于记录对象被引用的情况，如果计数为0，即表示对象可回收。Java并没有选择引用计数，是因为其存在一个基本的难题，也就是很难处理循环引用关系。
+* `Java选择的可达性分析`， Java的各种引用关系，在某种程度上，将可达性问题还进一步复杂化,这种类型的垃圾收集通常叫作追踪性垃圾收集。其原理简单来说，就是将对象及其引用关系看作一个图，选定活动的对象作为 `GC Roots`，然后跟踪引用链条，如果一个对象和`GC Roots之间不可达`，也就是不存在引用链条，那么即可认为是可回收对象。 JVM会把虚拟机栈和本地方法栈中正在引用的`对象、静态属性引用的对象和常量，作为GC Roots`。
+
+#### 常见的垃圾收集算法
+* `复制（Copying）算法`：将活着的对象复制到to区域，拷贝过程中将对象顺序放置，就可以避免内存碎片化。这么做的代价是，既然要进行复制，既要提前预留内存空间，有一定的浪费；另外，对于G1这种分拆成为大量regio GC，复制而不是移动，意味着GC需要维护region之间对象引用关系，这个开销也不小，不管是内存占用或者时间开销。
+* `标记-清除（Mark-Sweep）算法`，首先进行标记工作，标识出所有要回收的对象，然后进行清除。这么做除了标记、清除过程效率有限，另外就是不可避免的出现碎片化问题，这就导致其不适合特别大的堆；否则，一旦出现Full GC，暂停时间可能根本无法接受。
+* `标记-整理（Mark-Compact）`，类似于标记-清除，但为避免内存碎片化，它会在清理过程中将对象移动，以确保移动后的对象占用连续的内存空间。
+
+#### 在垃圾收集的过程，对应到Eden、 Survivor、 Tenured等区域会发生什么变化呢？
+* 这实际上取决于具体的GC方式，先来熟悉一下通常的垃圾收集流程，我画了一系列示意图，希望能有助于你理解清楚这个过程。
+
+第一， Java应用不断创建对象，通常都是分配在Eden区域，当其空间占用达到一定阈值时，触发minor GC。仍然被引用的对象（绿色方块）存活下来，被复制到JVM选择的Survivor区域，而没有被引用的对象（黄色方块）则被回收。注意，我给存活对象标记了“数字1”，这是为了表明对象的存活时间。
+
+![](https://img-blog.csdnimg.cn/20190409183348554.png)
+第二， 经过一次`Minor GC`， Eden就会空闲下来，直到再次达到`Minor GC`触发条件，这时候，另外一个`Survivor`区域则会成为`to`区域， `Eden`区域的存活对象和`From`区域对象，都会被复制到`to`区域，并且存活的年龄计数会被加`1`。
+
+![](https://img-blog.csdnimg.cn/20190409183455640.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+第三， 类似第二步的过程会发生很多次，直到有对象年龄计数达到阈值，这时候就会发生所谓的晋升（Promotion）过程，如下图所示，超过阈值的对象会被晋升到老年代。
+这个阈值是可以通过参数指定：`-XX:MaxTenuringThreshold=<N>`
+![](https://img-blog.csdnimg.cn/20190409183559189.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+后面就是`老年代GC`，具体取决于选择的`GC`选项，对应不同的算法。通常我们把`老年代GC`叫作`Major GC，`将对整个`堆进行的清理`叫作`Full GC`，但是这个也没有那么绝对，因为不同的老年代GC算法其实表现差异很大，例如`CMS`， `“concurrent”`就体现在清理工作是与工作线程一起并发运行的。
+
+**JDK又增加了两种全新的GC方式，分别是：**
+* `Epsilon GC`，简单说就是个`不做垃圾收集的GC`，似乎有点奇怪，有的情况下，例如在进行性能测试的时候，可能需要明确判断GC本身产生了多大的开销，这就是其典型应用场景。
+* `ZGC`，这是Oracle开源出来的一个`超级GC`实现，具备令人惊讶的扩展能力，比如支持`T bytes级`别的堆大小，并且保证绝大部分情况下，`延迟都不会超过10 ms`。虽然目前还处于`实验阶段`，仅支持Linux 64位的平台，但其已经表现出的能力和潜力都非常令人期待。
+
+#### java内存模型中的happen-before是什么？
+* Happen-before关系，是Java内存模型中保证多线程操作可见性的机制，也是对早期语言规范中含糊的可见性概念的一个精确定义。
+* 线程内执行的每个操作，都保证happen-before后面的操作，这就保证了基本的程序顺序规则，这是开发者在书写程序时的基本约定。
+* 对于volatile变量，对它的写操作，保证happen-before在随后对该变量的读取操作。
+* 对于一个锁的解锁操作，保证happen-before加锁操作。
+* 对象构建完成，保证happen-before于fnalizer的开始动作。
+* 甚至是类似线程内部操作的完成，保证happen-before其他Thread.join()的线程等。
+* 这些happen-before关系是存在着传递性的，如果满足a happen-before b和b happen-before c，那么a happen-before c也成立。
+* JMM内部的实现通常是依赖于所谓的内存屏障，通过禁止某些重排序的方式，提供内存可见性保证，也就是实现了各种happen-before规则。与此同时，更多复杂度在于，需要尽量确保各种编译器、各种体系结构的处理器，都能够提供一致的行为。
+> `可从四个维度去理解JMM`
+* 从JVM运行时视角来看， JVM内存可分为JVM栈、本地方法栈、 PC计数器、方法区、堆；其中前三区是线程所私有的，后两者则是所有线程共有的
+*  从JVM内存功能视角来看， JVM可分为堆内存、非堆内存与其他。其中堆内存对应于上述的堆区；非堆内存对应于上述的JVM栈、本地方法栈、 PC计数器、方法区；其他则对应于直接内存
+* 从线程运行视角来看， JVM可分为主内存与线程工作内存。 Java内存模型规定了所有的变量都存储在主内存中；每个线程的工作内存保存了被该线程使用到的变量，这些变量是主内存的副本拷贝，线程对变量的所有操作（读取、赋值等）都必须在工作内存中进行，而不能直接读写主内存中的变量
+* 从垃圾回收视角来看， JVM中的堆区=新生代+老年代。新生代主要用于存放新创建的对象与存活时长小的对象，新生代=E+S1+S2；老年代则用于存放存活时间长的对象
+
+
