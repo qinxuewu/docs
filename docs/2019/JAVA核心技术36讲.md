@@ -378,12 +378,16 @@ Executors目前提供了5种不同的线程池创建配置：
 第一， Java应用不断创建对象，通常都是分配在Eden区域，当其空间占用达到一定阈值时，触发minor GC。仍然被引用的对象（绿色方块）存活下来，被复制到JVM选择的Survivor区域，而没有被引用的对象（黄色方块）则被回收。注意，我给存活对象标记了“数字1”，这是为了表明对象的存活时间。
 
 ![](https://img-blog.csdnimg.cn/20190409183348554.png)
+
 第二， 经过一次`Minor GC`， Eden就会空闲下来，直到再次达到`Minor GC`触发条件，这时候，另外一个`Survivor`区域则会成为`to`区域， `Eden`区域的存活对象和`From`区域对象，都会被复制到`to`区域，并且存活的年龄计数会被加`1`。
 
 ![](https://img-blog.csdnimg.cn/20190409183455640.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+
 第三， 类似第二步的过程会发生很多次，直到有对象年龄计数达到阈值，这时候就会发生所谓的晋升（Promotion）过程，如下图所示，超过阈值的对象会被晋升到老年代。
 这个阈值是可以通过参数指定：`-XX:MaxTenuringThreshold=<N>`
+
 ![](https://img-blog.csdnimg.cn/20190409183559189.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+
 后面就是`老年代GC`，具体取决于选择的`GC`选项，对应不同的算法。通常我们把`老年代GC`叫作`Major GC，`将对整个`堆进行的清理`叫作`Full GC`，但是这个也没有那么绝对，因为不同的老年代GC算法其实表现差异很大，例如`CMS`， `“concurrent”`就体现在清理工作是与工作线程一起并发运行的。
 
 **JDK又增加了两种全新的GC方式，分别是：**
