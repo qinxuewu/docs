@@ -94,7 +94,8 @@ Java知识学习总结+JDK源码阅读笔记
 
 ## 知识点总结
 - [多线程和JVM知识总结](2019/多线程和JVM知识总结.md)
-- [JAVA核心技术36讲](2019/JAVA核心技术36讲.md)
+- [JAVA核心技术36讲笔记](2019/JAVA核心技术36讲.md)
+- [MySQL实战45讲笔记](2019/MySQL实战45讲笔记.md)
 - [Zookeeper面试专题](其它/Zookeeper面试专题.md)
 - [redis面试专题.md](其它/redis面试.md)
 - [spring面试专题.md](其它/spring.md)
