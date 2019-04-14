@@ -226,5 +226,143 @@ insert into T values(100,1, 'aa'),(200,2,'bb'),(300,3,'cc'),(500,5,'ee'),(600,6,
 
 **为什么`RR`能实现可重复读而`RC`不能,分两种情况**
 * 快照读的情况下,rr(可重复读)不能更新事务内的up_limit_id,而`rc(读提交)`每次会把`up_limit_id`更新为快照读之前最新已提交事务的`transaction id`,则`rc(读提交)`不能可重复读
-* 当前读的情况下,`rr(可重复读)`是利用`record lock+gap lock`来实现的,而`rc(读提交)`没有gap,所以rc不能可重复读
+* 当前读的情况下,`rr(可重复读)`是利用`record lock+gap lock`来实现的,而`rc(读提交)`没有gap,所以rc不能可重复读 
+
+### MySQL为什么有时候会选错索引
+* 在MySQL中一张表其实是可以支持多个索引的。但是，你写SQL语句的时候，并没有主动指定使用哪个索引。也就是说，使用哪个索引是由MySQL来确定的。所以有时候由于MySQL选错了索引，而导致执行速度变得很慢
+
+测试代码 
+```sql
+CREATE TABLE `t` (
+  `id` int(11) NOT NULL,
+  `a` int(11) DEFAULT NULL,
+  `b` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `a` (`a`),
+  KEY `b` (`b`)
+) ENGINE=InnoDB；
+```
+然后，我们往表t中插入10万行记录，取值按整数递增，即：(1,1,1)，(2,2,2)，(3,3,3) 直到(100000,100000,100000)。
+
+分析一条SQL语句：
+```sql
+mysql> select * from t where a between 10000 and 20000;
+```
+正常情况下，a上有索引，肯定是要使用索引a的。
+
+![explain命令](https://img-blog.csdnimg.cn/20190414141306715.png)
+但是特许情况下如果同时有两个以下下操作执行：
+* 如果一个A请求首先开启了事物，随后，B请求把数据都删除后，又插入了10万行数据。
+* 这时候， B操作的查询语句`select * from t where a between 10000 and 20000`就不会再选择索引a了，会执行全表扫描，执行时间会比之前慢很多。`为什么会出现这样情况？`因为选择索引是优化器的工作，而优化器选择索引的目的，是找到一个最优的执行方案，并用最小的代价去执行语句。
+* MySQL在真正开始执行语句之前，并不能精确地知道满足这个条件的记录有多少条，而只能根据统计信息来估算记录数。这个统计信息就是索引的“`区分度`”。一个索引上不同的值越多，这个索引的区分度就越好。而一个索引上不同的值的个数，我们称之为`“基数”`（cardinality）。也就是说，这个基数越大，索引的区分度越好。
+* 可以使用`show index table`方法，看到一个索引的基数
+* MySQL是怎样得到索引的基数的呢？MySQL通过采样统计的方法得到基数
+* 如果使用索引a，每次从索引a上拿到一个值，都要回到主键索引上查出整行数据，这个代价优化器也要算进去的。而如果选择扫描10万行，是直接在主键索引上扫描的，没有额外的代价。优化器会估算这两个选择的代价，从结果看来，优化器认为直接扫描主键索引更快。当然，从执行时间看来，这个选择并不是最优的。
+* `analyze table t` 命令可以用来重新统计索引信息
+* 采用`force index`强行选择一个索引。如果force index指定的索引在候选索引列表中，就直接选择这个索引，不再评估其他索引的执行代价。
+
+
+![](https://img-blog.csdnimg.cn/20190414141504344.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+```sql
+set long_query_time=0;
+select * from t where a between 10000 and 20000; /*Q1*/
+select * from t force index(a) where a between 10000 and 20000;/*Q2*/
+
+第一句，是将慢查询日志的阈值设置为0，表示这个线程接下来的语句都会被记录入慢查询日志中；
+第二句，Q1是session B原来的查询；
+第三句，Q2是加了force index(a)来和session B原来的查询语句执行情况对比。
+```
+* delete 语句删掉了所有的数据，然后再通过call idata()插入了10万行数据，看上去是覆盖了原来的10万行。
+* 但是，session A开启了事务并没有提交，所以之前插入的10万行数据是不能删除的。这样，之前的数据每一行数据都有两个版本，旧版本是delete之前的数据，新版本是标记为deleted的数据。这样，索引a上的数据其实就有两份
+
+### 怎么给字符串字段加索引
+* 假设，你现在维护一个支持邮箱登录的系统，用户表是这么定义的：
+
+```sql
+mysql> create table SUser(
+ID bigint unsigned primary key,
+email varchar(64), 
+... 
+)engine=innodb; 
+```
+由于要使用邮箱登录，所以业务代码中一定会出现类似于这样的语句：
+```sql
+mysql> select f1, f2 from SUser where email='xxx';
+```
+* 如果email这个字段上没有索引，那么这个语句就只能做全表扫描。同时，MySQL是支持前缀索引的，也就是说，你可以定义字符串的一部分作为索引。默认地，如果你创建索引的语句不指定前缀长度，那么索引就会包含整个字符串。
+
+比如，这两个在email字段上创建索引的语句：
+```sql
+mysql> alter table SUser add index index1(email);
+或
+mysql> alter table SUser add index index2(email(6));
+```
+![inddex1索引结构](https://img-blog.csdnimg.cn/201904142351118.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+![index2索引结构](https://img-blog.csdnimg.cn/20190414235147183.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+* 第一个语句创建的index1索引里面，包含了每个记录的整个字符串；
+* 第二个语句创建的index2索引里面，对于每个记录都是只取前6个字节。由于email(6)这个索引结构中每个邮箱字段都只取前6个字节,所以占用的空间会更小，这就是使用前缀索引的优势。但是 可能会增加额外的记录扫描次数。
+
+**使用的是index1的执行流程**
+* 从`index1`索引树找到满足索引值是’zhangssxyz@xxx.com’的这条记录，取得ID2的值；
+* 到主键上查到主键值是ID2的行，判断email的值是正确的，将这行记录加入结果集；
+* 取index1索引树上刚刚查到的位置的下一条记录，发现已经不满足email='zhangssxyz@xxx.com’的条件了，循环结束
+* 这个过程中，只需要回主键索引取一次数据，所以系统认为只扫描了一行。
+
+**使用的是index2的执行流程**
+* 从`index2`索引树找到满足索引值是’zhangs’的记录，找到的第一个是ID1；
+* 到主键上查到主键值是ID1的行，判断出email的值不是’zhangssxyz@xxx.com’，这行记录丢弃；
+* 取index2上刚刚查到的位置的下一条记录，发现仍然是’zhangs’，取出ID2，再到ID索引上取整行然后判断，这次值对了，将这行记录加入结果集；
+* 重复上一步，直到在idxe2上取到的值不是’zhangs’时，循环结束。
+* 在这个过程中，要回主键索引取4次数据，也就是扫描了4行。
+* 但是  对于这个查询语句来说，如果你定义的`index2`不是email(6)而是email(7），也就是说取email字段的前7个字节来构建索引的话，即满足前缀’zhangss’的记录只有一个，也能够直接查到ID2，只扫描一行就结束了。
+* 也就是说`使用前缀索引，定义好长度，就可以做到既节省空间，又不用额外增加太多的查询成本`。
+
+**前缀索引对覆盖索引的影响**
+* 使用前缀索引可能会增加扫描行数，这会影响到性能。其实，前缀索引的影响不止如此
+
+```sql
+#查询1 
+select id,email from SUser where email='zhangssxyz@xxx.com';
+# 查询2
+select id,name,email from SUser where email='zhangssxyz@xxx.com';
+```
+* 如果使用index1（即email整个字符串的索引结构）的话，可以利用覆盖索引，从index1查到结果后直接就返回了，不需要回到ID索引再去查一次。而如果使用index2（即email(6)索引结构）的话，就不得不回到ID索引再去判断email字段的值。
+* 即使你将index2的定义修改为email(18)的前缀索引，这时候虽然index2已经包含了所有的信息，但InnoDB还是要回到id索引再查一下，因为系统并不确定前缀索引的定义是否截断了完整信息。
+* 使用前缀索引就用不上覆盖索引对查询性能的优化了
+
+#### 小结
+对于类似于邮箱这样的字段来说，使用前缀索引的效果可能还不错。但是，遇到前缀的区分度不够好的情况时。比如，我们国家的身份证号，一共18位，其中前6位是地址码，所以同一个县的人的身份证号前6位一般会是相同的。
+
+假设你维护的数据库是一个市的公民信息系统，这时候如果对身份证号做长度为6的前缀索引的话，这个索引的区分度就非常低了。可能你需要创建长度为12以上的前缀索引，才能够满足区分度要求。但是，`索引选取的越长，占用的磁盘空间就越大，相同的数据页能放下的索引值就越少，搜索的效率也就会越低`。
+
+那么，如果我们能够确定业务需求里面只有按照身份证进行等值查询的需求，还有没有别的处理方法呢？这种方法，既可以占用更小的空间，也能达到相同的查询效率。
+
+第一种方式是使用`倒序存储`。如果你存储身份证号的时候把它倒过来存，每次查询的时候，你可以这么写：
+
+```sql
+mysql> select field_list from t where id_card = reverse('input_id_card_string');
+```
+由于身份证号的最后6位没有地址码这样的重复逻辑，所以最后这6位很可能就提供了足够的区分度。
+
+第二种方式是`使用hash字段`。你可以在表上再创建一个整数字段，来保存身份证的校验码，同时在这个字段上创建索引。
+```sql
+mysql> alter table t add id_card_crc int unsigned, add index(id_card_crc);
+```
+然后每次插入新记录的时候，都同时用crc32()这个函数得到校验码填到这个新字段。由于校验码可能存在冲突，也就是说两个不同的身份证号通过crc32()函数得到的结果可能是相同的，所以你的查询语句where部分要判断id_card的值是否精确相同。
+```sql
+mysql> select field_list from t where id_card_crc=crc32('input_id_card_string') and id_card='input_id_card_string'
+```
+这样，索引的长度变成了4个字节，比原来小了很多。
+
+**使用倒序存储和使用hash字段这两种方法的异同点**
+* 首先，它们的相同点是，都不支持范围查询。
+* `从占用的额外空间来看`，倒序存储方式在主键索引上，不会消耗额外的存储空间，而hash字段方法需要增加一个字段
+* `在CPU消耗方面`，倒序方式每次写和读的时候，都需要额外调用一次reverse函数，而hash字段的方式需要额外调用一次crc32()函数
+* `从查询效率上看`，使用hash字段方式的查询性能相对更稳定一些。因为crc32算出来的值虽然有冲突的概率，但是概率非常小，可以认为每次查询的平均扫描行数接近1。而倒序存储方式毕竟还是用的前缀索引的方式，也就是说还是会增加扫描行数。
+
+**字符串字段创建索引的场景你可以使用的方式有：**
+* 直接创建完整索引，这样可能比较占用空间；
+* 创建前缀索引，节省空间，但会增加查询扫描次数，并且不能使用覆盖索引；
+* 倒序存储，再创建前缀索引，用于绕过字符串本身前缀的区分度不够的问题；
+* 创建hash字段索引，查询性能稳定，有额外的存储和计算消耗，跟第三种方式一样，都不支持范围扫描。
 
