@@ -366,3 +366,241 @@ mysql> select field_list from t where id_card_crc=crc32('input_id_card_string') 
 * 倒序存储，再创建前缀索引，用于绕过字符串本身前缀的区分度不够的问题；
 * 创建hash字段索引，查询性能稳定，有额外的存储和计算消耗，跟第三种方式一样，都不支持范围扫描。
 
+**利用学号作为登录名索引设计问题？**
+
+> 如果你在维护一个学校的学生信息数据库，学生登录名的统一格式是”学号@gmail.com", 而学号的规则是：十五位的数字，其中前三位是所在城市编号、第四到第六位是学校编号、第七位到第十位是入学年份、最后五位是顺序编号。
+系统登录的时候都需要学生输入登录名和密码，验证正确后才能继续使用系统。就只考虑登录验证这个行为的话，你会怎么设计这个登录名的索引呢？
+
+**`设计思路：`**
+* 由于这个学号的规则，无论是正向还是反向的前缀索引，重复度都比较高。因为维护的只是一个学校的，因此前面6位（其中，前三位是所在城市编号、第四到第六位是学校编号）其实是固定的，邮箱后缀都是@gamil.com，因此可以只存入学年份加顺序编号，它们的长度是9位。
+* 而其实在此基础上，可以用数字类型来存这9位数字。比如201100001，这样只需要占4个字节。其实这个就是一种hash，只是它用了最简单的转换规则：字符串转数字的规则，而刚好我们设定的这个背景，可以保证这个转换后结果的唯一性。
+
+
+### 为什么我的MySQL会“抖”一下
+* 一条SQL语句，正常执行的时候特别快，但是有时也不知道怎么回事，它就会变得特别慢，并且这样的场景很难复现，它不只随机，而且持续时间还很短。看上去，这就像是数据库“抖”了一下
+* 在MySQL里，如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程IO成本、查找成本都很高。为了解决这个问题，MySQL的设计者使用了`WAL技术`，WAL的全称是Write-Ahead Logging，它的关键点就是`先写日志，再写磁盘`。
+* 利用WAL技术，数据库将随机写转换成了顺序写，大大提升了数据库的性能。但是，由此也带来了内存脏页的问题。脏页会被后台线程自动flush，也会由于数据页淘汰而触发flush，而刷脏页的过程由于会占用资源，可能会让你的更新和查询语句的响应时间长一些
+* 当内存数据页跟磁盘数据页内容不一致的时候，我们称这个内存页为“脏页”。内存数据写入到磁盘后，内存和磁盘上的数据页的内容就一致了，称为“干净页”。
+* 平时执行很快的更新操作，其实就是在写内存和日志，而MySQL偶尔“抖”一下的那个瞬间，可能就是在刷脏页（`flush`）。
+
+**什么情况会引发数据库的flush过程呢？**
+* `InnoDB`在处理更新语句的时候，只做了写日志这一个磁盘操作。这个日志叫作redo log（重做日志）。在更新内存写完`redo log`后，就返回给客户端，本次更新成功。
+* `InnoDB`的`redo log`(重做日志)写满了。这时候系统会停止所有更新操作，把`checkpoint(检查点)`往前推进，`redo log`留出空间可以继续写
+* 第二种场景是：对应的就是系统内存不足。当需要新的内存页，而内存不够用的时候，就要淘汰一些数据页，空出内存给别的数据页使用。如果淘汰的是“脏页”，就要先将脏页写到磁盘。
+* 第三种场景就是`MySQL`认为系统`“空闲”`的时候。也要见缝插针地找时间，只要有机会就刷一点`“脏页”`
+* 第四种场景就是`MySQL正常关闭的情况`。这时候，MySQL会把内存的脏页都flush到磁盘上，这样下次MySQL启动的时候，就可以直接从磁盘上读数据，启动速度会很快。
+
+**分析一下上面四种场景对性能的影响**
+* `第一种是“redo log写满了，要flush脏页”`，这种情况是InnoDB要尽量避免的。因为出现这种情况的时候，整个系统就不能再接受更新了，所有的更新都必须堵住。如果你从监控上看，这时候更新数会跌为0。
+* `第二种是“内存不够用了，要先将脏页写到磁盘”`，这种情况其实是常态。InnoDB用缓冲池（buffer pool）管理内存，缓冲池中的内存页有三种状态：第一种是，还没有使用的；第二种是，使用了并且是干净页；第三种是，使用了并且是脏页。InnoDB的策略是尽量使用内存，因此对于一个长时间运行的库来说，未被使用的页面很少。
+* 而当要读入的数据页没有在内存的时候，就必须到缓冲池中申请一个数据页。这时候只能把最久不使用的数据页从内存中淘汰掉：如果要淘汰的是一个干净页，就直接释放出来复用；但如果是脏页呢，就必须将脏页先刷到磁盘，变成干净页后才能复用。
+* 所以，刷脏页虽然是常态，但是出现以下这两种情况，都是会明显影响性能的：一个查询要淘汰的脏页个数太多，会导致查询的响应时间明显变长；日志写满，更新全部堵住，写性能跌为0，这种情况对敏感业务来说，是不能接受的。
+
+**InnoDB刷脏页的控制策略**
+* 首先，你要正确地告诉`InnoDB`所在主机的`IO能力`，这样`InnoDB`才能知道需要全力刷脏页的时候，可以刷多快。这就要用到`innodb_io_capacity`这个参数了，它会告诉`InnoDB`你的磁盘能力。这个值我建议你设置成`磁盘的IOPS`。
+* 假设有这样一个场景：`MySQL的写入速度很慢，TPS很低`，但是数据库主机的`IO压力并不大`。主机磁盘用的是SSD，但是`innodb_io_capacity`的值设置的是`300`。于是，InnoDB认为这个系统的能力就这么差，所以刷脏页刷得特别慢，甚至比脏页生成的速度还慢，这样就造成了脏页累积，影响了查询和更新性能。
+* `InnoDB`的刷盘速度就是要参考这两个因素：一个是`脏页比例`，一个是`redo log写盘速度`。
+* 参数`innodb_max_dirty_pages_pct`是`脏页比例上限`，默认值是`75%`。InnoDB会根据当前的脏页比例（假设为M），算出一个范围在0到100之间的数字。`InnoDB`每次写入的日志`都有一个序号`，当前写入的序号跟`checkpoint`对应的序号之间的差值。我们假设为N。InnoDB会根据这个N算出一个范围在0到100之间的数字，这个计算公式可以记为F2(N)。F2(N)算法比较复杂，你只要知道N越大，算出来的值越大就好了。
+* 然后，根据上述算得的F1(M)和F2(N)两个值，取其中较大的值记为R，之后引擎就可以按照`innodb_io_capacity`定义的能力乘以`R%`来控制刷脏页的速度。
+
+![](https://img-blog.csdnimg.cn/2019041513510966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+* InnoDB会在后台刷脏页，而刷脏页的过程是要将内存页写入磁盘。所以，无论是你的查询语句在需要内存的时候可能要求淘汰一个脏页，还是由于刷脏页的逻辑会占用IO资源并可能影响到了你的更新语句，都可能是造成你从业务端感知到MySQL“抖”了一下的原因。
+* 要尽量避免这种情况，你就要合理地设置`innodb_io_capacity的值`，并且平时要多关注脏页比例，不要让它经常接近`75%`。
+
+>脏页比例是通过Innodb_buffer_pool_pages_dirty/Innodb_buffer_pool_pages_total得到的
+
+```sql
+mysql> select VARIABLE_VALUE into @a from global_status where VARIABLE_NAME = 'Innodb_buffer_pool_pages_dirty';
+select VARIABLE_VALUE into @b from global_status where VARIABLE_NAME = 'Innodb_buffer_pool_pages_total';
+select @a/@b;
+```
+* 一旦一个查询请求需要在执行过程中先flush掉一个脏页时，这个查询就可能要比平时慢了。而MySQL中的一个机制，可能让你的查询会更慢：在准备刷一个脏页的时候，如果这个数据页旁边的数据页刚好是脏页，就会把这个“邻居”也带着一起刷掉；而且这个把“邻居”拖下水的逻辑还可以继续蔓延，也就是对于每个邻居数据页，如果跟它相邻的数据页也还是脏页的话，也会被放到一起刷。
+* 在InnoDB中，`innodb_flush_neighbors` 参数就是用来控制这个行为的，`值为1`的时候会有上述的`“连坐”机制`，`值为0时`表示不找邻居，自己刷自己的。
+* 找`“邻居”`这个优化在`机械硬盘时代是很有意义`的，可以`减少很多随机IO`。机械硬盘的随机`IOPS`一般只有几百，相同的逻辑操作减少随机IO就意味着系统性能的大幅度提升。
+* 而如果使用的是`SSD这类IOPS比较高的设备`的话，我就建议你把`innodb_flush_neighbors`的值设置成0。因为这时候`IOPS`往往不是瓶颈，而`“只刷自己”`，就能更快地执行完必要的刷脏页操作，减少SQL语句响应时间。
+* 在MySQL 8.0中`，innodb_flush_neighbors参数的默认值已经是0`了。
+
+### 为什么表数据删掉一半，表文件大小不变
+* 一个InnoDB表包含两部分，即：表结构定义和数据。在MySQL 8.0版本以前，表结构是存在以.frm为后缀的文件里。
+* 表数据既可以存在共享表空间里，也可以是单独的文件。这个行为是由参数`innodb_file_per_table`控制的，设置为`OFF`表示的是，表的数据放在`系统共享表空间`，也就是跟数据字典放在一起；设置为`ON`表示的是，每个InnoDB表数据存储在一个以 `.ibd`为后缀的文件中。从`MySQL 5.6.6`版本开始，它的`默认值就是ON`了
+* 建议你不论使用MySQL的哪个版本，都将这个值设置为ON。因为，一个表单独存储为一个文件更容易管理，而且在你不需要这个表的时候，通过`drop table`命令，系统就会直接删除这个文件。而如果是放在共享表空间中，即使表删掉了，空间也是不会回收的。
+* 我们在删除整个表的时候，可以使用drop table命令回收表空间。但是，我们遇到的更多的删除数据的场景是删除某些行，表中的数据被删除了，但是表空间却没有被回收。
+
+**数据删除流程**
+
+![InnoDB中一个索引的示意图](https://img-blog.csdnimg.cn/20190416104535458.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+* 假设，我们要删掉R4这个记录，InnoDB引擎只会把R4这个记录标记为删除。如果之后要再插入一个ID在300和600之间的记录时，可能会复用这个位置。但是，磁盘文件的大小并不会缩小。
+* InnoDB的数据是按页存储的，那么如果我们删掉了一个数据页上的所有记录，整个数据页就可以被复用了。
+* 但是，数据页的复用跟记录的复用是不同的。记录的复用，只限于符合范围条件的数据，比如R4这条记录被删除后，如果插入一个ID是400的行，可以直接复用这个空间。但如果插入的是一个ID是800的行，就不能复用这个位置了。
+* 而当整个页从B+树里面摘掉以后，可以复用到任何位置。如果相邻的两个数据页利用率都很小，系统就会把这两个页上的数据合到其中一个页上，另外一个数据页就被标记为可复用。
+* 所以如果我们用delete命令把整个表的数据删除，结果就是，所有的数据页都会被标记为可复用。但是磁盘上，文件不会变小。也就是说，通过delete命令是不能回收表空间的。这些可以复用，而没有被使用的空间，看起来就像是`“空洞”`。
+* 实际上，不止是删除数据会造成空洞，插入数据也会。如果数据是按照索引递增顺序插入的，那么索引是紧凑的。但如果数据是随机插入的，就可能造成索引的数据页分裂。另外，更新索引上的值，可以理解为删除一个旧的值，再插入一个新值。不难理解，这也是会造成空洞的。
+
+**重建表**
+* 重建表就是新建一个与表A结构相同的表B，然后按照主键ID递增的顺序，把数据一行一行地从表A里读出来再插入到表B中。由于表B是新建的表，所以表A主键索引上的空洞，在表B中就都不存在了。
+* 可以使用`alter table A engine=InnoDB`命令来重建表。MySQL 5.5之后会自动完成转存数据、交换表名、删除旧表的操作。
+* 重建表的过程中，如果中途有新的数据要写入，就会造成数据丢失。所以在整个`DDL`过程中，表A中不能有更新。也就是说，这个DDL不是`Online`的。在MySQL 5.6版本开始引入的`Online DDL`，对这个操作流程做了优化。
+* 对于很大的表来说，这个操作是很消耗IO和CPU资源的。想要比较安全的操作的话，推荐使用`GitHub`开源的[gh-ost](https://github.com/github/gh-ost)来做。
+
+**MySQL执行DDL()原理**
+* `DML`：它们是SELECT、UPDATE、INSERT、DELETE，就象它的名字一样，这4条命令是用来对数据库里的数据进行操作的语言
+* `DDL`：DDL比DML要多，主要的命令有CREATE、ALTER、DROP等，DDL主要是用在定义或改变表(TABLE)的结构，数据类型，表之间的链接和约束等初始化工作上，他们大多在建立表时使用
+* `DCL`：是数据库控制功能。是用来设置或更改数据库用户或角色权限的语句
+*  MySQL各版本，对于DDL的处理方式是不同的，主要有三种：
+* `Copy Table`方式：这是InnoDB最早支持的方式。通过临时表拷贝的方式实现的。新建一个带有新结构的临时表，将原表数据全部拷贝到临时表，然后Rename，完成创建操作。这个方式过程中，`原表是可读的，不可写`。但是`会消耗一倍的存储空间`。
+* `Inplace`方式：这是原生MySQL 5.5，以及`innodb_plugin`中提供的方式。所谓Inplace，也就是在`原表上直接进行，不会拷贝临时表`。相对于Copy Table方式，这比较高效率。`原表同样可读的，但是不可写`。
+* `Online方式`：MySQL 5.6以上版本中提供的方式，无论是Copy Table方式，还是Inplace方式，`原表只能允许读取，不可写`。对应用有较大的限制，因此MySQL最新版本中，InnoDB支持了所谓的`Online方式DDL`。与以上两种方式相比，`online方式支持DDL时不仅可以读，还可以写`
+
+### count(*)语句到底是怎样实现的
+* 在不同的MySQL引擎中，count(*)有不同的实现方式。
+* `MyISAM引擎`把一个表的总行数存在了磁盘上，因此执行`count(*)`的时候会直接返回这个数，效率很高。这里讨论的是没有过滤条件的count(*)，如果加了where 条件的话，MyISAM表也是不能返回得这么快的。
+* `InnoDB引擎`就麻烦了，它执行count(*)的时候，需要把数据一行一行地从引擎里面读出来，然后累积计数。
+
+**为什么InnoDB不跟MyISAM一样，也把数字存起来呢？**
+* 这是因为即使是在同一个时刻的多个查询，由于`多版本并发控制`（MVCC）的原因，InnoDB表“应该返回多少行”也是不确定的。
+* 这和InnoDB的事务设计有关系，`可重复读是它默认的隔离级别`，在代码上就是通过多版本并发控制，也就是MVCC来实现的。每一行记录都要判断自己是否对这个会话可见，因此对于count(*)请求来说，InnoDB只好把数据一行一行地读出依次判断，可见的行才能够用于计算“基于这个查询”的表的总行数。
+* `InnoDB是索引组织表`，`主键索引树的叶子节点是数据`，而`普通索引树的叶子节点是主键值`。所以，普通索引树比主键索引树小很多。对于count(*)这样的操作，遍历哪个索引树得到的结果逻辑上都是一样的。因此，MySQL优化器会找到最小的那棵树来遍历。在保证逻辑正确的前提下，尽量减少扫描的数据量，是数据库系统设计的通用法则之一。
+* MyISAM表虽然count(*)很快，但是不支持事务；show table status命令虽然返回很快，但是不准确；InnoDB表直接count(*)会遍历全表，虽然结果准确，但会导致性能问题。
+
+### 不同的count用法
+`select count(?) from t`这样的查询语句里面，`count(*)、count(主键id)、count(字段)和count(1)`等不同用法的性能，有哪些差别。
+* count()是一个聚合函数，对于返回的结果集，一行行地判断，如果count函数的参数不是NULL，累计值就加1，否则不加。最后返回累计值。
+* 所以，count(*)、count(主键id)和count(1) 都表示返回满足条件的结果集的总行数；而count(字段），则表示返回满足条件的数据行里面，参数“字段”不为NULL的总个数。
+* `对于count(主键id)来说`，InnoDB引擎会遍历整张表，把每一行的id值都取出来，返回给server层。server层拿到id后，判断是不可能为空的，就按行累加。
+* `对于count(1)来说`，InnoDB引擎遍历整张表，但不取值。server层对于返回的每一行，放一个数字“1”进去，判断是不可能为空的，按行累加。
+* `对于count(字段)来说`：如果这个“字段”是定义为not null的话，一行行地从记录里面读出这个字段，判断不能为null，按行累加；如果这个“字段”定义允许为null，那么执行的时候，判断到有可能是null，还要把值取出来再判断一下，不是null才累加。
+* count(*)是例外：并不会把全部字段取出来，而是专门做了优化，不取值。count(*)肯定不是null，按行累加。
+* 所以结论是：按照效率排序的话，count(字段)<count(主键id)<count(1)≈count(*)，所以我建议你，尽量使用count(*)。
+
+### order by是怎么工作的
+首先创建一个测试表  `t_city`
+```sql
+CREATE TABLE `t_city` (
+  `id` int(11) NOT NULL,
+  `city` varchar(16) NOT NULL,
+  `name` varchar(16) NOT NULL,
+  `age` int(11) NOT NULL,
+  `addr` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `city` (`city`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
+使用存储过程 添加10W条测试数据
+
+```sql
+delimiter ;;
+create procedure idata2()
+begin
+  declare i int;
+  set i=1;
+  while(i<=10000)do
+    insert into t_city values(i,'广州', i,i,i);
+    set i=i+1;
+  end while;
+end;;
+delimiter ;
+call idata2();
+```
+比如有如下sql语句，为避免全表扫描，已经在city字段加上索引
+
+```sql
+select city,name,age from t_city where city='广州' order by name limit 1000;
+```
+这个语句看上去逻辑很清晰， 那吗数据库内部到底是怎样执行的了？
+
+首先先用`explain`看看执行计划
+
+```sql
+explain select city,name,age from t_city where city='广州' order by name limit 1000;
+```
+![](https://img-blog.csdnimg.cn/20190416172638203.png)
+**先看下个执行计划各参数的含义：**
+* `select_type`：显 示查询中每个select子句的类型
+* `table`： 显示这一行的数据是关于哪张表的，有时不是真实的表名字
+* `type`：在表中找到所需行的方式，又称“访问类型”。常用的类型有： ALL, index,  range, ref, eq_ref, const, system, NULL（从左到右，性能从差到好）
+* `possible_keys`：指出MySQL能使用哪个索引在表中找到记录，查询涉及到的字段上若存在索引，则该索引将被列出，但不一定被查询使用
+* `Key`：key列显示MySQL实际决定使用的键（索引）
+* `key_len`：表示索引中使用的字节数，可通过该列计算查询中使用的索引的长度，key_len显示的值为索引字段的最大可能长度，并非实际使用长度，不损失精确性的情况下，长度越短越好 
+* `ref`：表示上述表的连接匹配条件，即哪些列或常量被用于查找索引列上的值
+* `rows`： 表示MySQL根据表统计信息及索引选用情况，估算的找到所需的记录所需要读取的行数
+* `Extra`：该列包含MySQL解决查询的详细信息。Extra这个字段中的`“Using filesort”表示的就是需要排序`，MySQL会给每个线程分配一块内存用于排序，称为`sort_buffer`。
+
+![全字段排序](https://img-blog.csdnimg.cn/20190416174643103.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+
+* 按name排序”这个动作，可能在内存中完成，也可能需要使用外部排序，这取决于排序所需的内存和参数`sort_buffer_size`。
+* `sort_buffer_size`就是MySQL为排序开辟的内存（`sort_buffer`）的大小。如果要排序的数据量小于sort_buffer_size，排序就在内存中完成。但如果排序数据量太大，内存放不下，则不得不利用磁盘临时文件辅助排序。
+
+>确定一个排序语句是否使用了临时文件
+
+```sql
+/* 打开optimizer_trace，只对本线程有效 */
+SET optimizer_trace='enabled=on'; 
+
+/* @a保存Innodb_rows_read的初始值 */
+select VARIABLE_VALUE into @a from  performance_schema.session_status where variable_name = 'Innodb_rows_read';
+
+/* 执行语句 */
+select city, name,age from t where city='杭州' order by name limit 1000; 
+
+/* 查看 OPTIMIZER_TRACE 输出 */
+SELECT * FROM `information_schema`.`OPTIMIZER_TRACE`
+
+/* @b保存Innodb_rows_read的当前值 */
+select VARIABLE_VALUE into @b from performance_schema.session_status where variable_name = 'Innodb_rows_read';
+
+/* 计算Innodb_rows_read差值 */
+select @b-@a;
+```
+这个方法是通过查看 OPTIMIZER_TRACE 的结果来确认的，你可以从 number_of_tmp_files中看到是否使用了临时文件。
+
+![](https://img-blog.csdnimg.cn/2019041617592518.png)
+* `number_of_tmp_files`表示的是，排序过程中使用的临时文件数。内存放不下时，就需要使用外部排序，外部排序一般使用归并排序算法。，MySQL将需要排序的数据分成12份，每一份单独排序后存在这些临时文件中。然后把这12个有序文件再合并成一个有序的大文件。
+* 如果`sort_buffer_size`超过了需要排序的数据量的大小，`number_of_tmp_files`就是0，表示排序可以直接在内存中完成。否则就需要放在临时文件中排序。
+* `sort_buffer_size`越小，需要分成的份数越多，`number_of_tmp_files`的值就越大。
+* `sort_mode` 里面的`packed_additional_fields`的意思是，排序过程对字符串做了`“紧凑”`处理。即使name字段的定义是varchar(16)，在排序过程中还是要按照实际长度来分配空间的。
+* 同时，最后一个查询语句select @b-@a 的返回结果是4000，表示整个执行过程只扫描了4000行。
+* 这里需要注意的是，为了避免对结论造成干扰，我把internal_tmp_disk_storage_engine设置成MyISAM。否则，select @b-@a的结果会大于4000
+* 在上面这个算法过程里面，只对原表的数据读了一遍，剩下的操作都是在sort_buffer和临时文件中执行的。但这个算法有一个问题，就是如果查询要返回的字段很多的话，那么sort_buffer里面要放的字段数太多，这样内存里能够同时放下的行数很少，要分成很多个临时文件，排序的性能会很差。
+
+**如果MySQL认为排序的单行长度太大会怎么做呢？**
+* `max_length_for_sort_data`，是MySQL中专门控制用于排序的行数据的长度的一个参数。它的意思是，如果单行的长度超过这个值，MySQL就认为单行太大，要换一个算法。
+
+### 如何正确地显示随机消息
+从一个单词表中随机选出三个单词
+
+创建测试表
+
+```sql
+ CREATE TABLE `words` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `word` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+```
+添加测试数据
+
+```sql
+delimiter ;;
+create procedure idata3()
+begin
+  declare i int;
+  set i=0;
+  while i<10000 do
+    insert into words(word) values(concat(char(97+(i div 1000)), char(97+(i % 1000 div 100)), char(97+(i % 100 div 10)), char(97+(i % 10))));
+    set i=i+1;
+  end while;
+end;;
+delimiter ;
+
+call idata3();
+```
+**首先，会想到用order by rand()来实现这个逻辑**
+
+```sql
+EXPLAIN select word from words order by rand() limit 3;
+```
+![](https://img-blog.csdnimg.cn/20190416182846114.png)
+* Extra字段显示`Using temporary`，表示的是需要使用临时表；`Using filesort`，表示的是需要执行排序操作。因此这个Extra的意思就是，需要临时表，并且需要在临时表上排序
+* order by rand()使用了内存临时表，内存临时表排序的时候使用了rowid排序方法。
+* tmp_table_size这个配置限制了内存临时表的大小，默认值是16M。如果临时表大小超过了tmp_table_size，那么内存临时表就会转成磁盘临时表。
+* 磁盘临时表使用的引擎默认是InnoDB，是由参数internal_tmp_disk_storage_engine控制的。当使用磁盘临时表的时候，对应的就是一个没有显式索引的InnoDB表的排序过程。
