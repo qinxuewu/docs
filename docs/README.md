@@ -109,3 +109,4 @@ Java知识学习总结+JDK源码阅读笔记
 - [Git的奇技淫巧](https://github.com/521xueweihan/git-tips)
 - [图解LeetCode](https://github.com/ZXZxin/ZXBlog/blob/master/%E5%88%B7%E9%A2%98/LeetCode/LeetCodeSolutionIndex.md)
 - [图解剑指Offer](https://github.com/ZXZxin/ZXBlog/tree/master/%E5%88%B7%E9%A2%98/Other/%E5%89%91%E6%8C%87Offer)
+- [互联网Java工程师进阶知识完全扫盲](https://github.com/doocs/advanced-java)
