@@ -604,3 +604,105 @@ EXPLAIN select word from words order by rand() limit 3;
 * order by rand()使用了内存临时表，内存临时表排序的时候使用了rowid排序方法。
 * tmp_table_size这个配置限制了内存临时表的大小，默认值是16M。如果临时表大小超过了tmp_table_size，那么内存临时表就会转成磁盘临时表。
 * 磁盘临时表使用的引擎默认是InnoDB，是由参数internal_tmp_disk_storage_engine控制的。当使用磁盘临时表的时候，对应的就是一个没有显式索引的InnoDB表的排序过程。
+
+### 幻读是什么，幻读有什么问题
+* 幻读指的是一个事务在前后两次查询同一个范围的时候，后一次查询看到了前一次查询没有看到的行。
+* 在可重复读隔离级别下，普通的查询是快照读，是不会看到别的事务插入的数据的。因此，幻读在“当前读”下才会出现。
+
+**创建测试数据**
+```sqll
+CREATE TABLE `t` (
+  `id` int(11) NOT NULL,
+  `c` int(11) DEFAULT NULL,
+  `d` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `c` (`c`)
+) ENGINE=InnoDB;
+
+insert into t values(0,0,0),(5,5,5),
+(10,10,10),(15,15,15),(20,20,20),(25,25,25);
+```
+**下面的语句序列，是怎么加锁的，加的锁又是什么时候释放的呢？**
+
+```sql
+begin;
+select * from t where d=5 for update;
+commit;
+```
+* 这个语句会命中d=5的这一行，对应的主键id=5，因此在select 语句执行完成后，id=5这一行会加一个写锁，而且由于两阶段锁协议，这个写锁会在执行commit语句的时候释放。
+* 由于字段d上没有索引，因此这条查询语句会做全表扫描。那么，其他被扫描到的，但是不满足条件的5行记录上，会不会被加锁呢？
+
+![](https://img-blog.csdnimg.cn/20190418165218311.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+* 可以看到，session A里执行了三次查询，分别是Q1、Q2和Q3。它们的SQL语句相同，都是select * from t where d=5 for update。这个语句的意思你应该很清楚了，查所有d=5的行，而且使用的是当前读，并且加上写锁
+
+**图中SQL执行流程**
+* Q1只返回id=5这一行；
+* 在T2时刻，session B把id=0这一行的d值改成了5，因此T3时刻Q2查出来的是id=0和id=5这两行；
+* 在T4时刻，session C又插入一行（1,1,5），因此T5时刻Q3查出来的是id=0、id=1和id=5的这三行。
+* 其中，Q3读到id=1这一行的现象，被称为`“幻读”`。
+* 在`可重复读`(InnoDB的默认)隔离级别下，普通的查询是快照读，是不会看到别的事务插入的数据的。因此，`幻读在“当前读”下才会出现。`
+* 上面session B的修改结果，被session A之后的select语句用“当前读”看到，不能称为幻读。幻读仅专指“新插入的行”
+
+从事务可见性规则来分析的话，上面这三条SQL语句的返回结果都没有问题。因为这三个查询都是加了for update，都是当前读。而当前读的规则，就是要能读到所有已经提交的记录的最新值。并且，session B和sessionC的两条语句，执行后就会提交，所以Q2和Q3就是应该看到这两个事务的操作效果，而且也看到了，这跟事务的可见性规则并不矛盾。但是，这是不是真的没问题呢？
+
+**幻读有什么问题？**
+* 首先是语义上的。session A在T1时刻就声明了，“我要把所有d=5的行锁住，不准别的事务进行读写操作”。而实际上，这个语义被破坏了。
+
+**其次，是数据一致性的问题。**
+* 我们知道，锁的设计是为了保证数据的一致性。而这个一致性，不止是数据库内部数据状态在此刻的一致性，还包含了数据和日志在逻辑上的一致性
+* 为了说明这个问题，我给session A在T1时刻再加一个更新语句，即：update t set d=100 where d=5。
+![](https://img-blog.csdnimg.cn/20190418171046246.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+**上面的执行流程**
+* 经过T1时刻，id=5这一行变成 (5,5,100)，当然这个结果最终是在T6时刻正式提交的;
+* 经过T2时刻，id=0这一行变成(0,5,5);
+* 经过T4时刻，表里面多了一行(1,5,5);
+
+这样看，这些数据也没啥问题，但是我们再来看看这时候binlog里面的内容。
+* T2时刻，session B事务提交，写入了两条语句；
+* T4时刻，session C事务提交，写入了两条语句；
+* T6时刻，session A事务提交，写入了update t set d=100 where d=5 这条语句。
+
+放到一起的话，就是这样的：
+```sql
+update t set d=5 where id=0; /*(0,0,5)*/
+update t set c=5 where id=0; /*(0,5,5)*/
+
+insert into t values(1,1,5); /*(1,1,5)*/
+update t set c=5 where id=1; /*(1,5,5)*/
+
+update t set d=100 where d=5;/*所有d=5的行，d改成100*/
+```
+>这个语句序列，不论是拿到备库去执行，还是以后用binlog来克隆一个库，这三行的结果，都变成了 (0,5,100)、(1,5,100)和(5,5,100)。也就是说，id=0和id=1这两行，发生了数据不一致。这个问题很严重，是不行的。
+
+**如何解决幻读？**
+* 产生幻读的原因是，行锁只能锁住行，但是新插入记录这个动作，要更新的是记录之间的“间隙”。因此，为了解决幻读问题，InnoDB只好引入新的锁，也就是间隙锁(Gap Lock)。
+* 间隙锁，锁的就是两个值之间的空隙。比如文章开头的表t，初始化插入了6个记录，这就产生了7个间隙。
+* 这样，当你执行 select * from t where d=5 for update的时候，就不止是给数据库中已有的6个记录加上了行锁，还同时加了7个间隙锁。这样就确保了无法再插入新的记录。
+* 也就是说这时候，在一行行扫描的过程中，不仅将给行加上了行锁，还给行两边的空隙，也加上了间隙锁。
+* 间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作。间隙锁之间都不存在冲突关系。
+* 间隙锁和next-key lock的引入，帮我们解决了幻读的问题，但同时也带来了一些“困扰”
+
+>比如现在有这样一个场景 业务逻辑这样的：任意锁住一行，如果这一行不存在的话就插入，如果存在这一行就更新它的数据，代码如下：
+
+```sql
+begin;
+select * from t where id=N for update;
+
+/*如果行不存在*/
+insert into t values(N,N,N);
+/*如果行存在*/
+update t set d=N set id=N;
+
+commit;
+```
+> 可能你会说，这个不是`insert ... on duplicate key update` 就能解决吗？但其实在有多个唯一键的时候,这个方法是不能满足要求的。这个逻辑一旦有并发，就会碰到死锁。你一定也觉得奇怪，这个逻辑每次操作前用for update锁起来，已经是最严格的模式了，怎么还会有死锁呢？
+
+![间隙锁导致的死锁](https://img-blog.csdnimg.cn/20190418172853342.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAzOTEzNDI=,size_16,color_FFFFFF,t_70)
+你看到了，其实都不需要用到后面的update语句，就已经形成死锁了。我们按语句执行顺序来分析一下：
+* session A 执行select ... for update语句，由于id=9这一行并不存在，因此会加上间隙锁(5,10);
+* session B 执行select ... for update语句，同样会加上间隙锁(5,10)，间隙锁之间不会冲突，因此这个语句可以执行成功；
+* session B 试图插入一行(9,9,9)，被session A的间隙锁挡住了，只好进入等待；
+* session A试图插入一行(9,9,9)，被session B的间隙锁挡住了。
+* 至此，两个session进入互相等待状态，形成死锁。当然，InnoDB的死锁检测马上就发现了这对死锁关系，让session A的insert语句报错返回了。
+
+> `间隙锁是在可重复读隔离级别下才会生效的`。所以，你如果把隔离级别设置为读提交的话，就没有间隙锁了。但同时，你要解决可能出现的数据和日志不一致问题，需要把`binlog`格式设置为row。这，也是现在不少公司使用的配置组合。
