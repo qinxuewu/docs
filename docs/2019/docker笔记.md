@@ -76,6 +76,24 @@ $ sudo rm -rf /var/lib/docker
 [root@izadux3fzjykx7z ~] $ docker run --name elasticsearch -d -e ES_JAVA_OPTS="-Xms214m -Xmx214m" -p 9200:9200 -p 9300:9300 elasticsearch:6.5.0
 ```
 
+## 删除 Docker CE
+```
+$ sudo yum remove docker-ce
+$ sudo rm -rf /var/lib/docker
+```
+## Docker常用命令
+
+列出本地镜像: docker images
+```
+docker images -a :列出本地所有的镜像（含中间映像层，默认情况下，过滤掉中间映像层）；
+docker images  --digests :显示镜像的摘要信息；
+docker images -f :显示满足条件的镜像；
+docker images --format :指定返回值的模板文件；
+docker images --no-trunc :显示完整的镜像信息；
+docker images  -q :只显示镜像ID。
+```
+
+
 ## 参考地址
 * Docker中文网站 https://www.docker-cn.com/
 * Docker安装手册：https://docs.docker-cn.com/engine/installation/
