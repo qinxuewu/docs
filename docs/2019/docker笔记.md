@@ -56,31 +56,6 @@ $ sudo rm -rf /var/lib/docker
 
 ```
 
-## 使用docker安装ElasticSearch
-搜索镜像
-```bash
-[root@izadux3fzjykx7z ~]$ docker search elasticsearch
-```
-拉取镜像
-
-```bash
-[root@izadux3fzjykx7z ~]$ docker pull elasticsearch:6.5.0
-```
-查看镜像
-```bash
-[root@izadux3fzjykx7z ~]$  docker images
-```
-启动一个ElasticSearch容器
-
-```bash
-[root@izadux3fzjykx7z ~] $ docker run --name elasticsearch -d -e ES_JAVA_OPTS="-Xms214m -Xmx214m" -p 9200:9200 -p 9300:9300 elasticsearch:6.5.0
-```
-
-## 删除 Docker CE
-```
-$ sudo yum remove docker-ce
-$ sudo rm -rf /var/lib/docker
-```
 ## Docker常用命令
 
 列出本地镜像: docker images
@@ -92,6 +67,25 @@ docker images --format :指定返回值的模板文件；
 docker images --no-trunc :显示完整的镜像信息；
 docker images  -q :只显示镜像ID。
 ```
+
+
+
+## 使用docker安装ElasticSearch
+
+```bash
+#搜索镜像
+[root@izadux3fzjykx7z ~]$ docker search elasticsearch
+
+#拉取镜像
+[root@izadux3fzjykx7z ~]$ docker pull elasticsearch:6.5.0
+```
+启动一个ElasticSearch容器
+
+```bash
+[root@izadux3fzjykx7z ~] $ docker run --name elasticsearch -d -e ES_JAVA_OPTS="-Xms214m -Xmx214m" -p 9200:9200 -p 9300:9300 elasticsearch:6.5.0
+```
+
+
 
 
 ## 参考地址
