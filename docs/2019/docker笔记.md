@@ -1,4 +1,3 @@
-[TOC]
 
 ## 概述
  - Docker 运行在 CentOS 7 上，要求系统为64位、系统内核版本为 3.10 以上。
@@ -622,6 +621,65 @@ redis-server --appendonly yes : 在容器执行redis-server启动命令，并打
 # 进入redis命令行
 $ docker exec -it 容器id redis-cli
 ```
+## Docker三剑客一之 Compose 
+* Compose 项目是 Docker 官方的开源项目，负责实现对 Docker 容器集群的快速编排
+
+**Compose 中有两个重要的概念：**
+* 服务 (service)：一个应用的容器，实际上可以包括若干运行相同镜像的容器实例。
+* 项目 (project)：由一组关联的应用容器组成的一个完整业务单元，在 docker-compose.yml 文件中定义。
+
+**安装与卸载**
+* Compose 支持 Linux、macOS、Windows 10 三大平台
+* Compose 可以通过 Python 的包管理工具 pip 进行安装，也可以直接下载编译好的二进制文件使用，甚至能够直接在 Docker 容器中运行。
+
+```bash
+#  二进制安装
+$ sudo curl -L https://github.com/docker/compose/releases/download/1.17.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
+# 卸载命令
+$ sudo rm /usr/local/bin/docker-compose
+
+# 容器中执行
+$ curl -L https://github.com/docker/compose/releases/download/1.8.0/run.sh > /usr/local/bin/docker-compose
+$ chmod +x /usr/local/bin/docker-compose
+
+[root@izadux3fzjykx7z bin]# docker-compose --version
+docker-compose version 1.8.0, build f3628c7
+```
+**常用命令**
+
+```bash
+build
+格式为 docker-compose build [options] [SERVICE...]。
+--force-rm 删除构建过程中的临时容器。
+--no-cache 构建镜像过程中不使用 cache（这将加长构建过程）。
+--pull 始终尝试通过 pull 来获取更新版本的镜像。
+
+config:验证 Compose 文件格式是否正确，若正确则显示配置，若格式错误显示错误原因。
+down:此命令将会停止 up 命令所启动的容器，并移除网络
+exec :进入指定的容器
+images :列出 Compose 文件中包含的镜像
+help:获得一个命令的帮助
+images:列出 Compose 文件中包含的镜像
+kill:通过发送 SIGKILL 信号来强制停止服务容器
+logs: 查看服务容器的输出
+pause: 暂停一个服务容器。
+port:打印某个容器端口所映射的公共端口。
+ps:列出项目中目前的所有容器。
+pull:拉取服务依赖的镜像
+push:推送服务依赖的镜像到 Docker 镜像仓库
+restart: 重启项目中的服务。
+rm:删除所有（停止状态的）服务容器。推荐先执行 docker-compose stop 命令来停止容器
+run: 在指定服务上执行一个命令。
+scale: 设置指定服务运行的容器个数  docker-compose scale web=3 db=2 将启动 3 个容器运行 web 服务，2 个容器运行 db 服务。
+start:启动已经存在的服务容器
+stop:停止已经处于运行状态的容器
+top:查看各个服务容器内运行的进程。
+unpause:恢复处于暂停状态中的服务。
+up:它将尝试自动完成包括构建镜像，（重新）创建服务，启动服务，并关联服务相关容器的一系列操作。如果使用 docker-compose up -d，将会在后台启动并运行所有的容器。一般推荐生产环境下使用该选项
+version:打印版本信息。
+```
+**Compose 模板文件**
 
 ## 参考
 * Docker安装手册：https://docs.docker-cn.com/engine/installation/
