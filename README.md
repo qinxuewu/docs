@@ -118,4 +118,5 @@ https://a870439570.github.io/interview-docs
 - [图解剑指Offer](docs/https://github.com/ZXZxin/ZXBlog/tree/master/%E5%88%B7%E9%A2%98/Other/%E5%89%91%E6%8C%87Offer)
 - [互联网Java工程师进阶知识完全扫盲](https://github.com/doocs/advanced-java)
 - [pandownload百度网盘不限速下载](http://pandownload.com/index.html)
+- [ZXBlog记录各种学习笔记(算法、Java、数据库、并发)](https://github.com/ZXZxin/ZXBlog)
 
