@@ -114,7 +114,7 @@ https://a870439570.github.io/interview-docs
 - [Linux服务命令](docs/其它/Linxu服务命令.md)
 - [PMP备考练习题](docs/2019/PMP练习题.md)
 - [Docker学习笔记](docs/2019/docker笔记.md)
-- [Git的奇技淫巧](docs/https://github.com/521xueweihan/git-tips)
+- [Git的奇技淫巧](https://github.com/521xueweihan/git-tips)
 - [图解剑指Offer](docs/https://github.com/ZXZxin/ZXBlog/tree/master/%E5%88%B7%E9%A2%98/Other/%E5%89%91%E6%8C%87Offer)
 - [互联网Java工程师进阶知识完全扫盲](https://github.com/doocs/advanced-java)
 - [pandownload百度网盘不限速下载](http://pandownload.com/index.html)
