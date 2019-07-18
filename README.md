@@ -65,6 +65,8 @@ https://a870439570.github.io/interview-docs
 - [Netty入门(二)TCP粘包与拆包问题处理](https://blog.csdn.net/u010391342/article/details/83011294)
 - [基于Zookeeper实现分布式锁和队列](https://blog.csdn.net/u010391342/article/details/82192933)
 - [ElasticSearch本地快速搭建与使用](https://blog.csdn.net/u010391342/article/details/82117389)
+- [Netty集成protobuf与多协议消息传递](https://myblog.qinxuewu.club/index.php/archives/119.html)
+- [Apache Thrift学习笔记:入门实例](https://myblog.qinxuewu.club/index.php/archives/121.html)
 
 
 ## 设计模式
@@ -120,4 +122,5 @@ https://a870439570.github.io/interview-docs
 - [pandownload百度网盘不限速下载](http://pandownload.com/index.html)
 - [ZXBlog记录各种学习笔记(算法、Java、数据库、并发)](https://github.com/ZXZxin/ZXBlog)
 - [中文社区文档ibooker](https://www.ibooker.org.cn/docs/)
+- [Gradle In Action(Gradle实战)中文版](https://lippiouyang.gitbooks.io/gradle-in-action-cn/content/)
 
