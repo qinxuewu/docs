@@ -30,16 +30,15 @@ Java知识学习总结+JDK源码阅读笔记
 - [(深入理解JUC)分析CountDownLatch源码](2019/分析CountDownLatch源码.md)
 - [(深入理解JUC)分析CyclicBarrier同步屏障源码](2019/CyclicBarrier.md)
 - [(深入理解JUC)分析Semaphore信号量源码](2019/Semaphore.md)
-- [(深入理解JUC)ThreadLocal源码](https://blog.qinxuewu.club/2019/03/28/java/shen-ru-li-jie-threadlocal-yuan-ma)
 - [(深入理解JUC)ConcurrentLinkedQueue源码](https://blog.qinxuewu.club/2019/03/29/java/shen-ru-li-jie-concurrentlinkedqueue-yuan-ma)
-- [volatile的内存语义](https://blog.qinxuewu.club/2019/04/05/java/volatile-de-nei-cun-yu-yi)
+- [volatile的内存语义](https://blog.csdn.net/u010391342/article/details/89042895)
 
 
 
 ## SpringBoot/SpringCloud/Spring
 - [SpringBoot2集成Sharding-JDBC实现分库分表](2019/SpringBoot2集成Sharding-JDBC实现分库分表.md)
 - [SpringBoot自定义一个starter](2019/SpringBoot自定义一个starter.md  )
-- [SpringBoot集成prometheus+Grafana监控](https://blog.qinxuewu.club/2019/04/02/spring-xi-lie/springboot-ji-cheng-prometheus-grafana-jian-kong)
+- [SpringBoot集成prometheus+Grafana监控](https://blog.csdn.net/u010391342/article/details/88970133)
 - [SpringBoot Admin监控集成](Spring/SpringBootAdmin.md)
 - [SpringBoot集成ElasticSearch6.2版本](https://blog.csdn.net/u010391342/article/details/82153709)
 - [SpringBoot集成Kafka](https://blog.csdn.net/u010391342/article/details/81430402)
