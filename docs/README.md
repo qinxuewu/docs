@@ -22,7 +22,7 @@ Java知识学习总结+JDK源码阅读笔记
 
 
 
-## JAVA 
+## JAVA基础
 - [深入理解JVM](2019/深入理解JVM.md)
 - [jvm监控命令](JVM/jvm监控命令.md)
 - [(深入理解JUC)什么是AQS队列同步器](https://blog.csdn.net/u010391342/article/details/88657920)
@@ -56,9 +56,11 @@ Java知识学习总结+JDK源码阅读笔记
 - [ELK分布式日志平台搭建](https://blog.csdn.net/u010391342/article/details/82895385)
 - [Netty入门(一)HelloWorld程序编写](https://blog.csdn.net/u010391342/article/details/83011198)
 - [Netty入门(二)TCP粘包与拆包问题处理](https://blog.csdn.net/u010391342/article/details/83011294)
+- [Netty入门(三)Netty集成protobuf与多协议消息传递](2019/Netty集成protobuf与多协议消息传递.md)
 - [基于Zookeeper实现分布式锁和队列](https://blog.csdn.net/u010391342/article/details/82192933)
 - [ElasticSearch本地快速搭建与使用](https://blog.csdn.net/u010391342/article/details/82117389)
-
+- [Apache Thrift安装配置及入门实例](2019/Thrift安装配置及入门实例.md)
+- [grpc快速入门](2019/grpc快速入门.md)
 
 ## 设计模式
 - [创建型模式](2019/创建型模式.md)
@@ -113,3 +115,6 @@ Java知识学习总结+JDK源码阅读笔记
 - [图解剑指Offer](https://github.com/ZXZxin/ZXBlog/tree/master/%E5%88%B7%E9%A2%98/Other/%E5%89%91%E6%8C%87Offer)
 - [互联网Java工程师进阶知识完全扫盲](https://github.com/doocs/advanced-java)
 - [pandownload百度网盘不限速下载](http://pandownload.com/index.html)
+
+## Golang学习笔记
+- [【从零开始学Go】使用goquery爬取影视资源网站](golang/使用goquery爬取影视资源网站.md)
