@@ -18,13 +18,13 @@ Java知识学习总结+JDK源码阅读笔记
 
 ## 开源小项目
 
-- [boot-actuator](https://github.com/a870439570/boot-actuator):   基于Spring Boot 实现的监控远程服务器多个Java应用JVM性能图形化工具
-- [blog-sharon](https://github.com/a870439570/blog-sharon):   一款简单微信小程序个人博客
-- [Mongodb-WeAdmin](https://github.com/a870439570/Mongodb-WeAdmin):  SpringBoot版Mongodb工具
+- [boot-actuator](https://github.com/qinxuewu/boot-actuator):   基于Spring Boot 实现的监控远程服务器多个Java应用JVM性能图形化工具
+- [blog-sharon](https://github.com/qinxuewu/blog-sharon):   一款简单微信小程序个人博客
+- [Mongodb-WeAdmin](https://github.com/qinxuewu/Mongodb-WeAdmin):  SpringBoot版Mongodb工具
 
 
 # 快速访问
-https://a870439570.github.io/interview-docs
+https://qinxuewu.github.io/interview-docs
 
 
 
