@@ -10,15 +10,13 @@ Java知识学习总结+JDK源码阅读笔记
 
 - email:  870439570@qq.com
 - CSDN: https://blog.csdn.net/u010391342
-- 简书: https://www.jianshu.com/u/65eeb288a0d9
-- 掘金: https://juejin.im/user/5a289b556fb9a0450e760117
-- 个人博客：https://blog.qinxuewu.club
+- 个人博客：https://qinxuewu.github.io/
 
 ## 开源小项目
 
-- [boot-actuator](https://github.com/a870439570/boot-actuator):   基于Spring Boot 实现的监控远程服务器多个Java应用JVM性能图形化工具
-- [blog-sharon](https://github.com/a870439570/blog-sharon):   一款简单微信小程序个人博客
-- [Mongodb-WeAdmin](https://github.com/a870439570/Mongodb-WeAdmin):  SpringBoot版Mongodb工具
+- [boot-actuator](https://github.com/qinxuewu/boot-actuator):   基于Spring Boot 实现的监控远程服务器多个Java应用JVM性能图形化工具
+- [blog-sharon](https://github.com/qinxuewu/blog-sharon):   一款简单微信小程序个人博客
+- [Mongodb-WeAdmin](https://github.com/qinxuewu/Mongodb-WeAdmin):  SpringBoot版Mongodb工具
 
 
 
@@ -30,7 +28,7 @@ Java知识学习总结+JDK源码阅读笔记
 - [(深入理解JUC)分析CountDownLatch源码](2019/分析CountDownLatch源码.md)
 - [(深入理解JUC)分析CyclicBarrier同步屏障源码](2019/CyclicBarrier.md)
 - [(深入理解JUC)分析Semaphore信号量源码](2019/Semaphore.md)
-- [(深入理解JUC)ConcurrentLinkedQueue源码](https://blog.qinxuewu.club/2019/03/29/java/shen-ru-li-jie-concurrentlinkedqueue-yuan-ma)
+- [(深入理解JUC)ConcurrentLinkedQueue源码](https://blog.csdn.net/u010391342/article/details/88856530)
 - [volatile的内存语义](https://blog.csdn.net/u010391342/article/details/89042895)
 
 
