@@ -34,12 +34,13 @@ Java知识学习总结+JDK源码阅读笔记
 
 
 ## SpringBoot/SpringCloud/Spring
-- [SpringBoot2集成Sharding-JDBC实现分库分表](2019/SpringBoot2集成Sharding-JDBC实现分库分表.md)
+- [SpringBoot集成Sharding-JDBC实现分库分表](2019/SpringBoot2集成Sharding-JDBC实现分库分表.md)
 - [SpringBoot自定义一个starter](2019/SpringBoot自定义一个starter.md  )
 - [SpringBoot集成prometheus+Grafana监控](https://blog.csdn.net/u010391342/article/details/88970133)
 - [SpringBoot Admin监控集成](Spring/SpringBootAdmin.md)
 - [SpringBoot集成ElasticSearch6.2版本](https://blog.csdn.net/u010391342/article/details/82153709)
 - [SpringBoot集成Kafka](https://blog.csdn.net/u010391342/article/details/81430402)
+- [SpringBoot集成Zookeeper](2019/SpringBoot集成Zookeeper.md)
 - [SpringCloud集成eureka注册中心访问权限](https://blog.csdn.net/u010391342/article/details/83086519)
 - [SpringCloud集成Consul实现服务注册中心](https://blog.csdn.net/u010391342/article/details/83082801)
 - [SpringCloud服务链路追踪](Spring/Springcloud服务链路追踪.md)
