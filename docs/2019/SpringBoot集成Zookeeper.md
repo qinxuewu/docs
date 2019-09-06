@@ -1,8 +1,8 @@
- [Zookeeper 伪集群安装部署操作](https://blog.csdn.net/u010391342/article/details/81671239) 
-[Java操作Zookeeper实现分布式锁和队列](https://blog.csdn.net/u010391342/article/details/82192933)
+- [Zookeeper 伪集群安装部署操作](https://blog.csdn.net/u010391342/article/details/81671239) 
+- [Java操作Zookeeper实现分布式锁和队列](https://blog.csdn.net/u010391342/article/details/82192933)
 
 
-@[toc]
+
 ### 分布式事物
 - 分布式事务是指事务的参与者，支持事务的服务器，资源服务器分别位于分布式系统的不同节点之上，通常一个分布式事物中会涉及到对多个数据源或业务系统的操作。
 - 典型的分布式事务场景：跨银行转操作就涉及调用两个异地银行服务
