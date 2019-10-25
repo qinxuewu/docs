@@ -23,7 +23,7 @@ Java知识学习总结+JDK源码阅读笔记
 - [Mongodb-WeAdmin](https://github.com/qinxuewu/Mongodb-WeAdmin):  SpringBoot版Mongodb工具
 
 
-# 快速访问
+# 快速访问更多
 https://qinxuewu.github.io/interview-docs
 
 
@@ -59,48 +59,7 @@ https://qinxuewu.github.io/interview-docs
 - [SpringMVC生命周期](docs/Spring/SpringMvc生命周期.md)
 - [Spring Aop](docs/Spring/aop.md)
 
-## 分布式
-- [ELK分布式日志平台搭建](https://blog.csdn.net/u010391342/article/details/82895385)
-- [Netty入门(一)HelloWorld程序编写](https://blog.csdn.net/u010391342/article/details/83011198)
-- [Netty入门(二)TCP粘包与拆包问题处理](https://blog.csdn.net/u010391342/article/details/83011294)
-- [基于Zookeeper实现分布式锁和队列](https://blog.csdn.net/u010391342/article/details/82192933)
-- [ElasticSearch本地快速搭建与使用](https://blog.csdn.net/u010391342/article/details/82117389)
-- [Netty集成protobuf与多协议消息传递](https://myblog.qinxuewu.club/index.php/archives/119.html)
-- [Apache Thrift学习笔记:入门实例](https://myblog.qinxuewu.club/index.php/archives/121.html)
 
-
-## 设计模式
-- [创建型模式](docs/2019/创建型模式.md)
-- [结构型模式](docs/2019/结构型模式.md)
-- [行为型模式](docs/2019/行为型模式.md)
-
-## 数据结构与算法
-- [leetcode算法题](docs/leetcode/leetcodeJava.md)
-- [leetcode数据库算法题](docs/leetcode/sql算法.md)
-- [(大话数据结构01)顺序表和单链表的比较](https://blog.csdn.net/u010391342/article/details/86760777)
-- [(大话数据结构02)循环列表的实现](https://blog.csdn.net/u010391342/article/details/86767093)
-- [(大话数据结构03)什么是双向链表](https://blog.csdn.net/u010391342/article/details/86768074)
-- [(大话数据结构04)什么是栈](https://blog.csdn.net/u010391342/article/details/86773596)
-- [(大话数据结构05)什么是队列](https://blog.csdn.net/u010391342/article/details/86775025)
-- [(大话数据结构06)什么是二叉树](https://blog.csdn.net/u010391342/article/details/86990584)
-- [(大话数据结构07)查找算法](https://blog.csdn.net/u010391342/article/details/88715233)
-
-## Storm系列
-- [(一)环境搭建安装](docs/storm/storm01.md)
-- [(二)常用shell命令](docs/storm/storm02.md)
-- [(三)Java编写第一个本地模式demo](doc/storm/storm03.md)
-- [(四)并行度和流分组](docs/storm/storm04.md)
-- [(五)DRPC远程调用](docs/storm/storm05.md)
-- [(六)Trident使用](docs/storm/storm06.md)
-- [(七)集成kafka](docs/storm/storm07.md)
-
-## hadoop系列
-- [(一)伪分布式搭建](docs/hadoop/hadoop01.md)
-- [(二)HDFS shell操作](docs/hadoop/hadoop02.md)
-- [(三)HDFS的java api](docs/hadoop/hadoop03.md)
-- [(四)MapReduce分布式计算利器](docs/hadoop/hadoop04.md)
-- [HBase安装以及基本操作](docs/hadoop/hbase01.md)
-- [HBase之Java API 操作](docs/hadoop/hbase02.md)
 
 ## 知识点总结
 - [多线程和JVM知识总结](docs/2019/多线程和JVM知识总结.md)
