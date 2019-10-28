@@ -43,7 +43,7 @@ https://qinxuewu.github.io/interview-docs
 
 
 ## SpringBoot/SpringCloud/Spring
-- [SpringBoot2集成Sharding-JDBC实现分库分表](docs/2019/SpringBoot2集成Sharding-JDBC实现分库分表.md)
+- [SpringBoot集成Sharding-JDBC实现分库分表](docs/2019/SpringBoot2集成Sharding-JDBC实现分库分表.md)
 - [SpringBoot自定义一个starter](docs/2019/SpringBoot自定义一个starter.md  )
 - [SpringBoot集成prometheus+Grafana监控](https://blog.qinxuewu.club/2019/04/02/spring-xi-lie/springboot-ji-cheng-prometheus-grafana-jian-kong)
 - [SpringBoot Admin监控集成](docs/Spring/SpringBootAdmin.md)
