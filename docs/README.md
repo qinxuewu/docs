@@ -59,7 +59,8 @@ Java知识学习总结+JDK源码阅读笔记
 - [基于Zookeeper实现分布式锁和队列](https://blog.csdn.net/u010391342/article/details/82192933)
 - [ElasticSearch本地快速搭建与使用](https://blog.csdn.net/u010391342/article/details/82117389)
 - [Apache Thrift安装配置及入门实例](2019/Thrift安装配置及入门实例.md)
-- [grpc快速入门](2019/grpc快速入门.md)
+- [Grpc快速入门](2019/grpc快速入门.md)
+- [Redis基本操作](distributed/redis基本操作.md)
 
 ## 设计模式
 - [创建型模式](2019/创建型模式.md)
@@ -101,9 +102,9 @@ Java知识学习总结+JDK源码阅读笔记
 - [高性能MySQL笔记](2019/高性能MySQL.md)
 - [从Paxos到Zookeeper分布式一致性原理与实践](2019/从Paxos到Zookeeper分布式一致性原理与实践.md)
 - [Kafka知识点总结](2019/Kafka知识点总结.md)
-- [Zookeeper面试专题](其它/Zookeeper面试专题.md)
-- [redis面试专题.md](其它/redis面试.md)
-- [spring面试专题.md](其它/spring.md)
+- [Zookeeper原理解析](其它/Zookeeper面试专题.md)
+- [Redis深入原理解析](其它/Redis深入原理解析)
+- [Spring面试总结](其它/spring.md)
 
 
 
