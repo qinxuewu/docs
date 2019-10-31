@@ -1,6 +1,6 @@
 # 简介
 
-Java知识学习总结+JDK源码阅读笔记
+> Java知识学习总结
 
 <!-- [![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-924715723-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5PIRvFq) -->
 [![码云](https://img.shields.io/badge/Gitee-%E7%A0%81%E4%BA%91-yellow.svg)](https://gitee.com/qinxuewu)
@@ -70,6 +70,7 @@ Java知识学习总结+JDK源码阅读笔记
 ## 数据结构与算法
 - [leetcode算法题](leetcode/leetcodeJava.md)
 - [leetcode数据库算法题](leetcode/sql算法.md)
+- [单向循环链表(约瑟夫环)](leetcode/约瑟夫环.md)
 - [(大话数据结构01)顺序表和单链表的比较](https://blog.csdn.net/u010391342/article/details/86760777)
 - [(大话数据结构02)循环列表的实现](https://blog.csdn.net/u010391342/article/details/86767093)
 - [(大话数据结构03)什么是双向链表](https://blog.csdn.net/u010391342/article/details/86768074)
