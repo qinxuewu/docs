@@ -49,7 +49,7 @@
 - [SpringCloud Alibaba系列(三)Nacos Config配置中心](https://blog.csdn.net/u010391342/article/details/86702084)
 - [Spring集成dubbo实现服务降级](Spring/Spring集成dubbo集群实现服务降级.md)
 - [SpringMVC生命周期](Spring/SpringMvc生命周期.md)
-- [Spring Aop](Spring/aop.md)
+- [Hystrix原理解析](2019/Hystrix原理解析.md)
 
 ## 分布式
 - [ELK分布式日志平台搭建](https://blog.csdn.net/u010391342/article/details/82895385)
