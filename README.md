@@ -24,7 +24,7 @@ Java知识学习总结+JDK源码阅读笔记
 
 
 # 快速访问地址
-https://qinxuewu.github.io/interview-docs
+https://qinxuewu.github.io/docs
 
 
 
