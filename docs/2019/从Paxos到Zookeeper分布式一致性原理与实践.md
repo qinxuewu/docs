@@ -58,6 +58,47 @@
 - zk中共有三种角色：leader,follower,observer。
 - leader可以为客户端提供读写服务。follower和observer只能提供读服务，并且observer不参与leader选择过程，也不参与’过半写成功‘的策略。
 
+
+### Paxos算法的原理
+- 在Paxos算法中，有三种角色：`Proposer,Acceptor,Learners`
+- 一个进程可能既是Proposer又是Acceptor又是Learner。Proposer负责提出提案，Acceptor负责对提案作出裁决（accept与否），learner负责学习提案结果。
+
+![Paxos](http://tva3.sinaimg.cn/large/0068QeGHgy1gbtjqcirrjj30yg0jewi2.jpg)
+
+
+
+#### 阶段一（prepare阶段）
+- Proposer选择一个提案编号N，然后向半数以上的Acceptor发送编号为N的Prepare请求。Pareper（N）
+- 如果一个Acceptor收到一个编号为N的Prepare请求，如果小于它已经响应过的请求，则拒绝
+- 若N大于该Acceptor已经响应过的所有Prepare请求的编号（maxN），那么它就会将它已经接受过（已经经过第二阶段accept的提案）的编号最大的提案作为响应反馈给Proposer，同时该Acceptor承诺不再接受任何编号小于N的提案。
+
+#### Paxos算法的活锁问题
+![Paxos活锁](http://tvax1.sinaimg.cn/large/0068QeGHgy1gbtk2u66ccj30m809u40m.jpg)
+
+- 在算法运行过程中，可能还会存在一种极端情况，当有两个proposer依次提出一系列编号递增的议案，那么会陷入死循环，无法完成第二阶段，也就是无法选定一个提案
+- 通过选取主Proposer，就可以保证Paxos算法的活性。选择一个主Proposer，并规定只有主Proposer才能提出议案。这样一来，只要主Proposer和过半的Acceptor能够正常进行网络通信，那么肯定会有一个提案被批准（第二阶段的accept），则可以解决死循环导致的活锁问题。
+
+
+
+#### 阶段二（accept阶段）
+- 如果一个Proposer收到半数以上Acceptor对其发出的编号为N的Prepare请求的响应，那么它就会发送一个针对[N,V]提案的Accept请求给半数以上的Acceptor
+- 如果Acceptor收到一个针对编号为N的提案的Accept请求，只要该Acceptor没有对编号大于N的Prepare请求做出过响应，它就接受该提案。如果N小于Acceptor以及响应的prepare请求，则拒绝
+
+
+### raft共识算法详解
+- `Raft`是一个用于管理日志一致性的协议。它将分布式一致性分解为多个子问题：Leader选举、日志复制（Log-replication）、安全性（Safety）、日志压缩（Log compaction）等
+- Raft将系统中的角色分为领导者`（Leader）`、跟从者`（Follower）`和候选者`（Candidate）`
+- Raft算法将时间分为一个个的任期`（term`），每一个`term`的开始都是Leader选举。在成功选举Leader之后，Leader会在整个term内管理整个集群。如果Leader选举失败，该term就会因为没有Leader而结束
+- 每一个任期的开始都是一次选举，一个或多个候选人会试图成为领导人。如果一个候选人赢得了选举，它就会在该任期的剩余时间担任领导人。在某些情况下，选票会被瓜分，有可能没有选出领导人，那么，将会开始另一个任期，并且立刻开始下一次选举。Raft算法保证在给定的一个任期最多只有一个领导人
+
+#### Leader选举
+- Raft 使用心跳触发Leader选举,当服务器启动时，初始化为`Follower`,如果服务器中已有`Leader`就向所有Followers周期性发送`heartbeat`。如果`Follower`在选举超时时间内没有收到Leader的heartbeat，就会等待一段随机的时间后发起一次Leader选举。
+- 每一个`follower`都有一个时钟，是一个随机的值，表示的是follower等待成为leader的时间，谁的时钟先跑完，则发起leader选举
+- Follower将其当前`term`加一然后转换为`Candidate`。它首先给自己投票并且给集群中的其他服务器发送RPC,赢得了多数的选票，成功选举为Leader
+
+
+
+
 ### ZAB协议的核心思想
 
 > ZAB协议的核心是定义了对于那些会改变Zookeeper服务器数据状态的事务请求的处理方式即：
@@ -85,6 +126,64 @@
 - Leader选举算法应该保证：已经在Leader上提交的事务最终也被其他节点都提交，即使出现了Leader挂掉，Commit消息没发出去这种情况。
 - 确保丢弃只在Leader上被提出的事务。Leader提出一个事务后挂了，集群中别的节点都没收到，当挂掉的节点恢复后，要确保丢弃那个事务。
 - 让Leader选举算法能够保证新选举出来的Leader拥有最大的事务ID的Proposal。
+
+
+### ZooKeeper的典型应用场景
+
+#### 数据发布订阅
+- 发布订阅系统一般有两种设计模式：分别死Push和Pull。ZooKeeper是采用两种相结合的方式，客户端向服务端注册自己需要关注的节点，一旦该节点数据发生变更，服务端就会向相应的客户端发送Watcher事件通知，客户端收到通知后，需要主动到服务端获取最新的数据。
+
+#### 分布式协调通知
+- 分布式协调通知是将不同的分布式组件有机结合起来的关键所在，ZooKeeper中特有的Watcher注册与异步通知机制，能够很好的实现分布式环境下不同机器，甚至不同系统之间的协调与通知
+- 通常的做法是不同的客户端都对ZooKeeper上同一个数据节点进行Watcher注册,监听数据节点的变化（包括节点本身和其子节点），入股数据节点发生变化，那所有订阅的客户端都够接收到对应的Watcher通知，并做出相应的处理。
+
+#### Master选举
+- 利用ZooKeeper的强一致性，能够很好地保证分布式高并发情况下节点的创建一定能够保证全局唯一性，ZooKeeper会保证客户端无法重复创建一个已经存在的节点，如果同时多个客户端创建同一个节点，最终只有一个客户端请求能创建成功，利用这个特性，能够很容易地在分布式环境中进行Master选举。
+- 客户端集群每天都会定时往ZooKeeper上创建临时节点，比如`/master_election/2019-09-03/binding`，这个过程中，只有一个客户端成功创建这个节点，那么客户端所在的机器称为Master,同时其他没有成功创建的客户端，都会在结点`/master_election/2019-09-03`上注册一个子节点变更的Watcher，用于监控当前Master机器是否存活，一旦发现Master挂了，那其余的客户端将会重新进行Master选择
+
+#### 分布式锁 
+- 在需要获取排它锁时，所有客户端都会试图通过调用`create()`接口，在`/exclusiver_lock`节点下创建临时子节点`/exclusiver_lock/lock`,创建成功的客户端就表示成获取锁，同时没有获取到锁的客户端需要在`/exclusiver_lock`节点上注册一个节点变更的Watcher监听,以便实时监听到lock节点的变更情况
+- 当获取或的客户单发生死机时，这个临时节点就会被删除，锁就释放了，并通知其他客户端去后去锁
+- 正式执行业务逻辑完成后，客户端主动删除自己创建的临时节点释放锁
+
+![ZooKeeper分布式锁创建流程](http://wx3.sinaimg.cn/large/0068QeGHgy1g6m6raeg5ij30ck0dxwfw.jpg)
+
+#### Kafak中的应用
+- 在ZooKeeper上会有一个专门哟该进行Broker服务器列表记录的结点，路径为`/brokers/ids`。每个Broker服务器在启动时都会进行注册,Broker id是一个全局唯一的ID。Broker创建的节点是一个临时节点，一旦这个Broker服务器死机或是下线，对应的Broker节点也就被删除
+- 在Kafka中，会将同一个Topic的消息分成多个分区并将其分布式到多个Broker上，这些分区信息以及与Broker对应的关系也也都由ZooKeeper维护，由专门的节点记录，路径为`/brokers/tipics`,Broker服务器在启动后，会到对应的Topic节点下注册自己的BrokerID，并写入针对该Topic的分组总数，比如`/brokers/topics/login/3`
+
+### 服务器启动时期的Leader选举
+- 每个server会发出一个投票，由于是初始情况，因此对于server1和server2来说，都会将自己作为leader服务器来投票，每次投票包含的最基本的元素为：所推举的服务器的myid和zxid，我们以(myid,zxid)的形式来表示。因为是初始化阶段，因此无论是server1和是server2都会投给自己，即server1的投票为(1, 0)，server2的投票为(2, 0)，然后各自将这个投票发给集群中其它所有机器。
+- 每个服务器都会接收来自其它服务器的投票，接收到后会判断该投票的有效性，包括检查是否是本轮投票，是否来自looking状态的服务器
+- 在接收到来自其它服务器的投票后，针对每一个投票，服务器都需要将别人的投票和自己的投票进行pk，pk的规则如下：优先检查zxid，zxid大的服务器优先作为leader。如果zxid相同，那么比较myid，myid大的服务器作为leader服务器。
+- 现在我们来看server1和server2实际是如何进行投票的，对于server1来说，他自己的投票是(1, 0)，而接收到的投票为(2, 0)。首先会对比两者的zxid，因为都是0，所以接下来会比较两者的myid，server1发现接收到的投票中的myid是2，大于自己，于是就会更新自己的投票为(2, 0)，然后重新将投票发出去，而对于server2，不需要更新自己的投票信息，只是再一次向集群中的所有机器发出上一次投票信息即可。
+- 每次投票后，服务器都会统计所有投票，判断是否已经有过半的机器接收到相同的投票信息，对于server1和server2来说，都统计出集群中已经有两台机器接受了(2, 0)这个投票信息。这里过半的概念是指大于集群机器数量的一半，即大于或等于(n/2+1)
+- 一旦确定了leader，每个服务器就会更新自己的状态，如果是follower，那么就变更为following，如果是leader，就变更为leading。
+
+### 服务器运行时期的Leader选举
+- 当leader挂了之后，余下的非observer服务器都会将自己的状态变为looking，然后开始进行leader选举流程。
+- 在这个过程中，需要生成投票信息(myid, zxid)，因为是运行期间，因此每个服务器上的zxid可能不同，我们假定server1的zxid为123，而server3的zxid为122.在第一轮投票中，server1和server3都会投给自己，即分别产生投票(1, 123)和(3, 122)，然后各自将这个投票发给集群中的所有机器。
+- 对于投票的处理，和上面提到的服务器启动期间的处理规则是一致的，在这个例子中，由于server1的zxid是123，server3的zxid是122，显然server1会成为leader。
+- 统计投票,改变服务器状态
+
+
+### zookeeper运维
+- 使用有两种方式：1. 使用telnet命令登录zk的对外服务端口，直接使用四字命令；2.使用nc命令：echo conf | nc localhost 2181。
+- conf，输出zk服务器运行时的基本配置信息，如clientPort，dataDir，ticjTime；
+- cons，输出当前服务器上所有的客户端连接详细信息，client IP，Session ID，最近一次与服务器交互的操作类型；
+- crst，重置所有的客户端连接统计信息；
+- dump，输出当前集群所有的会话信息；
+- envi，输出zk所在服务器的运行时环境信息；
+- ruok，输出当前zk服务器是否在运行
+- stat，输出zk服务器运行时状态信息；
+- srvr，和stat类似，区别是仅仅输出服务器自身信息；
+- srst，重置所有服务端的统计信息；
+- schs，输出当前服务器管理的watcher的概要信息；
+- wchc，输出当前服务器管理的watcher的详细信息，以会话为单位进行归组，同时列出被该会话注册watcher的节点路径；
+- wchp，类似wchc，不同在于以节点路径为单位进行归组；
+- mntr，输出信息比stat更详细，服务器的统计信息，k-v键值对，可以进行监控；
+
+
 
 ### SpringBoot集成Zookeeper实战
 
@@ -303,58 +402,3 @@ public class WatcherApi implements Watcher {
 }
 
 ```
-
-### ZooKeeper的典型应用场景
-
-#### 数据发布订阅
-- 发布订阅系统一般有两种设计模式：分别死Push和Pull。ZooKeeper是采用两种相结合的方式，客户端向服务端注册自己需要关注的节点，一旦该节点数据发生变更，服务端就会向相应的客户端发送Watcher事件通知，客户端收到通知后，需要主动到服务端获取最新的数据。
-
-#### 分布式协调通知
-- 分布式协调通知是将不同的分布式组件有机结合起来的关键所在，ZooKeeper中特有的Watcher注册与异步通知机制，能够很好的实现分布式环境下不同机器，甚至不同系统之间的协调与通知
-- 通常的做法是不同的客户端都对ZooKeeper上同一个数据节点进行Watcher注册,监听数据节点的变化（包括节点本身和其子节点），入股数据节点发生变化，那所有订阅的客户端都够接收到对应的Watcher通知，并做出相应的处理。
-
-#### Master选举
-- 利用ZooKeeper的强一致性，能够很好地保证分布式高并发情况下节点的创建一定能够保证全局唯一性，ZooKeeper会保证客户端无法重复创建一个已经存在的节点，如果同时多个客户端创建同一个节点，最终只有一个客户端请求能创建成功，利用这个特性，能够很容易地在分布式环境中进行Master选举。
-- 客户端集群每天都会定时往ZooKeeper上创建临时节点，比如`/master_election/2019-09-03/binding`，这个过程中，只有一个客户端成功创建这个节点，那么客户端所在的机器称为Master,同时其他没有成功创建的客户端，都会在结点`/master_election/2019-09-03`上注册一个子节点变更的Watcher，用于监控当前Master机器是否存活，一旦发现Master挂了，那其余的客户端将会重新进行Master选择
-
-#### 分布式锁 
-- 在需要获取排它锁时，所有客户端都会试图通过调用`create()`接口，在`/exclusiver_lock`节点下创建临时子节点`/exclusiver_lock/lock`,创建成功的客户端就表示成获取锁，同时没有获取到锁的客户端需要在`/exclusiver_lock`节点上注册一个节点变更的Watcher监听,以便实时监听到lock节点的变更情况
-- 当获取或的客户单发生死机时，这个临时节点就会被删除，锁就释放了，并通知其他客户端去后去锁
-- 正式执行业务逻辑完成后，客户端主动删除自己创建的临时节点释放锁
-
-![ZooKeeper分布式锁创建流程](http://wx3.sinaimg.cn/large/0068QeGHgy1g6m6raeg5ij30ck0dxwfw.jpg)
-
-#### Kafak中的应用
-- 在ZooKeeper上会有一个专门哟该进行Broker服务器列表记录的结点，路径为`/brokers/ids`。每个Broker服务器在启动时都会进行注册,Broker id是一个全局唯一的ID。Broker创建的节点是一个临时节点，一旦这个Broker服务器死机或是下线，对应的Broker节点也就被删除
-- 在Kafka中，会将同一个Topic的消息分成多个分区并将其分布式到多个Broker上，这些分区信息以及与Broker对应的关系也也都由ZooKeeper维护，由专门的节点记录，路径为`/brokers/tipics`,Broker服务器在启动后，会到对应的Topic节点下注册自己的BrokerID，并写入针对该Topic的分组总数，比如`/brokers/topics/login/3`
-
-### 服务器启动时期的Leader选举
-- 每个server会发出一个投票，由于是初始情况，因此对于server1和server2来说，都会将自己作为leader服务器来投票，每次投票包含的最基本的元素为：所推举的服务器的myid和zxid，我们以(myid,zxid)的形式来表示。因为是初始化阶段，因此无论是server1和是server2都会投给自己，即server1的投票为(1, 0)，server2的投票为(2, 0)，然后各自将这个投票发给集群中其它所有机器。
-- 每个服务器都会接收来自其它服务器的投票，接收到后会判断该投票的有效性，包括检查是否是本轮投票，是否来自looking状态的服务器
-- 在接收到来自其它服务器的投票后，针对每一个投票，服务器都需要将别人的投票和自己的投票进行pk，pk的规则如下：优先检查zxid，zxid大的服务器优先作为leader。如果zxid相同，那么比较myid，myid大的服务器作为leader服务器。
-- 现在我们来看server1和server2实际是如何进行投票的，对于server1来说，他自己的投票是(1, 0)，而接收到的投票为(2, 0)。首先会对比两者的zxid，因为都是0，所以接下来会比较两者的myid，server1发现接收到的投票中的myid是2，大于自己，于是就会更新自己的投票为(2, 0)，然后重新将投票发出去，而对于server2，不需要更新自己的投票信息，只是再一次向集群中的所有机器发出上一次投票信息即可。
-- 每次投票后，服务器都会统计所有投票，判断是否已经有过半的机器接收到相同的投票信息，对于server1和server2来说，都统计出集群中已经有两台机器接受了(2, 0)这个投票信息。这里过半的概念是指大于集群机器数量的一半，即大于或等于(n/2+1)
-- 一旦确定了leader，每个服务器就会更新自己的状态，如果是follower，那么就变更为following，如果是leader，就变更为leading。
-
-### 服务器运行时期的Leader选举
-- 当leader挂了之后，余下的非observer服务器都会将自己的状态变为looking，然后开始进行leader选举流程。
-- 在这个过程中，需要生成投票信息(myid, zxid)，因为是运行期间，因此每个服务器上的zxid可能不同，我们假定server1的zxid为123，而server3的zxid为122.在第一轮投票中，server1和server3都会投给自己，即分别产生投票(1, 123)和(3, 122)，然后各自将这个投票发给集群中的所有机器。
-- 对于投票的处理，和上面提到的服务器启动期间的处理规则是一致的，在这个例子中，由于server1的zxid是123，server3的zxid是122，显然server1会成为leader。
-- 统计投票,改变服务器状态
-
-
-### zookeeper运维
-- 使用有两种方式：1. 使用telnet命令登录zk的对外服务端口，直接使用四字命令；2.使用nc命令：echo conf | nc localhost 2181。
-- conf，输出zk服务器运行时的基本配置信息，如clientPort，dataDir，ticjTime；
-- cons，输出当前服务器上所有的客户端连接详细信息，client IP，Session ID，最近一次与服务器交互的操作类型；
-- crst，重置所有的客户端连接统计信息；
-- dump，输出当前集群所有的会话信息；
-- envi，输出zk所在服务器的运行时环境信息；
-- ruok，输出当前zk服务器是否在运行
-- stat，输出zk服务器运行时状态信息；
-- srvr，和stat类似，区别是仅仅输出服务器自身信息；
-- srst，重置所有服务端的统计信息；
-- schs，输出当前服务器管理的watcher的概要信息；
-- wchc，输出当前服务器管理的watcher的详细信息，以会话为单位进行归组，同时列出被该会话注册watcher的节点路径；
-- wchp，类似wchc，不同在于以节点路径为单位进行归组；
-- mntr，输出信息比stat更详细，服务器的统计信息，k-v键值对，可以进行监控；
