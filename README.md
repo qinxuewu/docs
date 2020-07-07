@@ -4,7 +4,7 @@
 
 # 简介
 
-Java知识学习总结+JDK源码阅读笔记
+Java知识学习总结
 [![码云](https://img.shields.io/badge/Gitee-%E7%A0%81%E4%BA%91-yellow.svg)](https://gitee.com/qinxuewu)
 [![Github](https://img.shields.io/badge/Github-Github-red.svg)](https://github.com/a870439570)
 
